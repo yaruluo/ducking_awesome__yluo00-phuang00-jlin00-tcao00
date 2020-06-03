@@ -5,4 +5,14 @@
 {% endblock %}
 
 {% block body %}
+{% if edit %}
+
+{% else %}
+<div>
+	{% for key, value in permissions %}
+	{{ value[1] }}: {{ value[0] }} <br>
+	{% endfor %}
+</div>
+{% endif %}
+
 {% endblock body %}
