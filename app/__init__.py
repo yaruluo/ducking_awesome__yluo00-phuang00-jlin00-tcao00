@@ -88,18 +88,18 @@ def signupcheck():
     #preliminary checks on entered fields
     if(username == "" or password == "" or confirm == ""):
         flash('Please fill out all fields!', 'alert-danger')
-        return render_template("signup.html", username=username, password=password, confirm=confirm)
+        return render_template("signup.html", username=username, password=password, confirm=confirm, isLogin=True, signup="active")
     if ("," in username):
             flash('Commas are not allowed in username!', 'alert-danger')
-            return render_template("signup.html", username=username, password=password, confirm=confirm)
+            return render_template("signup.html", username=username, password=password, confirm=confirm, isLogin=True, signup="active")
     if (confirm!=password):
         flash('Passwords do not match!', 'alert-danger')
-        return render_template("signup.html", username=username, password=password, confirm=confirm)
+        return render_template("signup.html", username=username, password=password, confirm=confirm, isLogin=True, signup="active")
     #form information delivered to backend
     added = db_manager.addUser(username,password) #returns True if user was sucessfully added
     if (not added):
         flash('Username taken!', 'alert-danger')
-        return render_template("signup.html", username=username, password=password, confirm=confirm)
+        return render_template("signup.html", username=username, password=password, confirm=confirm, isLogin=True, signup="active")
     flash('You have successfully created an account! Please log in!', 'alert-success')
     return redirect(url_for('login'))
 
@@ -109,9 +109,33 @@ def signupcheck():
 @app.route("/daily")
 @login_required
 def daily():
-    return "DAILY"
+    return render_template("daily.html", isLogin=False, daily="active")
+
+@app.route("/monthly")
+@login_required
+def monthly():
+    return render_template("monthly.html", isLogin=False, monthly="active")
+
+@app.route("/friends")
+@login_required
+def friends():
+    return render_template("friends.html", isLogin=False, friends="active")
+
+@app.route("/addfriends")
+@login_required
+def addfriends():
+    return render_template("addfriends.html", isLogin=False, addfriends="active")
 
 #====================================================
+# LOGOUT AND MAIN
+
+@app.route("/logout")
+@login_required
+def logout():
+    '''def logout(): logging out of session, redirects to login page'''
+    session.clear()
+    flash('You were successfully logged out.', 'alert-success')
+    return redirect('/')
 
 if __name__ == "__main__":
     db_builder.build_db()
