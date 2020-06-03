@@ -1,2 +1,8 @@
 yaruL -- 2020-06-03 2:20
 adds design doc
+
+jackieL -- 2020-06-03
+- create basic repo structure
+- added HTML pages for login and signup
+- added login routes and functionality
+- added functions to maintain database
