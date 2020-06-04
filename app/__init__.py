@@ -66,6 +66,7 @@ def auth():
         return redirect(url_for('login'))
     if (db_manager.userValid(enteredU, enteredP)): #returns true if login successful
         flash('You were successfully logged in!', 'alert-success')
+        flash('Welcome back, ' + enteredU + "!", 'alert-success')
         session['username'] = enteredU
         return redirect(url_for('daily'))
     else:
@@ -109,7 +110,22 @@ def signupcheck():
 @app.route("/daily")
 @login_required
 def daily():
-    return render_template("daily.html", isLogin=False, daily="active")
+    today = datetime.now()
+    now = "" + today.strftime("%A") + ", " + today.strftime("%B") + " " + today.strftime("%d") + ", " + today.strftime("%Y")
+    session['date'] = now
+    return render_template("daily.html", isLogin=False, daily="active", date = session['date'])
+
+@app.route("/entrycheck", methods=["GET", "POST"])
+@login_required
+def entry():
+    print("here")
+    entry = request.form['new_entry']
+    print(entry)
+    if(entry == ""):
+        return redirect(url_for('daily'))
+    else:
+        return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = entry)
+
 
 @app.route("/monthly")
 @login_required

@@ -5,4 +5,35 @@
 {% endblock %}
 
 {% block body %}
+<div style = "display: block; margin-left: auto; margin-right: auto;">
+	<h2> {{ date }} </h2><br>
+	<h3 style = "color: orange;"> Daily Overview </h3>
+	<div class="card" style = "width: 800px; text-align: left;">
+		<div class="form-group" id = "add">
+			<button type="button" class="btn btn-primary btn-rounded btn-xs" style = "width: 40px; border-radius: 30px;">+</button>
+			Add a new entry!
+		</div>
+		<form action = "/entrycheck" method = "POST" class="form-group" id = "textform" style = "display: none;">
+	    <textarea class="form-control" rows="4" name = "new_entry" placeholder = "Today, I am..."></textarea><br>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+		{{ entries }}
+	</div>
+</div>
 {% endblock body %}
+
+{% block script %}
+<script>
+	var add = document.getElementById("add");
+	var textform = document.getElementById("textform");
+
+	add.onclick = function(){
+		if(textform.style.display == "none"){
+			textform.style.display = "inline";
+		}else{
+			textform.style.display = "none"
+		}
+	}
+
+</script>
+{% endblock %}
