@@ -24,6 +24,23 @@
 		{% endfor %}
 	</div>
 </div>
+{% if isOwner %}
+<form action='/moodcheck' method="POST">
+	<span>Mood Tracker:
+		<select id="mood" name="mood">
+			<option style="background-color: #ffb6e6" class="pink" value="0">happy/joyful/content/relax</option>
+			<option style="background-color: #a3dbff" class="blue" value="1">sad/lonely/depressed/insecure</option>
+			<option style="background-color: #71ffda" class="green" value="2">productive/motivated/alive/excited</option>
+			<option style="background-color: #feffb2" class="yellow" value="3">sick/tired/bored/lazy</option>
+			<option style="background-color: #ffd177" class="orange" value="4">average/normal/fine/OK</option>
+			<option style="background-color: #ff5b5b" class="red" value="5">angry/anxious/fustrated/annoyed</option>
+		</select>
+		<input type="hidden" name="date" value="{{datetime}}">
+		<input type="submit">
+	</span>
+
+</form>
+{% endif %}
 {% endblock body %}
 
 {% block script %}

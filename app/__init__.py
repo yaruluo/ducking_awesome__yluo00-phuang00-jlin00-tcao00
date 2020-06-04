@@ -118,13 +118,26 @@ def daily(user,date):
     # print(text)
     if (len(text) == 0):
         text = ""
-    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text)
+    if (int(user) == session['user_id']):
+        isOwner = True
+    else:
+        isOwner = False
+    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date)
 
 @app.route("/entrycheck", methods=["GET", "POST"])
 @login_required
 def entry():
     entry = request.form['new_entry']
     db_manager.addEntry(session['username'], entry)
+    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+
+@app.route("/moodcheck", methods=["GET","POST"])
+@login_required
+def mood():
+    moods = request.form['mood']
+    print(moods)
+    date = request.form['date']
+    print(date)
     return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
 
 @app.route("/monthly")

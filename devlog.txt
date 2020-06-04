@@ -25,3 +25,10 @@ peihuaH -- 2020-06-04 15:55
 - fixed the route for daily page
 - added db function to get user id
 - fixed daily route so it uses user id instead of username
+
+peihuaH -- 2020-06-04 16:54
+- starting working on mood tracker:
+  - it only shows when the user is the owner of the journal they are looking at
+  - the select dropdown shows the colors of the mood
+  - only issue is that the selected choice doesn't have a background color
+- will work on the backend to the mood tracker soon
