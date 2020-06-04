@@ -32,3 +32,9 @@ peihuaH -- 2020-06-04 16:54
   - the select dropdown shows the colors of the mood
   - only issue is that the selected choice doesn't have a background color
 - will work on the backend to the mood tracker soon
+
+tiffanyC -- 2020-06-04 18:28
+- fixed journal entries so that there's only one per day
+- added editing functionality to journal entries
+- for database tables, made user_id and entry_id INTEGER PRIMARY KEY AUTOINCREMENT
+- journal entries supports bold and italics
