@@ -143,10 +143,7 @@ def edit():
 @app.route("/moodcheck", methods=["GET","POST"])
 @login_required
 def mood():
-    moods = request.form['mood']
-    print(moods)
-    date = request.form['date']
-    print(date)
+    db_manager.addMood(session['user_id'], request.form['date'], request.form['mood'])
     return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
 
 @app.route("/monthly")
