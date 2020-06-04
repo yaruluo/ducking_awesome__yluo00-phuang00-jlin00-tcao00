@@ -82,7 +82,7 @@ def addEntry(username, entry):
     date = today.date()
     inputs = (idNum, date)
     # print(date)
-    data = execmany(q, inputs).fetchone()
+    data = execmany(q, inputs).fetchall()
     # print(data)
     length = 0
     if(data is None):
@@ -96,37 +96,16 @@ def addEntry(username, entry):
     q = "SELECT body FROM journal_tbl WHERE entry_id=? AND user_id=? AND date=?"
     inputs = (length, idNum, date)
     data = execmany(q, inputs).fetchone()[0]
-    print(data)
+    # print(data)
 
-    # if(data is None):
-    #     print("nope")
-    #     q = "INSERT INTO journal_tbl VALUES(0, ?, ?, ?, '')"
-    #     inputs = (idNum, date, entry)
-    #     execmany(q, inputs)
-    #     q = "SELECT body FROM journal_tbl WHERE user_id=? AND date=? AND entry_id=?"
-    #     inputs = (idNum, date, 0)
-    #     data = execmany(q, inputs).fetchone()[0]
-    #     print(data)
-    # else:
-    #     print("yup")
-        # length = len(data)
-        # q = "INSERT INTO journal_tbl VALUES(?, ?, ?, ?, '')"
-        # inputs = (length+1, idNum, date, entry)
-        # execmany(q, inputs)
-        # q = "SELECT body FROM journal_tbl WHERE entry_id=? AND user_id=? AND date=?"
-        # inputs = (length+1, idNum, date)
-        # data = execmany(q, inputs).fetchone()[0]
-        # print(data)
 
 def getEntry(username, date):
     '''def getEntry(username, date): retrieve the body text of the user at the specified date'''
     q = "SELECT user_id FROM user_tbl WHERE username=?"
     inputs = (username,)
     idNum = execmany(q, inputs).fetchone()[0]
-    q = "SELECT body FROM journal_tbl WHERE user_id=? AND date=?"
+    q = "SELECT entry_id, body FROM journal_tbl WHERE user_id=? AND date=?"
     inputs = (idNum, date)
     data = execmany(q, inputs).fetchall()
-    print(data[0])
-    print(data[0][0])
-    print(data[1][0])
+    # print(data[0])
     return data

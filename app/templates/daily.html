@@ -17,7 +17,11 @@
 	    <textarea class="form-control" rows="4" name = "new_entry" placeholder = "Today, I am..."></textarea><br>
 			<button type="submit" class="btn btn-primary">Submit</button>
 		</form>
-		{{ entries }}
+		{% for x in entries %}
+			<div class = "card" style = "width: 800px; text-align: left; background-color: #e8f4f8;" id = {{x[0]}}>
+			{{ x[1] }}
+			</div>
+		{% endfor %}
 	</div>
 </div>
 {% endblock body %}

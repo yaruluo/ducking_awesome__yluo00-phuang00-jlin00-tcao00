@@ -114,6 +114,7 @@ def daily():
     now = "" + today.strftime("%A") + ", " + today.strftime("%B") + " " + today.strftime("%d") + ", " + today.strftime("%Y")
     session['date'] = now
     text = db_manager.getEntry(session['username'], today.date())
+    # print(text)
     if (len(text) == 0):
         text = ""
     return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text)
