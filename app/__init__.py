@@ -113,18 +113,17 @@ def daily():
     today = datetime.now()
     now = "" + today.strftime("%A") + ", " + today.strftime("%B") + " " + today.strftime("%d") + ", " + today.strftime("%Y")
     session['date'] = now
-    return render_template("daily.html", isLogin=False, daily="active", date = session['date'])
+    text = db_manager.getEntry(session['username'], today.date())
+    if (len(text) == 0):
+        text = ""
+    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text)
 
 @app.route("/entrycheck", methods=["GET", "POST"])
 @login_required
 def entry():
-    print("here")
     entry = request.form['new_entry']
-    print(entry)
-    if(entry == ""):
-        return redirect(url_for('daily'))
-    else:
-        return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = entry)
+    db_manager.addEntry(session['username'], entry)
+    return redirect(url_for('daily'))
 
 @app.route("/monthly")
 @login_required
