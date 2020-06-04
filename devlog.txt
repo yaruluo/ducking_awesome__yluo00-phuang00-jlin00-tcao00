@@ -32,3 +32,8 @@ peihuaH -- 2020-06-04 16:54
   - the select dropdown shows the colors of the mood
   - only issue is that the selected choice doesn't have a background color
 - will work on the backend to the mood tracker soon
+
+peihuaH -- 2020-06-04 18:29
+- made a new table in db for mood
+- wrote functions to add mood, retrieve one specific mood, and retrieve all moods in a month
+- updated route so that mood will be added to db when the form is submitted

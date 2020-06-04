@@ -36,7 +36,7 @@ def addUser(username, password):
             user_id = random.randrange(limit)
 
         #add entry into user table
-        q = "INSERT INTO user_tbl VALUES(?, ?, ?, '', '', '', 0, '', '')"
+        q = "INSERT INTO user_tbl VALUES(?, ?, ?, '', '', 0, '', '')"
         inputs = (user_id, username, password)
         execmany(q, inputs)
         return True
@@ -116,3 +116,28 @@ def getEntry(username, date):
     data = execmany(q, inputs).fetchall()
     # print(data[0])
     return data
+
+def addMood(user_id, date, mood):
+    '''adds the mood into the mood table'''
+    q = "INSERT INTO mood_tbl VALUES(?, ?, ?)"
+    inputs = (user_id, date, mood)
+    execmany(q, inputs)
+
+def getMood(user_id, date):
+    '''returns the mood for the given date and user'''
+    q = "SELECT mood FROM mood_tbl WHERE user_id = ? AND date = ?"
+    inputs = (user_id, date,)
+    data = execmany(q, inputs).fetchone()[0]
+    return data
+
+def getMonthMoods(user_id, month_year):
+    '''returns a list of all the moods in the given month for the given user in the format:
+        [{'date': <date>, 'mood': <mood>}, ... ]
+    '''
+    q = "SELECT date, mood FROM mood_tbl WHERE user_id = ? AND date LIKE '?%'"
+    inputs = (user_id, month_year,)
+    data = execmany(q, inputs).fetchall()
+    dict = {}
+    for row in data:
+        print(row)
+    return dict
