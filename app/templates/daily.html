@@ -18,13 +18,13 @@
 			<button type="submit" class="btn btn-primary" id="submit">Submit</button>
 		</form>
 		{% for x in entries %}
-			<div class = "card" style = "width: 800px; text-align: left; background-color: #e8f4f8;">
+			<div class = "card" style = "padding-left: 10px; padding-right: 10px; text-align: left; background-color: #e8f4f8;">
 				{% autoescape false %}
 					{{ x | replace("\r\n", "<br>") }}
 				{% endautoescape %}
 				<div class="form-group" id = "edit">
 					<br>
-					<button type="button" class="btn btn-primary btn-rounded btn-xs">Edit</button>
+					<button type="button" class="btn btn-primary btn-rounded btn-xs" id = "editbutton">Edit</button>
 				</div>
 				<form action = "/editentry" method = "POST" class="form-group" id = "textedit" style = "display: none;">
 			    <textarea class="form-control" rows="5" name = "edit_entry">{{ x }}</textarea><br>
@@ -60,7 +60,7 @@
 		}
 	}
 
-	var edit = document.getElementById("edit");
+	var edit = document.getElementById("editbutton");
 	var textedit = document.getElementById("textedit");
 
 	edit.onclick = function(){

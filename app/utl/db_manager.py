@@ -28,13 +28,6 @@ def addUser(username, password):
     inputs = (username,)
     data = execmany(q, inputs).fetchone()
     if (data is None):
-        # #assign unique user_id
-        # q = "SELECT user_id FROM user_tbl"
-        # data = exec(q).fetchall()
-        # user_id = random.randrange(limit)
-        # while (user_id in data):
-        #     user_id = random.randrange(limit)
-
         #add entry into user table
         q = "INSERT INTO user_tbl (username, password, permissions) VALUES(?, ?, ?)"
         inputs = (username, password, 0)
@@ -80,32 +73,23 @@ def getPermissions(username):
 
 def updateEntry(username, entry):
     '''def updateEntry(username, entry): add a new entry to the journal_tbl'''
-    # if("\r" in entry):
-    #     entry.replace("\r", "")
-    # print("here")
-    # print(entry)
     idNum = getUserID(username)
-    # print(username + " " + str(idNum))
     q = "SELECT body FROM journal_tbl WHERE user_id=? AND date=?"
     today = datetime.now()
     date = today.date()
     inputs = (idNum, date)
-    # print(date)
     data = execmany(q, inputs).fetchone()
     print(data)
     if(data is None):
         print("nope")
-        # print(entry)
         q = "INSERT INTO journal_tbl (user_id, date, body) VALUES(?, ?, ?)"
         inputs = (idNum, date, entry)
         execmany(q, inputs)
     else:
         print("yup")
-        # print(entry)
         q = "UPDATE journal_tbl SET body=? WHERE user_id=? AND date=?"
         inputs = (entry, idNum, date)
         execmany(q, inputs)
-    # print(data)
 
 
 def getEntry(username, date):
