@@ -28,16 +28,9 @@ def addUser(username, password):
     inputs = (username,)
     data = execmany(q, inputs).fetchone()
     if (data is None):
-        #assign unique user_id
-        q = "SELECT user_id FROM user_tbl"
-        data = exec(q).fetchall()
-        user_id = random.randrange(limit)
-        while (user_id in data):
-            user_id = random.randrange(limit)
-
         #add entry into user table
-        q = "INSERT INTO user_tbl VALUES(?, ?, ?, '', '', '', 0, '', '')"
-        inputs = (user_id, username, password)
+        q = "INSERT INTO user_tbl (username, password, permissions) VALUES(?, ?, ?)"
+        inputs = (username, password, 0)
         execmany(q, inputs)
         return True
     return False #if username already exists
@@ -78,41 +71,32 @@ def getPermissions(username):
 #====================================================
 # MANAGING JOURNAL ENTRIES
 
-def addEntry(username, entry):
-    '''def addEntry(username, entry): add a new entry to the journal_tbl'''
-    q = "SELECT user_id FROM user_tbl WHERE username=?"
-    inputs = (username,)
-    idNum = execmany(q, inputs).fetchone()[0]
-    # print(username + " " + str(idNum))
-    q = "SELECT entry_id FROM journal_tbl WHERE user_id=? AND date=?"
+def updateEntry(username, entry):
+    '''def updateEntry(username, entry): add a new entry to the journal_tbl'''
+    idNum = getUserID(username)
+    q = "SELECT body FROM journal_tbl WHERE user_id=? AND date=?"
     today = datetime.now()
     date = today.date()
     inputs = (idNum, date)
-    # print(date)
-    data = execmany(q, inputs).fetchall()
-    # print(data)
-    length = 0
+    data = execmany(q, inputs).fetchone()
+    print(data)
     if(data is None):
         print("nope")
+        q = "INSERT INTO journal_tbl (user_id, date, body) VALUES(?, ?, ?)"
+        inputs = (idNum, date, entry)
+        execmany(q, inputs)
     else:
         print("yup")
-        length = len(data)
-    q = "INSERT INTO journal_tbl VALUES(?, ?, ?, ?, '')"
-    inputs = (length, idNum, date, entry)
-    execmany(q, inputs)
-    q = "SELECT body FROM journal_tbl WHERE entry_id=? AND user_id=? AND date=?"
-    inputs = (length, idNum, date)
-    data = execmany(q, inputs).fetchone()[0]
-    # print(data)
+        q = "UPDATE journal_tbl SET body=? WHERE user_id=? AND date=?"
+        inputs = (entry, idNum, date)
+        execmany(q, inputs)
 
 
 def getEntry(username, date):
     '''def getEntry(username, date): retrieve the body text of the user at the specified date'''
-    q = "SELECT user_id FROM user_tbl WHERE username=?"
-    inputs = (username,)
-    idNum = execmany(q, inputs).fetchone()[0]
-    q = "SELECT entry_id, body FROM journal_tbl WHERE user_id=? AND date=?"
+    idNum = getUserID(username)
+    q = "SELECT body FROM journal_tbl WHERE user_id=? AND date=?"
     inputs = (idNum, date)
-    data = execmany(q, inputs).fetchall()
-    # print(data[0])
+    data = execmany(q, inputs).fetchone()
+    print(data)
     return data
