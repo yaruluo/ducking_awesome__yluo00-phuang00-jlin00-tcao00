@@ -35,7 +35,7 @@ def addUser(username, password):
             user_id = random.randrange(limit)
 
         #add entry into user table
-        q = "INSERT INTO user_tbl VALUES(?, ?, ?, '', '', '', 0, '')"
+        q = "INSERT INTO user_tbl VALUES(?, ?, ?, '', '', '', 0, '', '')"
         inputs = (user_id, username, password)
         execmany(q, inputs)
         return True
@@ -46,5 +46,25 @@ def changePass(username, password):
     q = "UPDATE user_tbl SET password=? WHERE username=?"
     inputs = (password, username)
     execmany(q, inputs)
+
+#====================================================
+# MANAGING FRIENDS
+
+def getPermissions(username):
+    '''def getPermissions(username): get user's permissions and convert into a dictionary'''
+    q = "SELECT permissions FROM user_tbl WHERE username=?"
+    inputs = (username,)
+    data = execmany(q, inputs).fetchone()[0]
+    print(data)
+    dict = {0: [False, "View Journals"], 1: [False, "View Mood Tracker"],
+            2: [False, "View Sleep Tracker"], 3: [False, "View Period Tracker"],
+            4: [False, "View To-Do Lists"], 5: [False, "Comment Access"]}
+    for i in range(6):
+        index = 5 - i
+        quotient = data // pow(10, index)
+        if (quotient != 0):
+            dict[index][0] = True
+        data = data % pow(10, index)
+    return dict
 
 #====================================================

@@ -126,7 +126,6 @@ def entry():
     else:
         return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = entry)
 
-
 @app.route("/monthly")
 @login_required
 def monthly():
@@ -135,7 +134,16 @@ def monthly():
 @app.route("/friends")
 @login_required
 def friends():
-    return render_template("friends.html", isLogin=False, friends="active")
+    username = session['username']
+    permissions = db_manager.getPermissions(username)
+    return render_template("friends.html", isLogin=False, friends="active", edit=False, permissions=permissions.items())
+
+@app.route("/friends")
+@login_required
+def editpermissions():
+    username = session['username']
+    permissions = db_manager.getPermissions(username)
+    return render_template("friends.html", isLogin=False, friends="active", edit=True, permissions=permissions.items())
 
 @app.route("/addfriends")
 @login_required
