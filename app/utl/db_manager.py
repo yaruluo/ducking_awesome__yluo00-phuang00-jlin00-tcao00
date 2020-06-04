@@ -29,13 +29,8 @@ def addUser(username, password):
     data = execmany(q, inputs).fetchone()
     if (data is None):
         #add entry into user table
-<<<<<<< HEAD
         q = "INSERT INTO user_tbl (username, password, permissions) VALUES(?, ?, ?)"
         inputs = (username, password, 0)
-=======
-        q = "INSERT INTO user_tbl VALUES(?, ?, ?, '', '', 0, '', '')"
-        inputs = (user_id, username, password)
->>>>>>> e4513579afecf668f4b8e8018e6fbd10203882c2
         execmany(q, inputs)
         return True
     return False #if username already exists
