@@ -6,3 +6,9 @@ jackieL -- 2020-06-03
 - added HTML pages for login and signup
 - added login routes and functionality
 - added functions to maintain database
+
+jackieL -- 2020-06-03 21:11
+- added the date and created a button on the daily page to add new journal entries
+- created a hidden form for submitting new journal entries (appears upon pressing button)
+- new route added for checking entries and putting them on the HTML page
+- need to work on entering entries into database 
