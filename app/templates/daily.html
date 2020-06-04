@@ -8,18 +8,28 @@
 <div style = "display: block; margin-left: auto; margin-right: auto;">
 	<h2> {{ date }} </h2><br>
 	<h3 style = "color: orange;"> Daily Overview </h3>
-	<div class="card" style = "width: 800px; text-align: left;">
-		<div class="form-group" id = "add">
+	<div class="card" style = "width: 800px; text-align: left;" id = "journal" data-hidden = "{{ hide }}">
+		<div class="form-group" id = "add" style = "display: inline;">
 			<button type="button" class="btn btn-primary btn-rounded btn-xs" style = "width: 40px; border-radius: 30px;">+</button>
 			Add a new entry!
 		</div>
 		<form action = "/entrycheck" method = "POST" class="form-group" id = "textform" style = "display: none;">
 	    <textarea class="form-control" rows="4" name = "new_entry" placeholder = "Today, I am..."></textarea><br>
-			<button type="submit" class="btn btn-primary">Submit</button>
+			<button type="submit" class="btn btn-primary" id="submit">Submit</button>
 		</form>
 		{% for x in entries %}
-			<div class = "card" style = "width: 800px; text-align: left; background-color: #e8f4f8;" id = {{x[0]}}>
-			{{ x[1] }}
+			<div class = "card" style = "width: 800px; text-align: left; background-color: #e8f4f8;">
+				{% autoescape false %}
+					{{ x | replace("\r\n", "<br>") }}
+				{% endautoescape %}
+				<div class="form-group" id = "edit">
+					<br>
+					<button type="button" class="btn btn-primary btn-rounded btn-xs">Edit</button>
+				</div>
+				<form action = "/editentry" method = "POST" class="form-group" id = "textedit" style = "display: none;">
+			    <textarea class="form-control" rows="5" name = "edit_entry">{{ x }}</textarea><br>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</form>
 			</div>
 		{% endfor %}
 	</div>
@@ -28,14 +38,37 @@
 
 {% block script %}
 <script>
+
+	var test = document.getElementById("journal").getAttribute("data-hidden");
 	var add = document.getElementById("add");
+	console.log(test);
+
+	if(test == "yes"){
+		add.style.display = "none";
+	}
+	if(test == "no"){
+		add.style.display = "inline";
+	}
+
 	var textform = document.getElementById("textform");
 
 	add.onclick = function(){
 		if(textform.style.display == "none"){
 			textform.style.display = "inline";
 		}else{
-			textform.style.display = "none"
+			textform.style.display = "none";
+		}
+	}
+
+	var edit = document.getElementById("edit");
+	var textedit = document.getElementById("textedit");
+
+	edit.onclick = function(){
+		console.log("here")
+		if(textedit.style.display == "none"){
+			textedit.style.display = "inline";
+		}else{
+			textedit.style.display = "none";
 		}
 	}
 

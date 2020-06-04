@@ -116,15 +116,25 @@ def daily(user,date):
     session['date'] = now
     text = db_manager.getEntry(session['username'], today.date())
     # print(text)
-    if (len(text) == 0):
-        text = ""
-    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text)
+    if (text is None):
+        hide = "no"
+        return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, hide = hide)
+    else:
+        hide = "yes"
+        return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, hide = hide)
 
 @app.route("/entrycheck", methods=["GET", "POST"])
 @login_required
 def entry():
     entry = request.form['new_entry']
-    db_manager.addEntry(session['username'], entry)
+    db_manager.updateEntry(session['username'], entry)
+    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+
+@app.route("/editentry", methods=["GET", "POST"])
+@login_required
+def edit():
+    entry = request.form['edit_entry']
+    db_manager.updateEntry(session['username'], entry)
     return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
 
 @app.route("/monthly")
