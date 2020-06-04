@@ -36,7 +36,7 @@ def no_login_required(f):
         if 'username' not in session:
             return f(*args, **kwargs)
         flash('You cannot view this page while logged in!', 'alert-danger')
-        return redirect('/daily')
+        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['username']))
     return dec
 
 #====================================================
@@ -46,7 +46,7 @@ def no_login_required(f):
 def root():
     '''def root(): Redirects to login page if not in session, redirects to daily if in session'''
     if 'username' in session: #if logged in
-        return redirect('/daily')
+        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['username']))
     return redirect('/login')
 
 @app.route("/login")
@@ -68,7 +68,7 @@ def auth():
         flash('You were successfully logged in!', 'alert-success')
         flash('Welcome back, ' + enteredU + "!", 'alert-success')
         session['username'] = enteredU
-        return redirect(url_for('daily'))
+        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['username']))
     else:
         flash('Wrong Credentials!', 'alert-danger')
         return redirect(url_for('login'))
@@ -107,9 +107,9 @@ def signupcheck():
 #====================================================
 # STARTING HERE, USER MUST BE LOGGED IN
 
-@app.route("/daily")
+@app.route("/daily/<user>/<date>")
 @login_required
-def daily():
+def daily(user,date):
     today = datetime.now()
     now = "" + today.strftime("%A") + ", " + today.strftime("%B") + " " + today.strftime("%d") + ", " + today.strftime("%Y")
     session['date'] = now
@@ -124,7 +124,7 @@ def daily():
 def entry():
     entry = request.form['new_entry']
     db_manager.addEntry(session['username'], entry)
-    return redirect(url_for('daily'))
+    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['username']))
 
 @app.route("/monthly")
 @login_required
