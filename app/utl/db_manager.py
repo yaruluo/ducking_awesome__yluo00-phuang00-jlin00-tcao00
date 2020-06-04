@@ -48,6 +48,13 @@ def changePass(username, password):
     inputs = (password, username)
     execmany(q, inputs)
 
+def getUserID(username):
+    q = "SELECT user_id FROM user_tbl WHERE username=?"
+    inputs = (username,)
+    id = execmany(q, inputs).fetchone()[0]
+    print(id)
+    return id
+
 #====================================================
 # MANAGING FRIENDS
 

@@ -21,5 +21,7 @@ tiffanyC -- 2020-06-03 22:49
 - fixed journal_tbl database functions so that each entry is a new row in the table instead of updating the text
 - display the entries on the daily page correctly (with separate cards)
 
-peihuaH -- 2020-06-04 15:34
+peihuaH -- 2020-06-04 15:55
 - fixed the route for daily page
+- added db function to get user id
+- fixed daily route so it uses user id instead of username

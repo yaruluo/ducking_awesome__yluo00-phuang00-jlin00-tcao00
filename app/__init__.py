@@ -36,7 +36,7 @@ def no_login_required(f):
         if 'username' not in session:
             return f(*args, **kwargs)
         flash('You cannot view this page while logged in!', 'alert-danger')
-        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['username']))
+        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
     return dec
 
 #====================================================
@@ -46,7 +46,7 @@ def no_login_required(f):
 def root():
     '''def root(): Redirects to login page if not in session, redirects to daily if in session'''
     if 'username' in session: #if logged in
-        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['username']))
+        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
     return redirect('/login')
 
 @app.route("/login")
@@ -68,7 +68,8 @@ def auth():
         flash('You were successfully logged in!', 'alert-success')
         flash('Welcome back, ' + enteredU + "!", 'alert-success')
         session['username'] = enteredU
-        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['username']))
+        session['user_id'] = db_manager.getUserID(enteredU)
+        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
     else:
         flash('Wrong Credentials!', 'alert-danger')
         return redirect(url_for('login'))
@@ -124,7 +125,7 @@ def daily(user,date):
 def entry():
     entry = request.form['new_entry']
     db_manager.addEntry(session['username'], entry)
-    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['username']))
+    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
 
 @app.route("/monthly")
 @login_required
