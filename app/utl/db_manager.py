@@ -4,6 +4,9 @@ import random, sys
 from datetime import datetime
 
 limit = sys.maxsize
+MOOD_DICT = {0: ['happy/joyful/content/relax', '#ffb6e6'], 1: ['sad/lonely/depressed/insecure', '#a3dbff'],
+             2: ['productive/motivated/alive/excited', '#71ffda'], 3: ['sick/tired/bored/lazy', '#feffb2'],
+             4: ['average/normal/fine/OK', '#ffd177'], 5: ['angry/anxious/fustrated/annoyed', '#ff5b5b']}
 #====================================================
 # LOGIN FUNCTIONS
 
@@ -104,7 +107,7 @@ def getEntry(username, date):
 def addMood(user_id, date, mood):
     '''adds the mood into the mood table if it does not already exist,
        updates the mood if there is already a value inputed for the day'''
-    if getMood(user_id, date) is None:
+    if getMood(user_id, date) == ['None', '#ffffff']:
         q = "INSERT INTO mood_tbl VALUES(?, ?, ?)"
         inputs = (user_id, date, mood)
         execmany(q, inputs)
@@ -119,9 +122,9 @@ def getMood(user_id, date):
     inputs = (user_id, date,)
     data = execmany(q, inputs).fetchone()
     if data is None:
-        return data
+        return ['None', '#000000']
     else:
-        return data[0]
+        return MOOD_DICT[data[0]]
 
 def getMonthMoods(user_id, month_year):
     '''returns a list of all the moods in the given month for the given user in the format:

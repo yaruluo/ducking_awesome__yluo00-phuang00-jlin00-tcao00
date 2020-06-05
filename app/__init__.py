@@ -119,11 +119,15 @@ def daily(user,date):
         hide = "no"
     else:
         hide = "yes"
+    print(user)
+    print(date)
+    mood_vals = db_manager.getMood(user, date)
+    print(mood_vals)
     if (int(user) == session['user_id']):
         isOwner = True
     else:
         isOwner = False
-    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, hide = hide)
+    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, hide = hide, mood=mood_vals)
 
 
 @app.route("/entrycheck", methods=["GET", "POST"])

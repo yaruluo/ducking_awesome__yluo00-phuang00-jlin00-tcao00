@@ -50,3 +50,7 @@ peihuaH -- 2020-06-04 21:21
     and adds it if it's not
   - getMood returns None if the entry is not found
   - getMonthMoods returns the date and the moods for the given user_id in json form
+
+peihuaH -- 2020-06-05 17:02
+- fixed flask app so that daily.html doesn't crash if user does not have any entries
+- made mood tracker display current mood and made the update button prettier

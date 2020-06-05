@@ -17,6 +17,7 @@
 	    <textarea class="form-control" rows="4" name = "new_entry" placeholder = "Today, I am..."></textarea><br>
 			<button type="submit" class="btn btn-primary" id="submit">Submit</button>
 		</form>
+		{% if entries != None %}
 		{% for x in entries %}
 			<div class = "card" style = "padding-left: 10px; padding-right: 10px; text-align: left; background-color: #e8f4f8;">
 				{% autoescape false %}
@@ -32,25 +33,41 @@
 				</form>
 			</div>
 		{% endfor %}
+		{% endif %}
 	</div>
 </div>
-{% if isOwner %}
-<form action='/moodcheck' method="POST">
-	<span>Mood Tracker:
-		<select id="mood" name="mood">
-			<option style="background-color: #ffb6e6" class="pink" value="0">happy/joyful/content/relax</option>
-			<option style="background-color: #a3dbff" class="blue" value="1">sad/lonely/depressed/insecure</option>
-			<option style="background-color: #71ffda" class="green" value="2">productive/motivated/alive/excited</option>
-			<option style="background-color: #feffb2" class="yellow" value="3">sick/tired/bored/lazy</option>
-			<option style="background-color: #ffd177" class="orange" value="4">average/normal/fine/OK</option>
-			<option style="background-color: #ff5b5b" class="red" value="5">angry/anxious/fustrated/annoyed</option>
-		</select>
-		<input type="hidden" name="date" value="{{datetime}}">
-		<input type="submit">
-	</span>
+<br>
+<h3 style = "color: orange;"> Current Mood </h3>
+<div class = "card" style="width:800px;background-color:{{mood[1]}};">
+	<div class="card-body">
+		<p style="text-align:center">{{mood[0]}}</p>
+		{% if isOwner %}
+		<div style="text-align:left;">
+			<button type="button" id="updateMood" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Update</button>
+			<div class="collapse" id="collapseExample">
+				<br>
+				<form class="form-inline" action='/moodcheck' method="POST">
+					<span>
+						<select class="form-control form-control-sm" id="mood" name="mood" style="width:18rem">
+							<option style="background-color: #ffb6e6" class="pink" value="0">happy/joyful/content/relax</option>
+							<option style="background-color: #a3dbff" class="blue" value="1">sad/lonely/depressed/insecure</option>
+							<option style="background-color: #71ffda" class="green" value="2">productive/motivated/alive/excited</option>
+							<option style="background-color: #feffb2" class="yellow" value="3">sick/tired/bored/lazy</option>
+							<option style="background-color: #ffd177" class="orange" value="4">average/normal/fine/OK</option>
+							<option style="background-color: #ff5b5b" class="red" value="5">angry/anxious/fustrated/annoyed</option>
+						</select>
+						<input type="hidden" name="date" value="{{datetime}}">
+						<button type="submit" class="btn btn-sm btn-secondary">Submit</button>
+					</span>
+				</form>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+</div>
+<br>
 
-</form>
-{% endif %}
+
 {% endblock body %}
 
 {% block script %}
