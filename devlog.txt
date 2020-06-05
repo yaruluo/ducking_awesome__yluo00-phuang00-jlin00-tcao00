@@ -43,3 +43,10 @@ peihuaH -- 2020-06-04 18:29
 - made a new table in db for mood
 - wrote functions to add mood, retrieve one specific mood, and retrieve all moods in a month
 - updated route so that mood will be added to db when the form is submitted
+
+peihuaH -- 2020-06-04 21:21
+- updated db_manager:
+  - addMood updates the mood of the day for the user if it is already in the table,
+    and adds it if it's not
+  - getMood returns None if the entry is not found
+  - getMonthMoods returns the date and the moods for the given user_id in json form

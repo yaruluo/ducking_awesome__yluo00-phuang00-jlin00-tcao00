@@ -102,26 +102,35 @@ def getEntry(username, date):
     return data
 
 def addMood(user_id, date, mood):
-    '''adds the mood into the mood table'''
-    q = "INSERT INTO mood_tbl VALUES(?, ?, ?)"
-    inputs = (user_id, date, mood)
-    execmany(q, inputs)
+    '''adds the mood into the mood table if it does not already exist,
+       updates the mood if there is already a value inputed for the day'''
+    if getMood(user_id, date) is None:
+        q = "INSERT INTO mood_tbl VALUES(?, ?, ?)"
+        inputs = (user_id, date, mood)
+        execmany(q, inputs)
+    else:
+        q = "UPDATE mood_tbl SET mood = ? WHERE user_id = ? AND date = ?"
+        inputs = (mood, user_id, date)
+        execmany(q, inputs)
 
 def getMood(user_id, date):
     '''returns the mood for the given date and user'''
     q = "SELECT mood FROM mood_tbl WHERE user_id = ? AND date = ?"
     inputs = (user_id, date,)
-    data = execmany(q, inputs).fetchone()[0]
-    return data
+    data = execmany(q, inputs).fetchone()
+    if data is None:
+        return data
+    else:
+        return data[0]
 
 def getMonthMoods(user_id, month_year):
     '''returns a list of all the moods in the given month for the given user in the format:
         [{'date': <date>, 'mood': <mood>}, ... ]
     '''
-    q = "SELECT date, mood FROM mood_tbl WHERE user_id = ? AND date LIKE '?%'"
-    inputs = (user_id, month_year,)
-    data = execmany(q, inputs).fetchall()
-    dict = {}
+    q = "SELECT date, mood FROM mood_tbl WHERE user_id = ? AND date LIKE ?"
+    inputs = (user_id, month_year + '%',)
+    data = execmany(q, inputs)
+    dict = []
     for row in data:
-        print(row)
+        dict.append({'date': row[0], 'mood': row[1]})
     return dict
