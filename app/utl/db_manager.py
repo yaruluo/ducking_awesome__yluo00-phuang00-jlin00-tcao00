@@ -122,7 +122,7 @@ def getMood(user_id, date):
     inputs = (user_id, date,)
     data = execmany(q, inputs).fetchone()
     if data is None:
-        return ['None', '#000000']
+        return ['None', '#ffffff']
     else:
         return MOOD_DICT[data[0]]
 

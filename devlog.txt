@@ -54,3 +54,9 @@ peihuaH -- 2020-06-04 21:21
 peihuaH -- 2020-06-05 17:02
 - fixed flask app so that daily.html doesn't crash if user does not have any entries
 - made mood tracker display current mood and made the update button prettier
+
+peihuaH -- 2020-06-06 00:38
+- changed mood background color to white when no mood has been chosen yet
+- updated monthly.html so that it displays the current month if not specified
+- set up form to display the data for the user selected month
+- send monthly mood data to javascript file

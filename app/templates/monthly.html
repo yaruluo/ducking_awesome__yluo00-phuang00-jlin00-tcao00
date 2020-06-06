@@ -4,5 +4,60 @@
 	Monthly
 {% endblock %}
 
+{% block style %}
+<style>
+	select,
+	select option {
+	  color: #000000;
+	}
+
+	select:invalid,
+	select option[value=""] {
+	  color: #6c757d;
+	}
+</style>
+{% endblock %}
+
 {% block body %}
+<h2>Monthly Overview for {{date}}</h2>
+<br>
+<form style="display:table;"action="/monthly" method="POST">
+	<div class="form-row">
+		<div class="col-auto">
+			<h4 style="color:orange;">Select Month:</h4>
+		</div>
+		<div class="col-auto">
+			<select id="dropdown" class="form-control form-group custom-select align-items-center" style="width:150px" name="month" required>
+				<option value="" selected disabled hidden>Month</option>
+				<option value="01">January</option>
+				<option value="02">February</option>
+				<option value="03">March</option>
+				<option value="04">April</option>
+				<option value="05">May</option>
+				<option value="06">June</option>
+				<option value="07">July</option>
+				<option value="08">August</option>
+				<option value="09">September</option>
+				<option value="10">October</option>
+				<option value="11">November</option>
+				<option value="12">December</option>
+			</select>
+		</div>
+		<div class="col-auto">
+			<input type="number" class="form-control form-group" style="width:150px" placeholder="Year" name="year" min="1" required>
+		</div>
+		<div class="col-auto">
+			<button type="submit" class="btn btn-primary form-group">Render</button>
+		</div>
+	</div>
+</form>
+<br>
+<br>
 {% endblock body %}
+
+{% block script %}
+<script type="text/javascript">
+	var mood_data = {{moods}};
+</script>
+<script src="{{url_for('static', filename='js/monthly.js')}}"></script>
+{% endblock %}

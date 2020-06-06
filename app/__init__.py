@@ -11,6 +11,9 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
+MONTHS = {'01': 'January', '02': 'February', '03': 'March', '04': 'April',
+          '05': 'May', '06': 'June', '07': 'July', '08': 'August',
+          '09': 'September', '10': 'October', '11': 'November', '12': 'December'}
 
 #====================================================
 # FUNCTION WRAPPERS FOR LOGIN
@@ -150,10 +153,16 @@ def mood():
     db_manager.addMood(session['user_id'], request.form['date'], request.form['mood'])
     return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
 
-@app.route("/monthly")
+@app.route("/monthly", methods=["GET", "POST"])
 @login_required
 def monthly():
-    return render_template("monthly.html", isLogin=False, monthly="active")
+    if 'month' in request.form:
+        date = MONTHS[request.form['month']] + ' ' + request.form['year']
+        moods = db_manager.getMonthMoods(session['user_id'], request.form['year'] + '-' + request.form['month'])
+    else:
+        date = datetime.now().strftime('%B') + ' ' + str(datetime.now().year)
+        moods = db_manager.getMonthMoods(session['user_id'], str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
+    return render_template("monthly.html", isLogin=False, monthly="active", date=date, moods=moods)
 
 @app.route("/friends")
 @login_required
