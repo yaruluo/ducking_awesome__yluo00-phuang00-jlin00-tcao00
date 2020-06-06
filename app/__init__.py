@@ -115,19 +115,20 @@ def daily(user,date):
     now = "" + today.strftime("%A") + ", " + today.strftime("%B") + " " + today.strftime("%d") + ", " + today.strftime("%Y")
     session['date'] = now
     text = db_manager.getEntry(session['username'], today.date())
+    tasks = db_manager.getTasks(session['username'], today.date())
     if(text is None):
         hide = "no"
     else:
         hide = "yes"
-    print(user)
-    print(date)
+    # print(user)
+    # print(date)
     mood_vals = db_manager.getMood(user, date)
     print(mood_vals)
     if (int(user) == session['user_id']):
         isOwner = True
     else:
         isOwner = False
-    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, hide = hide, mood=mood_vals)
+    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, hide = hide, mood=mood_vals, tasks = tasks)
 
 
 @app.route("/entrycheck", methods=["GET", "POST"])
@@ -142,6 +143,20 @@ def entry():
 def edit():
     entry = request.form['edit_entry']
     db_manager.updateEntry(session['username'], entry)
+    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+
+@app.route("/taskcheck", methods=["GET", "POST"])
+@login_required
+def task():
+    task = request.form['task']
+    description = request.form['description']
+    time = request.form['time']
+    print(task)
+    print(description)
+    print(time)
+    if (task == "" and description == "" and time == ""):
+        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+    db_manager.createTask(session['username'], task, description, time, 0)
     return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
 
 @app.route("/moodcheck", methods=["GET","POST"])

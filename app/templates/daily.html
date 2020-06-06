@@ -26,35 +26,35 @@
 	<h2> {{ date }} </h2><br>
 	<h3 style = "color: orange;"> Daily Overview </h3>
 	<div class="card" style = "width: 800px; text-align: left;" id = "journal" data-hidden = "{{ hide }}">
-		<div class="form-group" id = "add" style = "display: inline;">
+		<div class="form-group" id = "add" style = "display: inline; padding-top: 10px; padding-left: 10px; padding-right: 10px;">
 			<button type="button" class="btn btn-primary btn-rounded btn-xs" id = "add_entry" style = "width: 40px; border-radius: 30px;">+</button>
 			Add a new entry!
 		</div>
-		<form action = "/entrycheck" method = "POST" class="form-group" id = "textform" style = "display: none;">
+		<form action = "/entrycheck" method = "POST" class="form-group" id = "textform" style = "display: none; padding-left: 10px; padding-right: 10px;">
 	    <textarea class="form-control" rows="4" name = "new_entry" placeholder = "Today, I am..."></textarea><br>
 			<button type="submit" class="btn btn-primary" id="submit">Submit</button>
 		</form>
 		{% if entries != None %}
-		{% for x in entries %}
-			<div class = "card" style = "padding-left: 10px; padding-right: 10px; text-align: left; background-color: #e8f4f8;">
-				{% autoescape false %}
-					{{ x | replace("\r\n", "<br>") }}
-				{% endautoescape %}
-				<div class="form-group" id = "edit">
-					<br>
-					<button type="button" class="btn btn-primary btn-rounded btn-xs" id = "editbutton">Edit</button>
+			{% for x in entries %}
+				<div class = "card" style = "padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; text-align: left; background-color: #e8f4f8;">
+					{% autoescape false %}
+						{{ x | replace("\r\n", "<br>") }}
+					{% endautoescape %}
+					<div class="form-group" id = "edit">
+						<br>
+						<button type="button" class="btn btn-primary btn-rounded btn-xs" id = "editbutton">Edit</button>
+					</div>
+					<form action = "/editentry" method = "POST" class="form-group" id = "textedit" style = "display: none;">
+				    <textarea class="form-control" rows="5" name = "edit_entry">{{ x }}</textarea><br>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</form>
 				</div>
-				<form action = "/editentry" method = "POST" class="form-group" id = "textedit" style = "display: none;">
-			    <textarea class="form-control" rows="5" name = "edit_entry">{{ x }}</textarea><br>
-					<button type="submit" class="btn btn-primary">Submit</button>
-				</form>
-			</div>
-		{% endfor %}
+			{% endfor %}
 		{% endif %}
 	</div><br>
 	<h3 style = "color: orange;"> To-Do List </h3>
 	<div class = "card" style = "width: 800px; text-align: left;" id = "tdlist">
-		<div class="form-group">
+		<div class="form-group" style = "padding-top: 10px; padding-left: 10px; padding-right: 10px;">
 			<button type="button" class="btn btn-warning btn-rounded btn-xs"  id = "add_task" style = "width: 40px; border-radius: 30px;">+</button>
 			Add a new task!
 		</div>
@@ -80,8 +80,17 @@
 	        });
 	    </script>
 
-			<button type="submit" class="btn btn-primary" id="submit_task">Submit</button>
+			<button type="submit" class="btn btn-warning" id="submit_task">Submit</button>
 		</form>
+		{% if tasks != "" %}
+			{% for x in tasks %}
+				<div class = "card" style = "padding-left: 10px; padding-right: 10px; padding-top: 10px; text-align: left; background-color: #e8f8f4;">
+					<h5 style = "color: #F7717D; display: inline-block;">Task: <span style = "color: black; font-weight: normal;">{{ x[1] }}</span></h5>
+					<h5 style = "color: #59b5f6; display: inline-block;">Description: <span style = "color: black; font-weight: normal;">{{ x[2] }}</span></h5>
+					<h5 style = "color: #0cd35e; display: inline-block;">Time: <span style = "color: black; font-weight: normal;">{{ x[3] }}</span></h5>
+				</div>
+			{% endfor %}
+		{% endif %}
 	</div>
 </div>
 <br>
@@ -127,6 +136,17 @@
 
 	if(test == "yes"){
 		add.style.display = "none";
+		var edit = document.getElementById("editbutton");
+		var textedit = document.getElementById("textedit");
+
+		edit.onclick = function(){
+			console.log("here")
+			if(textedit.style.display == "none"){
+				textedit.style.display = "inline";
+			}else{
+				textedit.style.display = "none";
+			}
+		}
 	}
 	if(test == "no"){
 		add.style.display = "inline";
@@ -143,20 +163,10 @@
 		}
 	}
 
-	var edit = document.getElementById("editbutton");
-	var textedit = document.getElementById("textedit");
-
-	edit.onclick = function(){
-		console.log("here")
-		if(textedit.style.display == "none"){
-			textedit.style.display = "inline";
-		}else{
-			textedit.style.display = "none";
-		}
-	}
 
 	var addTask = document.getElementById("add_task")
 	addTask.onclick = function(){
+		console.log("here")
 		if(taskform.style.display == "none"){
 			taskform.style.display = "inline";
 		}else{
