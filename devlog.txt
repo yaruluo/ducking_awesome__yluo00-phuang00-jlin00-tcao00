@@ -54,3 +54,8 @@ peihuaH -- 2020-06-04 21:21
 peihuaH -- 2020-06-05 17:02
 - fixed flask app so that daily.html doesn't crash if user does not have any entries
 - made mood tracker display current mood and made the update button prettier
+
+tiffanyC -- 2020-06-05 22:00
+- updated journal_tbl to make tdlist a BLOB
+- created a form for adding new tasks
+  - has a responsive time picker
