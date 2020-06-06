@@ -2,6 +2,7 @@ import sqlite3
 from utl.db_builder import exec, execmany
 import random, sys
 from datetime import datetime
+import json
 
 limit = sys.maxsize
 MOOD_DICT = {0: ['happy/joyful/content/relax', '#ffb6e6'], 1: ['sad/lonely/depressed/insecure', '#a3dbff'],
@@ -77,11 +78,12 @@ def getPermissions(username):
 def updateEntry(username, entry):
     '''def updateEntry(username, entry): add a new entry to the journal_tbl'''
     idNum = getUserID(username)
-    q = "SELECT body FROM journal_tbl WHERE user_id=? AND date=?"
+    q = "SELECT entry_id FROM journal_tbl WHERE user_id=? AND date=?"
     today = datetime.now()
     date = today.date()
     inputs = (idNum, date)
     data = execmany(q, inputs).fetchone()
+    print("updateEntry")
     print(data)
     if(data is None):
         print("nope")
@@ -101,8 +103,49 @@ def getEntry(username, date):
     q = "SELECT body FROM journal_tbl WHERE user_id=? AND date=?"
     inputs = (idNum, date)
     data = execmany(q, inputs).fetchone()
+    print("getEntry")
     print(data)
     return data
+
+def createTask(username, task, description, time, resolved):
+    '''def createTask(username, date, text, time, resolved): create a to-do task for the current day'''
+    idNum = getUserID(username)
+    today = datetime.now()
+    date = today.date()
+    q = "INSERT INTO tdlist_tbl (user_id, date, task, description, time, resolved) VALUES(?, ?, ?, ?, ?, ?)"
+    inputs = (idNum, date, task, description, time, resolved)
+    execmany(q, inputs)
+
+def getTasks(username, date):
+    '''def getTasks(username, date): retrieve all tasks on the to-do list of a specified date'''
+    idNum = getUserID(username)
+    q = "SELECT entry_id FROM tdlist_tbl WHERE user_id=? AND date=?"
+    inputs = (idNum, date)
+    data = execmany(q, inputs).fetchall()
+    print("getTask")
+    # print(len(data))
+    print(data)
+    # print(data[1])
+    list = []
+    if(len(data) == 0):
+        return ""
+    else:
+        for x in data:
+            for y in x:
+                q = "SELECT entry_id, task, description, time, resolved FROM tdlist_tbl WHERE user_id=? AND date=? AND entry_id=?"
+                inputs = (idNum, date, y)
+                temp = execmany(q, inputs).fetchone()
+                list.append(temp)
+        print(list)
+        # print(list[0])
+        # print(list[0][0])
+        return list
+
+
+
+
+#====================================================
+# MANAGING TRACKERS
 
 def addMood(user_id, date, mood):
     '''adds the mood into the mood table if it does not already exist,
