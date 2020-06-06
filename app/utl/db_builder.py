@@ -29,7 +29,7 @@ def build_db():
     command = "CREATE TABLE IF NOT EXISTS user_tbl (user_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, sleep TEXT, period TEXT, permissions INT, friends TEXT, requests TEXT)"
     exec(command)
 
-    command = "CREATE TABLE IF NOT EXISTS journal_tbl (entry_id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INT, date DATETIME, body TEXT, tdlist TEXT)"
+    command = "CREATE TABLE IF NOT EXISTS journal_tbl (entry_id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INT, date DATETIME, body TEXT, tdlist BLOB)"
     exec(command)
 
     command = "CREATE TABLE IF NOT EXISTS comment_tbl (entry_id INT, commenter_id INT, comment TEXT)"

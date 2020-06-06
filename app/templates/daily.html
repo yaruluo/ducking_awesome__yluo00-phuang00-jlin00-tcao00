@@ -4,13 +4,30 @@
 	Daily
 {% endblock %}
 
+{% block style %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"/>
+<style>
+	.fa-clock-o::before {
+	  content: "Pick";
+	}
+	.fa-arrow-down::before {
+		content: "-";
+	}
+	.fa-arrow-up::before {
+		content: "+";
+	}
+</style>
+{% endblock %}
+
 {% block body %}
 <div style = "display: block; margin-left: auto; margin-right: auto;">
 	<h2> {{ date }} </h2><br>
 	<h3 style = "color: orange;"> Daily Overview </h3>
 	<div class="card" style = "width: 800px; text-align: left;" id = "journal" data-hidden = "{{ hide }}">
 		<div class="form-group" id = "add" style = "display: inline;">
-			<button type="button" class="btn btn-primary btn-rounded btn-xs" style = "width: 40px; border-radius: 30px;">+</button>
+			<button type="button" class="btn btn-primary btn-rounded btn-xs" id = "add_entry" style = "width: 40px; border-radius: 30px;">+</button>
 			Add a new entry!
 		</div>
 		<form action = "/entrycheck" method = "POST" class="form-group" id = "textform" style = "display: none;">
@@ -34,6 +51,37 @@
 			</div>
 		{% endfor %}
 		{% endif %}
+	</div><br>
+	<h3 style = "color: orange;"> To-Do List </h3>
+	<div class = "card" style = "width: 800px; text-align: left;" id = "tdlist">
+		<div class="form-group">
+			<button type="button" class="btn btn-warning btn-rounded btn-xs"  id = "add_task" style = "width: 40px; border-radius: 30px;">+</button>
+			Add a new task!
+		</div>
+		<form action = "/taskcheck" method = "POST" class="form-group" id = "taskform" style = "display: none; padding-left: 10px; padding-right: 10px;">
+			<label for="task" class="font-weight-bold">Task:</label>
+			<textarea class="form-control" rows="1" name = "task" id = "task" placeholder = "Buy groceries"></textarea><br>
+			<label for="description" class="font-weight-bold">Description:</label>
+	    <textarea class="form-control" rows="3" name = "description" id = "description" placeholder = "Milk, broccoli, chocolate..."></textarea><br>
+			<div class="form-group">
+				<label for="time" class="font-weight-bold">Time:</label>
+        <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+            <input type="text" class="form-control datetimepicker-input" id = "time" name = "time" data-target="#datetimepicker3"/>
+            <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+            </div>
+        </div>
+			</div>
+	    <script type="text/javascript">
+	        $(function () {
+	            $('#datetimepicker3').datetimepicker({
+	                format: 'LT',
+	            });
+	        });
+	    </script>
+
+			<button type="submit" class="btn btn-primary" id="submit_task">Submit</button>
+		</form>
 	</div>
 </div>
 <br>
@@ -86,7 +134,8 @@
 
 	var textform = document.getElementById("textform");
 
-	add.onclick = function(){
+	var addEntry = document.getElementById("add_entry")
+	addEntry.onclick = function(){
 		if(textform.style.display == "none"){
 			textform.style.display = "inline";
 		}else{
@@ -106,5 +155,15 @@
 		}
 	}
 
+	var addTask = document.getElementById("add_task")
+	addTask.onclick = function(){
+		if(taskform.style.display == "none"){
+			taskform.style.display = "inline";
+		}else{
+			taskform.style.display = "none";
+		}
+	}
+
 </script>
+
 {% endblock %}

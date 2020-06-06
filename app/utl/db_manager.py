@@ -77,7 +77,7 @@ def getPermissions(username):
 def updateEntry(username, entry):
     '''def updateEntry(username, entry): add a new entry to the journal_tbl'''
     idNum = getUserID(username)
-    q = "SELECT body FROM journal_tbl WHERE user_id=? AND date=?"
+    q = "SELECT entry_id FROM journal_tbl WHERE user_id=? AND date=?"
     today = datetime.now()
     date = today.date()
     inputs = (idNum, date)
@@ -103,6 +103,50 @@ def getEntry(username, date):
     data = execmany(q, inputs).fetchone()
     print(data)
     return data
+
+def createTask(username, date, name, description, time, resolved):
+    '''def createTask(username, date, text, time, resolved): create a to-do task for the current day'''
+    idNum = getUserID(username)
+    today = datetime.now()
+    date = today.date()
+    dict = {"name": name, "description": description, "time": time, "resolved": resolved}
+    q = "SELECT entry_id FROM journal_tbl WHERE user_id=? AND date=?"
+    inputs = (idNum, date)
+    data = execmany(q, inputs).fetchone()
+    print(data)
+    if(data is None):
+        print("no")
+        q = "INSERT INTO journal_tbl (user_id, date, tdlist) VALUES(?, ?, ?)"
+        inputs = (idNum, date, dict)
+        execmany(q, inputs)
+    else:
+        q = "SELECT tdlist FROM journal_tbl WHERE user_id=? AND date=?"
+        inputs = (idNum, date)
+        secondData = execmany(q, inputs).fetchone()
+        print(secondData)
+        if(secondData is None):
+            print("exists but new")
+            q = "UPDATE journal_tbl SET tdlist=? WHERE user_id=? AND date=?"
+            list = [dict]
+            inputs = (list, idNum, date)
+            execmany(q, inputs)
+        else:
+            print("yes and update)")
+            current = secondData[0]
+            list = current.append(dict)
+            q = "UPDATE journal_tbl SET tdlist=? WHERE user_id=? AND date=?"
+            inputs = (list, idNum, date)
+            execmany(q, inputs)
+            q = "SELECT tdlist FROM journal_tbl WHERE user_id=? AND date=?"
+            inputs = (idNum, date)
+            secondData = execmany(q, inputs).fetchone()
+            print(secondData)
+
+
+
+
+#====================================================
+# MANAGING TRACKERS
 
 def addMood(user_id, date, mood):
     '''adds the mood into the mood table if it does not already exist,
