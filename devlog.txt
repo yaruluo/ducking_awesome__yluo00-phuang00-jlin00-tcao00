@@ -59,3 +59,7 @@ tiffanyC -- 2020-06-05 22:00
 - updated journal_tbl to make tdlist a BLOB
 - created a form for adding new tasks
   - has a responsive time picker
+
+tiffanyC -- 2020=06-06 00:25
+- created a separate table for to-do lists instead of putting it with journal entries
+- user can now create new tasks and view all their tasks of the day
