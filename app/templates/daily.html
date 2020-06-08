@@ -38,7 +38,7 @@
 	<div class="card" style = "width: 800px; text-align: left; padding-bottom: 0px;" id = "journal" data-hidden = "{{ hide }}">
 		<div class="form-group" id = "add" style = "display: inline; padding-top: 10px; padding-left: 10px; padding-right: 10px;">
 			<button type="button" class="btn btn-primary btn-rounded btn-xs" id = "add_entry" style = "width: 40px; border-radius: 30px;">+</button>
-			Add a new entry!
+			{% if isOwner == True %}Add a new task!{% endif %}
 		</div>
 		<form action = "/entrycheck" method = "POST" class="form-group" id = "textform" style = "display: none; padding-left: 10px; padding-right: 10px;">
 	    <textarea class="form-control" rows="4" name = "new_entry" placeholder = "Today, I am..."></textarea><br>
@@ -66,7 +66,7 @@
 	<div class = "card" style = "width: 800px; text-align: left;" id = "tdlist">
 		<div class="form-group" style = "padding-top: 10px; padding-left: 10px; padding-right: 10px;">
 			<button type="button" class="btn btn-warning btn-rounded btn-xs"  id = "add_task" style = "width: 40px; border-radius: 30px;">+</button>
-			Add a new task!
+			{% if isOwner == True %}Add a new task!{% endif %}
 		</div>
 		<form action = "/taskcheck" method = "POST" class="form-group" id = "taskform" style = "display: none; padding-left: 10px; padding-right: 10px;">
 			<label for="task" class="font-weight-bold">Task:</label>
@@ -266,6 +266,15 @@
 			}else{
 				tempForm.style.display = "none";
 			}
+		}
+	}
+
+	var owner = "{{ isOwner }}";
+
+	if(owner == "False"){
+		var buttons = document.getElementsByClassName("btn");
+		for(var x = 0; x < buttons.length; x++){
+			buttons[x].style.display = "none";
 		}
 	}
 

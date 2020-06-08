@@ -89,3 +89,7 @@ peihuaH -- 2020-06-08 18:13
 jackieL -- 2020-06-08 18:43
 - added code to allow users to change global permissions
 - added code to allow users to send and accept friend requests
+
+tiffanyC -- 2020-06-08 19:44
+- users can now view their friends page
+- when viewing friends' pages, their buttons are hidden to prevent editing
