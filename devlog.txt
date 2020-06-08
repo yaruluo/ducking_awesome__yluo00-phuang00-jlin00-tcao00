@@ -85,3 +85,7 @@ tiffanyC -- 2020-06-08 17:20
 peihuaH -- 2020-06-08 18:13
 - added sleep tracker to daily page
 - user can edit their own sleep tracker as many times as they want
+
+jackieL -- 2020-06-08 18:43
+- added code to allow users to change global permissions
+- added code to allow users to send and accept friend requests

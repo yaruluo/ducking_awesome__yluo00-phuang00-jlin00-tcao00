@@ -270,7 +270,8 @@ def friends():
     permissions = db_manager.getPermissions(user_id)
     friendlist = db_manager.formatFriends(user_id)
     requests = db_manager.formatRequests(user_id)
-    return render_template("friends.html", isLogin=False, friends="active", edit=False, permissions=permissions.items(), friendlist=friendlist, requests=requests)
+    date = datetime.now().date()
+    return render_template("friends.html", isLogin=False, friends="active", edit=False, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date)
 
 @app.route("/processrequest", methods=["POST"])
 @login_required
