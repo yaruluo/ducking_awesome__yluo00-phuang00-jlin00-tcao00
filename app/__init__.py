@@ -127,7 +127,7 @@ def daily(user,date):
         tasks = unresolved
     else:
         tasks = unresolved + resolved
-        
+
     if(text is None):
         hide = "no"
     else:
@@ -260,7 +260,21 @@ def monthly():
 def friends():
     user_id = session['user_id']
     permissions = db_manager.getPermissions(user_id)
-    return render_template("friends.html", isLogin=False, friends="active", edit=False, permissions=permissions.items())
+    friendlist = db_manager.formatFriends(user_id)
+    requests = db_manager.formatRequests(user_id)
+    return render_template("friends.html", isLogin=False, friends="active", edit=False, permissions=permissions.items(), friendlist=friendlist, requests=requests)
+
+@app.route("/processrequest", methods=["POST"])
+@login_required
+def processrequest():
+    user_id = session['user_id']
+    value = request.form['response']
+    friend_id = request.form['id']
+    if value == '0':
+        db_manager.processRequest(user_id, friend_id, False)
+    else:
+        db_manager.processRequest(user_id, friend_id, True)
+    return redirect(url_for("friends"))
 
 @app.route("/permissions")
 @login_required

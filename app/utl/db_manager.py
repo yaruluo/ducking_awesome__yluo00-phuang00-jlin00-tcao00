@@ -46,11 +46,18 @@ def changePass(user_id, password):
     execmany(q, inputs)
 
 def getUserID(username):
+    '''def getUserID(username): return user_id for given username'''
     q = "SELECT user_id FROM user_tbl WHERE username=?"
     inputs = (username,)
     id = execmany(q, inputs).fetchone()[0]
-    print(id)
     return id
+
+def getUsername(user_id):
+    '''def getUsername(user_id): return username for given user_id'''
+    q = "select username FROM user_tbl WHERE user_id=?"
+    inputs = (user_id, )
+    data = execmany(q, inputs).fetchone()[0]
+    return data
 
 #====================================================
 # MANAGING FRIENDS
@@ -83,8 +90,19 @@ def getFriends(user_id):
     inputs = (user_id, )
     data = execmany(q, inputs).fetchone()[0]
     if data is None:
-        return None
+        return []
     return data.split(",")
+
+def formatFriends(user_id):
+    '''formatFriends(user_id): formats user's list of friends'''
+    friends = getFriends(user_id)
+    list = []
+    for friend in friends:
+        info = []
+        info.append(getUsername(friend))
+        info.append(friend)
+        list.append(tuple(info))
+    return list
 
 def getRequests(user_id):
     '''getRequests(user_id): get list of requests sent to user'''
@@ -92,8 +110,19 @@ def getRequests(user_id):
     inputs = (user_id, )
     data = execmany(q, inputs).fetchone()[0]
     if data is None:
-        return None
+        return []
     return data.split(",")
+
+def formatRequests(user_id):
+    '''formatRequests(user_id): formats lists of requests sent to user'''
+    requests = getRequests(user_id)
+    list = []
+    for request in requests:
+        info = []
+        info.append(getUsername(request))
+        info.append(request)
+        list.append(tuple(info))
+    return list
 
 def isFriend(user_id, friend_id):
     '''def isFriend(user_id, friend_id): check is user is friends with other user'''
@@ -152,6 +181,46 @@ def sendRequest(to_user, from_user):
     q = "UPDATE user_tbl SET requests=? WHERE user_id=?"
     inputs = (requests, to_user)
     execmany(q, inputs)
+
+def processRequest(to_user, from_user, accepted):
+    '''def acceptRequest(to, from): process request from other user'''
+    #update to_user request list
+    q = "SELECT requests FROM user_tbl WHERE user_id=?"
+    inputs = (to_user, )
+    requests = execmany(q, inputs).fetchone()[0]
+    requests = requests.split(",")
+    requests = requests.remove(str(from_user))
+    if requests is not None:
+        requests = requests.join(",")
+    q = "UPDATE user_tbl SET requests=? WHERE user_id=?"
+    inputs = (requests, to_user)
+    execmany(q, inputs)
+
+    if accepted:
+        #update to_user friend list
+        q = "SELECT friends FROM user_tbl WHERE user_id=?"
+        inputs = (to_user, )
+        friends = execmany(q, inputs).fetchone()[0]
+        if friends is None:
+            friends = str(from_user)
+        else:
+            friends += ',' + str(from_user)
+        q = "UPDATE user_tbl SET friends=? WHERE user_id=?"
+        inputs = (friends, to_user)
+        execmany(q, inputs)
+
+        #update from_user friend list
+        q = "SELECT friends FROM user_tbl WHERE user_id=?"
+        inputs = (from_user, )
+        friends = execmany(q, inputs).fetchone()[0]
+        if friends is None:
+            friends = str(to_user)
+        else:
+            friends += ',' + str(to_user)
+        q = "UPDATE user_tbl SET friends=? WHERE user_id=?"
+        inputs = (friends, from_user)
+        execmany(q, inputs)
+
 
 #====================================================
 # MANAGING JOURNAL ENTRIES
