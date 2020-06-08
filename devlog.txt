@@ -60,7 +60,7 @@ tiffanyC -- 2020-06-05 22:00
 - created a form for adding new tasks
   - has a responsive time picker
 
-tiffanyC -- 2020=06-06 00:25
+tiffanyC -- 2020-06-06 00:25
 - created a separate table for to-do lists instead of putting it with journal entries
 - user can now create new tasks and view all their tasks of the day
 
@@ -69,3 +69,10 @@ peihuaH -- 2020-06-06 00:38
 - updated monthly.html so that it displays the current month if not specified
 - set up form to display the data for the user selected month
 - send monthly mood data to javascript file
+
+tiffanyC -- 2020-06-08 01:51
+- created new branch 'tasks' to focus on the to-do list
+- added removeTask, resolveTask, and editTask functions for tdlist_tbl
+- users can now create new tasks, edit tasks, resolve and unresolve tasks
+  - unresolving makes editing the tasks impossible and changes opacity of task
+- merging 'tasks' to 'master'

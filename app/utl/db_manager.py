@@ -141,8 +141,26 @@ def getTasks(username, date):
         # print(list[0][0])
         return list
 
+def removeTask(username, date, entryNum):
+    '''def removeTask(username, date, entryNum): removes the task row from tdlist_tbl given the entry ID'''
+    idNum = getUserID(username)
+    q = "DELETE FROM tdlist_tbl WHERE entry_id=? AND user_id=? AND date=?"
+    inputs = (entryNum, idNum, date)
+    execmany(q, inputs)
 
+def resolveTask(username, date, entryNum, resolve):
+    '''def removeTask(username, date, entryNum): resolves the task row from tdlist_tbl given the entry ID'''
+    idNum = getUserID(username)
+    q = "UPDATE tdlist_tbl SET resolved=? WHERE entry_id=? AND user_id=? AND date=?"
+    inputs = (resolve, entryNum, idNum, date)
+    execmany(q, inputs)
 
+def editTask(username, date, entryNum, task, description, time):
+    '''def editTask(username, date, entryNum, task, description, time): edits task given changes'''
+    idNum = getUserID(username)
+    q = "UPDATE tdlist_tbl SET task=?, description=?, time=? WHERE entry_id=? AND user_id=? AND date=?"
+    inputs = (task, description, time, entryNum, idNum, date)
+    execmany(q, inputs)
 
 #====================================================
 # MANAGING TRACKERS

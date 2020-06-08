@@ -162,6 +162,73 @@ def task():
     db_manager.createTask(session['username'], task, description, time, 0)
     return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
 
+@app.route("/edittask", methods=["GET", "POST"])
+@login_required
+def taskedit():
+    today = datetime.now()
+    tasks = db_manager.getTasks(session['username'], today.date())
+    toRemove = ""
+    toResolve = ""
+    toUnresolve = ""
+
+    toChange = ""
+    changeTask = ""
+    changeDescription = ""
+    changeTime = ""
+
+    print("==================")
+    for x in tasks:
+        entryID = str(x[0])
+        delete = 'delete_task' + entryID
+        print(delete)
+        resolve = 'resolve_task' + entryID
+        unresolve = 'unresolve_task' + entryID
+        taskEdit = 'task' + entryID
+        descriptionEdit = 'description' + entryID
+        timeEdit = 'time' + entryID
+        if(delete in request.form):
+            print("yes delete")
+            toRemove = request.form[delete]
+            print(toRemove)
+            break
+        elif(resolve in request.form):
+                print("yes resolve")
+                toResolve = request.form[resolve]
+                print(toResolve)
+                break
+        elif(unresolve in request.form):
+                print("yes unresolve")
+                toUnresolve = request.form[unresolve]
+                print(toUnresolve)
+                break
+        else:
+            if(taskEdit in request.form):
+                toChange = entryID
+                changeTask = request.form[taskEdit]
+            if(descriptionEdit in request.form):
+                toChange = entryID
+                changeDescription = request.form[descriptionEdit]
+            if(timeEdit in request.form):
+                toChange = entryID
+                changeTime = request.form[timeEdit]
+                break
+    if(toRemove != ""):
+        db_manager.removeTask(session['username'], today.date(), int(toRemove))
+    if(toResolve != ""):
+        db_manager.resolveTask(session['username'], today.date(), int(toResolve), 1)
+    if(toUnresolve != ""):
+        db_manager.resolveTask(session['username'], today.date(), int(toUnresolve), 0)
+
+    print("change")
+    print(changeTask)
+    print(changeDescription)
+    print(changeTime)
+
+    if(toChange != ""):
+        db_manager.editTask(session['username'], today.date(), int(toChange), changeTask, changeDescription, changeTime)
+
+    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+
 @app.route("/moodcheck", methods=["GET","POST"])
 @login_required
 def mood():

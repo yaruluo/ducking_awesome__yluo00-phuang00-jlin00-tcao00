@@ -24,8 +24,8 @@
 {% block body %}
 <div style = "display: block; margin-left: auto; margin-right: auto;">
 	<h2> {{ date }} </h2><br>
-	<h3 style = "color: orange;"> Daily Overview </h3>
-	<div class="card" style = "width: 800px; text-align: left;" id = "journal" data-hidden = "{{ hide }}">
+	<h3 style = "color: #ee4035;"> Daily Overview </h3>
+	<div class="card" style = "width: 800px; text-align: left; padding-bottom: 0px;" id = "journal" data-hidden = "{{ hide }}">
 		<div class="form-group" id = "add" style = "display: inline; padding-top: 10px; padding-left: 10px; padding-right: 10px;">
 			<button type="button" class="btn btn-primary btn-rounded btn-xs" id = "add_entry" style = "width: 40px; border-radius: 30px;">+</button>
 			Add a new entry!
@@ -36,7 +36,7 @@
 		</form>
 		{% if entries != None %}
 			{% for x in entries %}
-				<div class = "card" style = "padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; text-align: left; background-color: #e8f4f8;">
+				<div class = "card" style = "padding-left: 10px; padding-right: 10px; padding-top: 10px; text-align: left; background-color: #e8f4f8;">
 					{% autoescape false %}
 						{{ x | replace("\r\n", "<br>") }}
 					{% endautoescape %}
@@ -52,7 +52,7 @@
 			{% endfor %}
 		{% endif %}
 	</div><br>
-	<h3 style = "color: orange;"> To-Do List </h3>
+	<h3 style = "color: #f37736;"> To-Do List </h3>
 	<div class = "card" style = "width: 800px; text-align: left;" id = "tdlist">
 		<div class="form-group" style = "padding-top: 10px; padding-left: 10px; padding-right: 10px;">
 			<button type="button" class="btn btn-warning btn-rounded btn-xs"  id = "add_task" style = "width: 40px; border-radius: 30px;">+</button>
@@ -66,7 +66,7 @@
 			<div class="form-group">
 				<label for="time" class="font-weight-bold">Time:</label>
         <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
-            <input type="text" class="form-control datetimepicker-input" id = "time" name = "time" data-target="#datetimepicker3"/>
+            <input type="text" class="form-control datetimepicker-input" id = "time" name = "time" data-target="#datetimepicker3" placeholder = "10:00 AM"/>
             <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
                 <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
             </div>
@@ -82,19 +82,65 @@
 
 			<button type="submit" class="btn btn-warning" id="submit_task">Submit</button>
 		</form>
+
 		{% if tasks != "" %}
 			{% for x in tasks %}
-				<div class = "card" style = "padding-left: 10px; padding-right: 10px; padding-top: 10px; text-align: left; background-color: #e8f8f4;">
-					<h5 style = "color: #F7717D; display: inline-block;">Task: <span style = "color: black; font-weight: normal;">{{ x[1] }}</span></h5>
-					<h5 style = "color: #59b5f6; display: inline-block;">Description: <span style = "color: black; font-weight: normal;">{{ x[2] }}</span></h5>
-					<h5 style = "color: #0cd35e; display: inline-block;">Time: <span style = "color: black; font-weight: normal;">{{ x[3] }}</span></h5>
+				<div class = "card" style = "text-align: left; background-color: #e8f4f8; margin-bottom: 3px; border: 2px solid #e5cce5;">
+					<form action = "/edittask" method = "POST" class="form-group" id = "tasksetting{{x[0]}}" name = "tasksetting{{x[0]}}" style = "margin-bottom: 0px; display: inlne-block; font-size: 0px;">
+						{% if x[4] == 0 %}
+							<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 621px;" value = "{{ x[0] }}">x</button>
+							<button type="button" class="btn btn-warning btn-rounded btn-xs special" id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px;" value = "{{ x[0] }}">Edit</button>
+							<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "resolve_task{{x[0]}}" name = "resolve_task{{x[0]}}" value = "{{ x[0] }}">Resolve</button>
+						{% else %}
+							<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 605px;" value = "{{ x[0] }}">x</button>
+							<button type="button" class="btn btn-warning btn-rounded btn-xs special" disabled id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px;" value = "{{ x[0] }}">Edit</button>
+							<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "unresolve_task{{x[0]}}" name = "unresolve_task{{x[0]}}" value = "{{ x[0] }}">Unresolve</button>
+						{% endif %}
+					</form>
+					{% if x[4] == 0 %}
+						<div class = "card-body" style = "background-color: #e8f8f4; border-top: 2px solid white;">
+							<h5 style = "color: #F7717D; display: inline-block;">Task: <span style = "color: black; font-weight: normal;">{{ x[1] }}</span></h5><br>
+							<h5 style = "color: #59b5f6; display: inline-block;">Description: <span style = "color: black; font-weight: normal;">{{ x[2] }}</span></h5><br>
+							<h5 style = "color: #0cd35e; display: inline-block;">Time: <span style = "color: black; font-weight: normal;">{{ x[3] }}</span></h5>
+						</div>
+					{% else %}
+						<div class = "card-body" style = "background-color: #e8f8f4; border-top: 2px solid white; opacity: 50%;">
+							<h5 style = "color: #F7717D; display: inline-block;">Task: <span style = "color: black; font-weight: normal;">{{ x[1] }}</span></h5><br>
+							<h5 style = "color: #59b5f6; display: inline-block;">Description: <span style = "color: black; font-weight: normal;">{{ x[2] }}</span></h5><br>
+							<h5 style = "color: #0cd35e; display: inline-block;">Time: <span style = "color: black; font-weight: normal;">{{ x[3] }}</span></h5>
+						</div>
+					{% endif %}
+					<form action = "/edittask" method = "POST" class="form-group" id = "taskedit{{x[0]}}" style = "display: none; padding-left: 10px; padding-right: 10px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; background-color: white;">
+						<label for="task" class="font-weight-bold">Task:</label>
+						<textarea class="form-control" rows="1" name = "task{{x[0]}}" id = "task{{x[0]}}">{{ x[1] }}</textarea><br>
+						<label for="description" class="font-weight-bold">Description:</label>
+				    <textarea class="form-control" rows="3" name = "description{{x[0]}}" id = "description{{x[0]}}">{{ x[2] }}</textarea><br>
+						<div class="form-group">
+							<label for="time" class="font-weight-bold">Time:</label>
+			        <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+			            <input type="text" class="form-control datetimepicker-input" id = "time{{x[0]}}" name = "time{{x[0]}}" data-target="#datetimepicker3" value = "{{ x[3] }}"/>
+			            <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+			                <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+			            </div>
+			        </div>
+						</div>
+				    <script type="text/javascript">
+				        $(function () {
+				            $('#datetimepicker3').datetimepicker({
+				                format: 'LT',
+				            });
+				        });
+				    </script>
+
+						<button type="submit" class="btn btn-warning" id="submit_task">Submit</button>
+					</form>
 				</div>
 			{% endfor %}
 		{% endif %}
 	</div>
 </div>
 <br>
-<h3 style = "color: orange;"> Current Mood </h3>
+<h3 style = "color: #7bc043;"> Current Mood </h3>
 <div class = "card" style="width:800px;background-color:{{mood[1]}};">
 	<div class="card-body">
 		<p style="text-align:center">{{mood[0]}}</p>
@@ -132,7 +178,7 @@
 
 	var test = document.getElementById("journal").getAttribute("data-hidden");
 	var add = document.getElementById("add");
-	console.log(test);
+	// console.log(test);
 
 	if(test == "yes"){
 		add.style.display = "none";
@@ -140,7 +186,7 @@
 		var textedit = document.getElementById("textedit");
 
 		edit.onclick = function(){
-			console.log("here")
+			// console.log("here")
 			if(textedit.style.display == "none"){
 				textedit.style.display = "inline";
 			}else{
@@ -154,7 +200,7 @@
 
 	var textform = document.getElementById("textform");
 
-	var addEntry = document.getElementById("add_entry")
+	var addEntry = document.getElementById("add_entry");
 	addEntry.onclick = function(){
 		if(textform.style.display == "none"){
 			textform.style.display = "inline";
@@ -164,13 +210,28 @@
 	}
 
 
-	var addTask = document.getElementById("add_task")
+	var addTask = document.getElementById("add_task");
 	addTask.onclick = function(){
-		console.log("here")
 		if(taskform.style.display == "none"){
 			taskform.style.display = "inline";
 		}else{
 			taskform.style.display = "none";
+		}
+	}
+
+	var special = document.getElementsByClassName("special");
+
+	for(var x = 0; x < special.length; x++){
+		special[x].onclick = function(){
+			temp = this.getAttribute("value");
+			name = "taskedit" + temp;
+			var tempForm = document.getElementById(name);
+			// console.log(tempForm);
+			if(tempForm.style.display == "none"){
+				tempForm.style.display = "inline";
+			}else{
+				tempForm.style.display = "none";
+			}
 		}
 	}
 
