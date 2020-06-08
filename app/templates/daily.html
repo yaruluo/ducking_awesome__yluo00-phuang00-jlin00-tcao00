@@ -65,16 +65,16 @@
 	    <textarea class="form-control" rows="3" name = "description" id = "description" placeholder = "Milk, broccoli, chocolate..."></textarea><br>
 			<div class="form-group">
 				<label for="time" class="font-weight-bold">Time:</label>
-        <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+        <div class="input-group date" id="datetimepicker0" data-target-input="nearest">
             <input type="text" class="form-control datetimepicker-input" id = "time" name = "time" data-target="#datetimepicker3" placeholder = "10:00 AM"/>
-            <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+            <div class="input-group-append" data-target="#datetimepicker0" data-toggle="datetimepicker">
                 <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
             </div>
         </div>
 			</div>
 	    <script type="text/javascript">
 	        $(function () {
-	            $('#datetimepicker3').datetimepicker({
+	            $('#datetimepicker0').datetimepicker({
 	                format: 'LT',
 	            });
 	        });
@@ -117,16 +117,17 @@
 				    <textarea class="form-control" rows="3" name = "description{{x[0]}}" id = "description{{x[0]}}">{{ x[2] }}</textarea><br>
 						<div class="form-group">
 							<label for="time" class="font-weight-bold">Time:</label>
-			        <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+			        <div class="input-group date" id="datetimepicker{{x[0]}}" data-target-input="nearest">
 			            <input type="text" class="form-control datetimepicker-input" id = "time{{x[0]}}" name = "time{{x[0]}}" data-target="#datetimepicker3" value = "{{ x[3] }}"/>
-			            <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+			            <div class="input-group-append" data-target="#datetimepicker{{x[0]}}" data-toggle="datetimepicker">
 			                <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
 			            </div>
 			        </div>
 						</div>
 				    <script type="text/javascript">
 				        $(function () {
-				            $('#datetimepicker3').datetimepicker({
+									var temp = '#datetimepicker{{x[0]}}'
+				            $(temp).datetimepicker({
 				                format: 'LT',
 				            });
 				        });
