@@ -117,7 +117,17 @@ def daily(user,date):
     now = "" + today.strftime("%A") + ", " + today.strftime("%B") + " " + today.strftime("%d") + ", " + today.strftime("%Y")
     session['date'] = now
     text = db_manager.getEntry(session['username'], today.date())
-    tasks = db_manager.getTasks(session['username'], today.date())
+    unresolved = db_manager.getSpecificTasks(session['username'], today.date(), 0)
+    resolved = db_manager.getSpecificTasks(session['username'], today.date(), 1)
+    if(unresolved == "" and resolved == ""):
+        tasks = ""
+    elif(unresolved == ""):
+        tasks = resolved
+    elif(resolved == ""):
+        tasks = unresolved
+    else:
+        tasks = unresolved + resolved
+        
     if(text is None):
         hide = "no"
     else:

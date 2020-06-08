@@ -222,6 +222,31 @@ def getTasks(username, date):
         # print(list[0][0])
         return list
 
+def getSpecificTasks(username, date, resolved):
+    '''def getSpecificTasks(username, date): retrieve tasks on the to-do list of a specified date based on their 'resolved' status'''
+    idNum = getUserID(username)
+    q = "SELECT entry_id FROM tdlist_tbl WHERE user_id=? AND date=? AND resolved=?"
+    inputs = (idNum, date, resolved)
+    data = execmany(q, inputs).fetchall()
+    print("getSpecificTask")
+    # print(len(data))
+    print(data)
+    # print(data[1])
+    list = []
+    if(len(data) == 0):
+        return ""
+    else:
+        for x in data:
+            for y in x:
+                q = "SELECT entry_id, task, description, time, resolved FROM tdlist_tbl WHERE user_id=? AND date=? AND entry_id=?"
+                inputs = (idNum, date, y)
+                temp = execmany(q, inputs).fetchone()
+                list.append(temp)
+        print(list)
+        # print(list[0])
+        # print(list[0][0])
+        return list
+
 def removeTask(username, date, entryNum):
     '''def removeTask(username, date, entryNum): removes the task row from tdlist_tbl given the entry ID'''
     idNum = getUserID(username)
