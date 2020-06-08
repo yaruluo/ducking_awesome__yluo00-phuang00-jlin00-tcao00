@@ -127,7 +127,7 @@ def daily(user,date):
         tasks = unresolved
     else:
         tasks = unresolved + resolved
-        
+
     if(text is None):
         hide = "no"
     else:
@@ -135,12 +135,13 @@ def daily(user,date):
     # print(user)
     # print(date)
     mood_vals = db_manager.getMood(user, date)
-    print(mood_vals)
+    # print(mood_vals)
+    sleep_vals = db_manager.getSleep(user, date)
     if (int(user) == session['user_id']):
         isOwner = True
     else:
         isOwner = False
-    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, hide = hide, mood=mood_vals, tasks = tasks)
+    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, hide = hide, mood=mood_vals, tasks = tasks, sleep=sleep_vals)
 
 
 @app.route("/entrycheck", methods=["GET", "POST"])
@@ -243,6 +244,13 @@ def taskedit():
 def mood():
     db_manager.addMood(session['user_id'], request.form['date'], request.form['mood'])
     return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+
+@app.route("/sleepcheck", methods=["GET","POST"])
+@login_required
+def sleep():
+    db_manager.addSleep(session['user_id'], request.form['date'], request.form['sleep'])
+    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+
 
 @app.route("/monthly", methods=["GET", "POST"])
 @login_required

@@ -304,3 +304,38 @@ def getMonthMoods(user_id, month_year):
     for row in data:
         dict.append({'date': row[0], 'mood': row[1]})
     return dict
+
+def addSleep(user_id, date, sleep):
+    '''adds the sleep into the sleep table if it does not already exist,
+       updates the sleep if there is already a value inputed for the day'''
+    if getSleep(user_id, date) == None:
+        q = "INSERT INTO sleep_tbl VALUES(?, ?, ?)"
+        inputs = (user_id, date, sleep)
+        execmany(q, inputs)
+    else:
+        q = "UPDATE sleep_tbl SET sleep = ? WHERE user_id = ? AND date = ?"
+        inputs = (sleep, user_id, date)
+        execmany(q, inputs)
+
+def getSleep(user_id, date):
+    '''returns the hours of sleep for the given date and user
+       returns None if user did not input data for the day'''
+    q = "SELECT sleep FROM sleep_tbl WHERE user_id = ? AND date = ?"
+    inputs = (user_id, date,)
+    data = execmany(q, inputs).fetchone()
+    if data is None:
+        return None
+    else:
+        return data[0]
+
+def getMonthSleep(user_id, month_year):
+    '''returns a list of all the hours of sleep in the given month for the given user in the format:
+        [{'date': <date>, 'sleep': <sleep>}, ... ]
+    '''
+    q = "SELECT date, sleep FROM sleep_tbl WHERE user_id = ? AND date LIKE ?"
+    inputs = (user_id, month_year + '%',)
+    data = execmany(q, inputs)
+    dict = []
+    for row in data:
+        dict.append({'date': row[0], 'sleep': row[1]})
+    return dict
