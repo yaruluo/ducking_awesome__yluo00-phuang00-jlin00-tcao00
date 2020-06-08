@@ -81,3 +81,7 @@ tiffanyC -- 2020-06-08 17:20
 - fixed bug so that timepicker works when editing tasks
 - wrote db functions to retrieve resolved and unresolved functions separately
 - tasks now appear in order of unresolved tasks first, then resolved
+
+peihuaH -- 2020-06-08 18:13
+- added sleep tracker to daily page
+- user can edit their own sleep tracker as many times as they want

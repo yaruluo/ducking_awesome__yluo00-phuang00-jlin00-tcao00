@@ -18,6 +18,16 @@
 	.fa-arrow-up::before {
 		content: "+";
 	}
+	select,
+	select option {
+	  color: #000000;
+	}
+
+	select:invalid,
+	select option[value=""] {
+	  color: #6c757d;
+	}
+
 </style>
 {% endblock %}
 
@@ -152,7 +162,8 @@
 				<br>
 				<form class="form-inline" action='/moodcheck' method="POST">
 					<span>
-						<select class="form-control custom-select" name="mood" style="width:18rem">
+						<select class="form-control custom-select" name="mood" style="width:18rem" required>
+							<option value="" selected disabled hidden>Select mood...</option>
 							<option style="background-color: #ffb6e6" class="pink" value="0">happy/joyful/content/relax</option>
 							<option style="background-color: #a3dbff" class="blue" value="1">sad/lonely/depressed/insecure</option>
 							<option style="background-color: #71ffda" class="green" value="2">productive/motivated/alive/excited</option>
@@ -160,6 +171,28 @@
 							<option style="background-color: #ffd177" class="orange" value="4">average/normal/fine/OK</option>
 							<option style="background-color: #ff5b5b" class="red" value="5">angry/anxious/fustrated/annoyed</option>
 						</select>
+						<input type="hidden" name="date" value="{{datetime}}">
+						<button type="submit" class="btn btn-sm btn-secondary">Submit</button>
+					</span>
+				</form>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+</div>
+<br>
+<h3 style = "color: #2C01D8;"> Sleep Tracker </h3>
+<div class = "card" style="width:800px;background-color:#e8f4f8;">
+	<div class="card-body">
+		<p style="text-align:center">{{sleep}} hours of sleep</p>
+		{% if isOwner %}
+		<div style="text-align:left;">
+			<button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#sleep" aria-expanded="false" aria-controls="sleep">Update</button>
+			<div class="collapse" id="sleep">
+				<br>
+				<form class="form-inline" action='/sleepcheck' method="POST">
+					<span>
+						<input type="number" name="sleep" min="0" step="0.01" required>
 						<input type="hidden" name="date" value="{{datetime}}">
 						<button type="submit" class="btn btn-sm btn-secondary">Submit</button>
 					</span>

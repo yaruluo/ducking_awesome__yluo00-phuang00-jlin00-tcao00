@@ -40,3 +40,6 @@ def build_db():
 
     command = "CREATE TABLE IF NOT EXISTS mood_tbl (user_id INTEGER, date TEXT, mood INTEGER)"
     exec(command)
+
+    command = "CREATE TABLE IF NOT EXISTS sleep_tbl (user_id INTEGER, date TEXT, sleep REAL)"
+    exec(command)
