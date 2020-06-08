@@ -76,3 +76,8 @@ tiffanyC -- 2020-06-08 01:51
 - users can now create new tasks, edit tasks, resolve and unresolve tasks
   - unresolving makes editing the tasks impossible and changes opacity of task
 - merging 'tasks' to 'master'
+
+tiffanyC -- 2020-06-08 17:20
+- fixed bug so that timepicker works when editing tasks
+- wrote db functions to retrieve resolved and unresolved functions separately
+- tasks now appear in order of unresolved tasks first, then resolved
