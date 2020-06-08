@@ -263,7 +263,6 @@ def permissions():
 @login_required
 def editpermissions():
     user_id = session['user_id']
-    print(user_id)
     permissions = 0
     options = request.form.getlist("options")
     for entry in options:
@@ -271,10 +270,25 @@ def editpermissions():
     db_manager.updatePermissions(user_id, permissions)
     return redirect(url_for("friends"))
 
-@app.route("/addfriends")
+@app.route("/addfriends", methods=["GET", "POST"])
 @login_required
 def addfriends():
-    return render_template("addfriends.html", isLogin=False, addfriends="active")
+    user_id = session['user_id']
+    users = []
+    search = False
+    query = ''
+    if request.method == "GET":
+        if request.args:
+            if ('query' in request.args):
+                query = request.args['query']
+                users = db_manager.findUser(user_id, query)
+                search = True
+    else:
+        id = request.form['id']
+        db_manager.sendRequest(id, user_id)
+        query = request.form['query']
+        return redirect(url_for("addfriends", query=query))
+    return render_template("addfriends.html", isLogin=False, addfriends="active", users=users, search=search, query=query)
 
 #====================================================
 # LOGOUT AND MAIN

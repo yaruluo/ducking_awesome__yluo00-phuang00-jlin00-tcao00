@@ -74,9 +74,83 @@ def getPermissions(user_id):
 def updatePermissions(user_id, permissions):
     '''def updatePermissions(user_id): set user's permissions'''
     q = "UPDATE user_tbl SET permissions=? WHERE user_id=?"
-    print("UPDATING")
-    print(permissions)
     inputs = (permissions, user_id)
+    execmany(q, inputs)
+
+def getFriends(user_id):
+    '''def getFriends(user_id): get user list of friends'''
+    q = "SELECT friends FROM user_tbl WHERE user_id=?"
+    inputs = (user_id, )
+    data = execmany(q, inputs).fetchone()[0]
+    if data is None:
+        return None
+    return data.split(",")
+
+def getRequests(user_id):
+    '''getRequests(user_id): get list of requests sent to user'''
+    q = "SELECT requests FROM user_tbl WHERE user_id=?"
+    inputs = (user_id, )
+    data = execmany(q, inputs).fetchone()[0]
+    if data is None:
+        return None
+    return data.split(",")
+
+def isFriend(user_id, friend_id):
+    '''def isFriend(user_id, friend_id): check is user is friends with other user'''
+    friends = getFriends(user_id)
+    if friends is None:
+        return False
+    return (str(friend_id) in friends)
+
+def isRequested(user_id, friend_id):
+    '''def isRequested(user_id, friend_id): check if user has already requested friend'''
+    requests = getRequests(friend_id)
+    if requests is None:
+        return False
+    return (str(user_id) in requests)
+
+def findUser(user_id, query):
+    '''def findUser(query): search for a user'''
+    query = query.lower().strip()
+    list = []
+    q = "SELECT username FROM user_tbl;"
+    data = exec(q).fetchall()
+    for name in data:
+        info = []
+        if (query in name[0].lower()):
+            friend_id = getUserID(name[0])
+            if (user_id != friend_id):
+                info.append(name[0]) #name
+                info.append(friend_id) #user_id
+                friend = isFriend(user_id, friend_id)
+                requested = isRequested(user_id, friend_id)
+                print(requested)
+                if friend: #color
+                    info.append("btn-secondary")
+                    info.append("disabled")
+                    info.append("Added")
+                else:
+                    info.append("btn-primary")
+                    if requested:
+                        info.append("disabled")
+                        info.append("Requested")
+                    else:
+                        info.append("")
+                        info.append("Send Request")
+                list.append(tuple(info))
+    return list
+
+def sendRequest(to_user, from_user):
+    '''def sendRequest(to, from): send request to user from other user'''
+    q = "SELECT requests FROM user_tbl WHERE user_id=?"
+    inputs = (to_user, )
+    requests = execmany(q, inputs).fetchone()[0]
+    if requests is None:
+        requests = str(from_user)
+    else:
+        requests += ',' + str(from_user)
+    q = "UPDATE user_tbl SET requests=? WHERE user_id=?"
+    inputs = (requests, to_user)
     execmany(q, inputs)
 
 #====================================================
