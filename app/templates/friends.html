@@ -6,12 +6,25 @@
 
 {% block body %}
 {% if edit %}
-
+<form action="/editpermissions" method="POST">
+	{% for key, value in permissions %}
+	<div class="form-check">
+		{% if value[0] == True %}
+		<input name="options" type="checkbox" class="form-check-input" id="{{ key }}" value="{{ key }}" checked>
+		{% else %}
+		<input name="options" type="checkbox" class="form-check-input" id="{{ key }}" value="{{ key }}">
+		{% endif %}
+		<label class="form-check-label" for="{{ key }}">{{ value[1] }}</label>
+	</div>
+	{% endfor %}
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>
 {% else %}
 <div>
 	{% for key, value in permissions %}
 	{{ value[1] }}: {{ value[0] }} <br>
 	{% endfor %}
+	<a class="btn btn-primary text-white" href="/permissions">Edit</a>
 </div>
 {% endif %}
 

@@ -68,7 +68,6 @@ def auth():
         flash('Please fill out all fields!', 'alert-danger')
         return redirect(url_for('login'))
     if (db_manager.userValid(enteredU, enteredP)): #returns true if login successful
-        flash('You were successfully logged in!', 'alert-success')
         flash('Welcome back, ' + enteredU + "!", 'alert-success')
         session['username'] = enteredU
         session['user_id'] = db_manager.getUserID(enteredU)
@@ -249,16 +248,28 @@ def monthly():
 @app.route("/friends")
 @login_required
 def friends():
-    username = session['username']
-    permissions = db_manager.getPermissions(username)
+    user_id = session['user_id']
+    permissions = db_manager.getPermissions(user_id)
     return render_template("friends.html", isLogin=False, friends="active", edit=False, permissions=permissions.items())
 
-@app.route("/friends")
+@app.route("/permissions")
+@login_required
+def permissions():
+    user_id = session['user_id']
+    permissions = db_manager.getPermissions(user_id)
+    return render_template("friends.html", isLogin=False, friends="active", edit=True, permissions=permissions.items())
+
+@app.route("/editpermissions", methods=["POST"])
 @login_required
 def editpermissions():
-    username = session['username']
-    permissions = db_manager.getPermissions(username)
-    return render_template("friends.html", isLogin=False, friends="active", edit=True, permissions=permissions.items())
+    user_id = session['user_id']
+    print(user_id)
+    permissions = 0
+    options = request.form.getlist("options")
+    for entry in options:
+        permissions += pow(10, int(entry))
+    db_manager.updatePermissions(user_id, permissions)
+    return redirect(url_for("friends"))
 
 @app.route("/addfriends")
 @login_required

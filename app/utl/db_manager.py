@@ -39,10 +39,10 @@ def addUser(username, password):
         return True
     return False #if username already exists
 
-def changePass(username, password):
+def changePass(user_id, password):
     '''def changePass(username, password): updating data table of user in session with new password'''
-    q = "UPDATE user_tbl SET password=? WHERE username=?"
-    inputs = (password, username)
+    q = "UPDATE user_tbl SET password=? WHERE user_id=?"
+    inputs = (password, user_id)
     execmany(q, inputs)
 
 def getUserID(username):
@@ -55,12 +55,11 @@ def getUserID(username):
 #====================================================
 # MANAGING FRIENDS
 
-def getPermissions(username):
-    '''def getPermissions(username): get user's permissions and convert into a dictionary'''
-    q = "SELECT permissions FROM user_tbl WHERE username=?"
-    inputs = (username,)
+def getPermissions(user_id):
+    '''def getPermissions(user_id): get user's permissions and convert into a dictionary'''
+    q = "SELECT permissions FROM user_tbl WHERE user_id=?"
+    inputs = (user_id,)
     data = execmany(q, inputs).fetchone()[0]
-    print(data)
     dict = {0: [False, "View Journals"], 1: [False, "View Mood Tracker"],
             2: [False, "View Sleep Tracker"], 3: [False, "View Period Tracker"],
             4: [False, "View To-Do Lists"], 5: [False, "Comment Access"]}
@@ -71,6 +70,14 @@ def getPermissions(username):
             dict[index][0] = True
         data = data % pow(10, index)
     return dict
+
+def updatePermissions(user_id, permissions):
+    '''def updatePermissions(user_id): set user's permissions'''
+    q = "UPDATE user_tbl SET permissions=? WHERE user_id=?"
+    print("UPDATING")
+    print(permissions)
+    inputs = (permissions, user_id)
+    execmany(q, inputs)
 
 #====================================================
 # MANAGING JOURNAL ENTRIES
