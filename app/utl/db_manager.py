@@ -247,11 +247,11 @@ def updateEntry(username, entry):
         execmany(q, inputs)
 
 
-def getEntry(username, date):
+def getEntry(user, date):
     '''def getEntry(username, date): retrieve the body text of the user at the specified date'''
-    idNum = getUserID(username)
+    # idNum = getUserID(username)
     q = "SELECT body FROM journal_tbl WHERE user_id=? AND date=?"
-    inputs = (idNum, date)
+    inputs = (user, date)
     data = execmany(q, inputs).fetchone()
     print("getEntry")
     print(data)
@@ -266,11 +266,11 @@ def createTask(username, task, description, time, resolved):
     inputs = (idNum, date, task, description, time, resolved)
     execmany(q, inputs)
 
-def getTasks(username, date):
+def getTasks(user, date):
     '''def getTasks(username, date): retrieve all tasks on the to-do list of a specified date'''
-    idNum = getUserID(username)
+    # idNum = getUserID(username)
     q = "SELECT entry_id FROM tdlist_tbl WHERE user_id=? AND date=?"
-    inputs = (idNum, date)
+    inputs = (user, date)
     data = execmany(q, inputs).fetchall()
     print("getTask")
     # print(len(data))
@@ -283,7 +283,7 @@ def getTasks(username, date):
         for x in data:
             for y in x:
                 q = "SELECT entry_id, task, description, time, resolved FROM tdlist_tbl WHERE user_id=? AND date=? AND entry_id=?"
-                inputs = (idNum, date, y)
+                inputs = (user, date, y)
                 temp = execmany(q, inputs).fetchone()
                 list.append(temp)
         print(list)
@@ -291,11 +291,11 @@ def getTasks(username, date):
         # print(list[0][0])
         return list
 
-def getSpecificTasks(username, date, resolved):
+def getSpecificTasks(user, date, resolved):
     '''def getSpecificTasks(username, date): retrieve tasks on the to-do list of a specified date based on their 'resolved' status'''
-    idNum = getUserID(username)
+    # idNum = getUserID(username)
     q = "SELECT entry_id FROM tdlist_tbl WHERE user_id=? AND date=? AND resolved=?"
-    inputs = (idNum, date, resolved)
+    inputs = (user, date, resolved)
     data = execmany(q, inputs).fetchall()
     print("getSpecificTask")
     # print(len(data))
@@ -308,7 +308,7 @@ def getSpecificTasks(username, date, resolved):
         for x in data:
             for y in x:
                 q = "SELECT entry_id, task, description, time, resolved FROM tdlist_tbl WHERE user_id=? AND date=? AND entry_id=?"
-                inputs = (idNum, date, y)
+                inputs = (user, date, y)
                 temp = execmany(q, inputs).fetchone()
                 list.append(temp)
         print(list)

@@ -116,9 +116,9 @@ def daily(user,date):
     today = datetime.now()
     now = "" + today.strftime("%A") + ", " + today.strftime("%B") + " " + today.strftime("%d") + ", " + today.strftime("%Y")
     session['date'] = now
-    text = db_manager.getEntry(session['username'], today.date())
-    unresolved = db_manager.getSpecificTasks(session['username'], today.date(), 0)
-    resolved = db_manager.getSpecificTasks(session['username'], today.date(), 1)
+    text = db_manager.getEntry(user, today.date())
+    unresolved = db_manager.getSpecificTasks(user, today.date(), 0)
+    resolved = db_manager.getSpecificTasks(user, today.date(), 1)
     if(unresolved == "" and resolved == ""):
         tasks = ""
     elif(unresolved == ""):
