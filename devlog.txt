@@ -1,5 +1,5 @@
 yaruL -- 2020-06-03 2:20
-adds design doc
+- added design doc
 
 jackieL -- 2020-06-03
 - create basic repo structure
@@ -93,3 +93,6 @@ jackieL -- 2020-06-08 18:43
 tiffanyC -- 2020-06-08 19:44
 - users can now view their friends page
 - when viewing friends' pages, their buttons are hidden to prevent editing
+
+yaruL -- 2020-06-08 23:42
+- updated design doc 
