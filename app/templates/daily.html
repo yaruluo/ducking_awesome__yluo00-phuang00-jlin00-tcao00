@@ -37,12 +37,12 @@
 	<h3 style = "color: #ee4035;"> Daily Overview </h3>
 	<div class="card" style = "width: 800px; text-align: left; padding-bottom: 0px;" id = "journal" data-hidden = "{{ hide }}">
 		<div class="form-group" id = "add" style = "display: inline; padding-top: 10px; padding-left: 10px; padding-right: 10px;">
-			<button type="button" class="btn btn-primary btn-rounded btn-xs" id = "add_entry" style = "width: 40px; border-radius: 30px;">+</button>
-			{% if isOwner == True %}Add a new task!{% endif %}
+			<button type="button" class="btn btn-owner btn-primary btn-rounded btn-xs" id = "add_entry" style = "width: 40px; border-radius: 30px;">+</button>
+			{% if isOwner %}Add a new task!{% endif %}
 		</div>
 		<form action = "/entrycheck" method = "POST" class="form-group" id = "textform" style = "display: none; padding-left: 10px; padding-right: 10px;">
 	    <textarea class="form-control" rows="4" name = "new_entry" placeholder = "Today, I am..."></textarea><br>
-			<button type="submit" class="btn btn-primary" id="submit">Submit</button>
+			<button type="submit" class="btn btn-owner btn-primary" id="submit">Submit</button>
 		</form>
 		{% if entries != None %}
 			{% for x in entries %}
@@ -50,23 +50,53 @@
 					{% autoescape false %}
 						{{ x | replace("\r\n", "<br>") }}
 					{% endautoescape %}
-					<div class="form-group" id = "edit">
+					<div class="form-group" id="edit">
 						<br>
-						<button type="button" class="btn btn-primary btn-rounded btn-xs" id = "editbutton">Edit</button>
+						<button type="button" class="btn btn-owner btn-primary btn-rounded btn-xs" id = "editbutton">Edit</button>
 					</div>
 					<form action = "/editentry" method = "POST" class="form-group" id = "textedit" style = "display: none;">
 				    <textarea class="form-control" rows="5" name = "edit_entry">{{ x }}</textarea><br>
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button type="submit" class="btn btn-owner btn-primary">Submit</button>
 					</form>
-				</div>
+					<!-- comments -->
+					{% if comment %}
+						{% if comments == [] %}
+							<center class="font-weight-bold">
+								No comments yet!
+							</center>
+						{% else %}
+							<a class="btn btn-link font-weight-bold" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+							  View Comments
+							</a>
+							<div class="collapse" id="collapseExample">
+								{% for comment in comments %}
+							  <div class="card card-body p-2">
+									<i><b>{{ comment[0] }}</b> commented:</i>
+									{{ comment[1] }}
+							   </div>
+								{% endfor %}
+							</div>
+						{% endif %}
+						<br>
+						<center>
+							<form action="/addcomment" method="POST">
+								<div class="form-group">
+									<input type="hidden" name="user_id" value="{{ user_id }}">
+									<input type="text" class="form-control d-inline" name="commentbody" placeholder="Add comment..."></input>
+								</div>
+							</form>
+						</center>
+				{% endif %}
+						<br>
+					</div>
 			{% endfor %}
 		{% endif %}
 	</div><br>
 	<h3 style = "color: #f37736;"> To-Do List </h3>
 	<div class = "card" style = "width: 800px; text-align: left;" id = "tdlist">
 		<div class="form-group" style = "padding-top: 10px; padding-left: 10px; padding-right: 10px;">
-			<button type="button" class="btn btn-warning btn-rounded btn-xs"  id = "add_task" style = "width: 40px; border-radius: 30px;">+</button>
-			{% if isOwner == True %}Add a new task!{% endif %}
+			<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs"  id = "add_task" style = "width: 40px; border-radius: 30px;">+</button>
+			{% if isOwner %}Add a new task!{% endif %}
 		</div>
 		<form action = "/taskcheck" method = "POST" class="form-group" id = "taskform" style = "display: none; padding-left: 10px; padding-right: 10px;">
 			<label for="task" class="font-weight-bold">Task:</label>
@@ -90,7 +120,7 @@
 	        });
 	    </script>
 
-			<button type="submit" class="btn btn-warning" id="submit_task">Submit</button>
+			<button type="submit" class="btn btn-owner btn-warning" id="submit_task">Submit</button>
 		</form>
 
 		{% if tasks != "" %}
@@ -98,13 +128,13 @@
 				<div class = "card" style = "text-align: left; background-color: #e8f4f8; margin-bottom: 3px; border: 2px solid #e5cce5;">
 					<form action = "/edittask" method = "POST" class="form-group" id = "tasksetting{{x[0]}}" name = "tasksetting{{x[0]}}" style = "margin-bottom: 0px; display: inlne-block; font-size: 0px;">
 						{% if x[4] == 0 %}
-							<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 621px;" value = "{{ x[0] }}">x</button>
-							<button type="button" class="btn btn-warning btn-rounded btn-xs special" id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px;" value = "{{ x[0] }}">Edit</button>
-							<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "resolve_task{{x[0]}}" name = "resolve_task{{x[0]}}" value = "{{ x[0] }}">Resolve</button>
+							<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 621px;" value = "{{ x[0] }}">x</button>
+							<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs special" id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px;" value = "{{ x[0] }}">Edit</button>
+							<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "resolve_task{{x[0]}}" name = "resolve_task{{x[0]}}" value = "{{ x[0] }}">Resolve</button>
 						{% else %}
-							<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 605px;" value = "{{ x[0] }}">x</button>
-							<button type="button" class="btn btn-warning btn-rounded btn-xs special" disabled id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px;" value = "{{ x[0] }}">Edit</button>
-							<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "unresolve_task{{x[0]}}" name = "unresolve_task{{x[0]}}" value = "{{ x[0] }}">Unresolve</button>
+							<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 605px;" value = "{{ x[0] }}">x</button>
+							<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs special" disabled id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px;" value = "{{ x[0] }}">Edit</button>
+							<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "unresolve_task{{x[0]}}" name = "unresolve_task{{x[0]}}" value = "{{ x[0] }}">Unresolve</button>
 						{% endif %}
 					</form>
 					{% if x[4] == 0 %}
@@ -143,7 +173,7 @@
 				        });
 				    </script>
 
-						<button type="submit" class="btn btn-warning" id="submit_task">Submit</button>
+						<button type="submit" class="btn btn-owner btn-warning" id="submit_task">Submit</button>
 					</form>
 				</div>
 			{% endfor %}
@@ -157,7 +187,7 @@
 		<p style="text-align:center">{{mood[0]}}</p>
 		{% if isOwner %}
 		<div style="text-align:left;">
-			<button type="button" id="updateMood" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Update</button>
+			<button type="button" id="updateMood" class="btn btn-owner btn-secondary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Update</button>
 			<div class="collapse" id="collapseExample">
 				<br>
 				<form class="form-inline" action='/moodcheck' method="POST">
@@ -172,7 +202,7 @@
 							<option style="background-color: #ff5b5b" class="red" value="5">angry/anxious/fustrated/annoyed</option>
 						</select>
 						<input type="hidden" name="date" value="{{datetime}}">
-						<button type="submit" class="btn btn-sm btn-secondary">Submit</button>
+						<button type="submit" class="btn btn-owner btn-sm btn-secondary">Submit</button>
 					</span>
 				</form>
 			</div>
@@ -187,14 +217,14 @@
 		<p style="text-align:center">{{sleep}} hours of sleep</p>
 		{% if isOwner %}
 		<div style="text-align:left;">
-			<button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#sleep" aria-expanded="false" aria-controls="sleep">Update</button>
+			<button type="button" class="btn btn-owner btn-secondary" type="button" data-toggle="collapse" data-target="#sleep" aria-expanded="false" aria-controls="sleep">Update</button>
 			<div class="collapse" id="sleep">
 				<br>
 				<form class="form-inline" action='/sleepcheck' method="POST">
 					<span>
 						<input type="number" name="sleep" min="0" step="0.01" required>
 						<input type="hidden" name="date" value="{{datetime}}">
-						<button type="submit" class="btn btn-sm btn-secondary">Submit</button>
+						<button type="submit" class="btn btn-owner btn-sm btn-secondary">Submit</button>
 					</span>
 				</form>
 			</div>
@@ -272,7 +302,7 @@
 	var owner = "{{ isOwner }}";
 
 	if(owner == "False"){
-		var buttons = document.getElementsByClassName("btn");
+		var buttons = document.getElementsByClassName("btn-owner");
 		for(var x = 0; x < buttons.length; x++){
 			buttons[x].style.display = "none";
 		}

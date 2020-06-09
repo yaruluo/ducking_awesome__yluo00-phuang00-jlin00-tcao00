@@ -116,9 +116,12 @@ def daily(user,date):
     today = datetime.now()
     now = "" + today.strftime("%A") + ", " + today.strftime("%B") + " " + today.strftime("%d") + ", " + today.strftime("%Y")
     session['date'] = now
+    entry_id = db_manager.getEntryId(user, today.date())
     text = db_manager.getEntry(user, today.date())
     unresolved = db_manager.getSpecificTasks(user, today.date(), 0)
     resolved = db_manager.getSpecificTasks(user, today.date(), 1)
+    comments = db_manager.getComments(user, entry_id)
+    permissions = db_manager.getPermissions(user)
     if(unresolved == "" and resolved == ""):
         tasks = ""
     elif(unresolved == ""):
@@ -141,7 +144,11 @@ def daily(user,date):
         isOwner = True
     else:
         isOwner = False
-    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, hide = hide, mood=mood_vals, tasks = tasks, sleep=sleep_vals)
+    comment = permissions.get(4)[0]
+    if isOwner:
+        comment = True
+    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, hide = hide, mood=mood_vals, tasks = tasks, sleep=sleep_vals,
+                                         comments=comments, user_id=user, entry_id=entry_id, entrydate=today, comment=comment)
 
 
 @app.route("/entrycheck", methods=["GET", "POST"])
@@ -251,6 +258,16 @@ def sleep():
     db_manager.addSleep(session['user_id'], request.form['date'], request.form['sleep'])
     return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
 
+@app.route("/addcomment", methods=["POST"])
+@login_required
+def addcomment():
+    user_id = session['user_id']
+    friend_id = request.form['user_id']
+    comment = request.form['commentbody']
+    date = datetime.date(datetime.now())
+    if comment != '':
+        db_manager.addComment(user_id, friend_id, date, comment)
+    return redirect(url_for("daily", user=friend_id, date=date))
 
 @app.route("/monthly", methods=["GET", "POST"])
 @login_required
@@ -290,7 +307,10 @@ def processrequest():
 def permissions():
     user_id = session['user_id']
     permissions = db_manager.getPermissions(user_id)
-    return render_template("friends.html", isLogin=False, friends="active", edit=True, permissions=permissions.items())
+    friendlist = db_manager.formatFriends(user_id)
+    requests = db_manager.formatRequests(user_id)
+    date = datetime.now().date()
+    return render_template("friends.html", isLogin=False, friends="active", edit=True, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date)
 
 @app.route("/editpermissions", methods=["POST"])
 @login_required

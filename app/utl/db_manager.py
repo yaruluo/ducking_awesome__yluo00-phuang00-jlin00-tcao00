@@ -67,11 +67,11 @@ def getPermissions(user_id):
     q = "SELECT permissions FROM user_tbl WHERE user_id=?"
     inputs = (user_id,)
     data = execmany(q, inputs).fetchone()[0]
-    dict = {0: [False, "View Journals"], 1: [False, "View Mood Tracker"],
-            2: [False, "View Sleep Tracker"], 3: [False, "View Period Tracker"],
-            4: [False, "View To-Do Lists"], 5: [False, "Comment Access"]}
-    for i in range(6):
-        index = 5 - i
+    dict = {0: [False, "View Mood Tracker"],
+            1: [False, "View Sleep Tracker"], 2: [False, "View Period Tracker"],
+            3: [False, "View To-Do Lists"], 4: [False, "Comment Access"]}
+    for i in range(5):
+        index = 4 - i
         quotient = data // pow(10, index)
         if (quotient != 0):
             dict[index][0] = True
@@ -221,6 +221,41 @@ def processRequest(to_user, from_user, accepted):
         inputs = (friends, from_user)
         execmany(q, inputs)
 
+def addComment(user_id, friend_id, date, comment):
+    '''def addComment(user_id, friend_id, comment): add comment to a friend's journal entry'''
+    q = "INSERT INTO comment_tbl(entry_id, commenter_id, comment) VALUES(?, ?, ?)"
+    entry_id = getEntryId(friend_id, date)
+    inputs = (entry_id, user_id, comment)
+    execmany(q, inputs)
+
+def isCommenter(user_id, comment_id):
+    '''def isCommenter(user_id, comment_id): check to see if comment was made by user'''
+    q = "SELECT commenter_id FROM comment_tbl WHERE comment_id=?"
+    inputs = (comment_id, )
+    data = execmany(q, inputs).fetchone()[0]
+    return (user_id == data)
+
+def editComment(comment_id, comment):
+    '''def editComment(comment_id, comment): edit comment by user'''
+    q = "UPDATE comment_tbl SET comment=? WHERE comment_id=?"
+    inputs = (comment, comment_id)
+    execmany(q, inputs)
+
+def getComments(user_id, entry_id):
+    '''def getComments(user_id, entry_id): return list of comments on certain entry'''
+    list = []
+    q = "SELECT commenter_id, comment, comment_id FROM comment_tbl WHERE entry_id=?"
+    inputs = (entry_id, )
+    data = execmany(q, inputs).fetchall()
+    if data is None:
+        return []
+    for comment in data:
+        info = []
+        info.append(getUsername(comment[0]))
+        info.append(comment[1])
+        info.append(isCommenter(comment[0], comment[2]))
+        list.append(tuple(info))
+    return list
 
 #====================================================
 # MANAGING JOURNAL ENTRIES
@@ -256,6 +291,15 @@ def getEntry(user, date):
     print("getEntry")
     print(data)
     return data
+
+def getEntryId(user, date):
+    '''def getEntryId(user, date): get entry_id for entry made by user on certain date'''
+    q = "SELECT entry_id FROM journal_tbl WHERE user_id=? AND date=?"
+    inputs = (user, date)
+    data = execmany(q, inputs).fetchone()
+    if data is None: #no entry found
+        return -1
+    return data[0]
 
 def createTask(username, task, description, time, resolved):
     '''def createTask(username, date, text, time, resolved): create a to-do task for the current day'''

@@ -35,7 +35,7 @@ def build_db():
     command = "CREATE TABLE IF NOT EXISTS tdlist_tbl (entry_id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INT, date DATETIME, task TEXT, description TEXT, time TEXT, resolved INT)"
     exec(command)
 
-    command = "CREATE TABLE IF NOT EXISTS comment_tbl (entry_id INT, commenter_id INT, comment TEXT)"
+    command = "CREATE TABLE IF NOT EXISTS comment_tbl (entry_id INT, comment_id INTEGER PRIMARY KEY AUTOINCREMENT, commenter_id INT, comment TEXT)"
     exec(command)
 
     command = "CREATE TABLE IF NOT EXISTS mood_tbl (user_id INTEGER, date TEXT, mood INTEGER)"
