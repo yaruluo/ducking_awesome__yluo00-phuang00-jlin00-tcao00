@@ -1,8 +1,10 @@
-import sqlite3
-from utl.db_builder import exec, execmany
-import random, sys
+# standard library imports
 from datetime import datetime
-import json
+import random, sys
+import sqlite3
+
+# local application imports
+from utl.db_builder import exec, execmany
 
 limit = sys.maxsize
 MOOD_DICT = {0: ['happy/joyful/content/relax', '#ffb6e6'], 1: ['sad/lonely/depressed/insecure', '#a3dbff'],

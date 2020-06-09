@@ -1,3 +1,4 @@
+# standard library imports
 import sqlite3
 
 DB_FILE = "journal.db"

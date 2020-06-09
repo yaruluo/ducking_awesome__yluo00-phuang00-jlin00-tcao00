@@ -3,11 +3,17 @@
 #P05 -- Fin
 #2020-06-11
 
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+# standard library imports
+from datetime import datetime
 from functools import wraps
 import sqlite3, os, random
+
+# third-party imports
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+
+# local application imports
 from utl import db_builder, db_manager
-from datetime import datetime
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
