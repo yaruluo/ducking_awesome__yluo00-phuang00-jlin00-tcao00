@@ -144,11 +144,19 @@ def daily(user,date):
         isOwner = True
     else:
         isOwner = False
+    viewmood = permissions.get(0)[0]
+    viewsleep = permissions.get(1)[0]
+    viewperiod = permissions.get(2)[0]
+    viewtd = permissions.get(3)[0]
     comment = permissions.get(4)[0]
     if isOwner:
         comment = True
+        viewtd = True
+        viewsleep = True
+        viewmood = True
+        viewperiod = True
     return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, hide = hide, mood=mood_vals, tasks = tasks, sleep=sleep_vals,
-                                         comments=comments, user_id=user, entry_id=entry_id, entrydate=today, comment=comment)
+                                         comments=comments, user_id=user, entry_id=entry_id, entrydate=today, comment=comment, viewmood=viewmood, viewsleep=viewsleep, viewperiod=viewperiod, viewtd=viewtd)
 
 
 @app.route("/entrycheck", methods=["GET", "POST"])

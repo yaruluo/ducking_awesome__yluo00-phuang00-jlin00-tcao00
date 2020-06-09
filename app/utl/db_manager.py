@@ -39,12 +39,6 @@ def addUser(username, password):
         return True
     return False #if username already exists
 
-def changePass(user_id, password):
-    '''def changePass(username, password): updating data table of user in session with new password'''
-    q = "UPDATE user_tbl SET password=? WHERE user_id=?"
-    inputs = (password, user_id)
-    execmany(q, inputs)
-
 def getUserID(username):
     '''def getUserID(username): return user_id for given username'''
     q = "SELECT user_id FROM user_tbl WHERE username=?"
@@ -228,19 +222,6 @@ def addComment(user_id, friend_id, date, comment):
     inputs = (entry_id, user_id, comment)
     execmany(q, inputs)
 
-def isCommenter(user_id, comment_id):
-    '''def isCommenter(user_id, comment_id): check to see if comment was made by user'''
-    q = "SELECT commenter_id FROM comment_tbl WHERE comment_id=?"
-    inputs = (comment_id, )
-    data = execmany(q, inputs).fetchone()[0]
-    return (user_id == data)
-
-def editComment(comment_id, comment):
-    '''def editComment(comment_id, comment): edit comment by user'''
-    q = "UPDATE comment_tbl SET comment=? WHERE comment_id=?"
-    inputs = (comment, comment_id)
-    execmany(q, inputs)
-
 def getComments(user_id, entry_id):
     '''def getComments(user_id, entry_id): return list of comments on certain entry'''
     list = []
@@ -253,7 +234,6 @@ def getComments(user_id, entry_id):
         info = []
         info.append(getUsername(comment[0]))
         info.append(comment[1])
-        info.append(isCommenter(comment[0], comment[2]))
         list.append(tuple(info))
     return list
 
