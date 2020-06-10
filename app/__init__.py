@@ -152,12 +152,13 @@ def daily(user,date):
         isOwner = True
     else:
         isOwner = False
-    viewmood = permissions.get(0)[0]
-    viewsleep = permissions.get(1)[0]
-    viewperiod = permissions.get(2)[0]
-    viewtd = permissions.get(3)[0]
-    comment = permissions.get(4)[0]
-    viewentry = db_manager.isFriend(session['user_id'], int(user))
+    comment = False
+    viewtd = False
+    viewsleep = False
+    viewmood = False
+    viewperiod = False
+    viewentry = False
+    isFriend = db_manager.isFriend(session['user_id'], int(user))
     if isOwner:
         comment = True
         viewtd = True
@@ -165,7 +166,14 @@ def daily(user,date):
         viewmood = True
         viewperiod = True
         viewentry = True
-    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, hide = hide, mood=mood_vals, tasks = tasks, sleep=sleep_vals,
+    if isFriend:
+        viewmood = permissions.get(0)[0]
+        viewsleep = permissions.get(1)[0]
+        viewperiod = permissions.get(2)[0]
+        viewtd = permissions.get(3)[0]
+        comment = permissions.get(4)[0]
+        viewentry = True
+    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, mood=mood_vals, tasks = tasks, sleep=sleep_vals,
                                          comments=comments, user_id=user, entry_id=entry_id, entrydate=today, comment=comment, viewmood=viewmood, viewsleep=viewsleep, viewperiod=viewperiod, viewtd=viewtd, viewentry=viewentry)
 
 
