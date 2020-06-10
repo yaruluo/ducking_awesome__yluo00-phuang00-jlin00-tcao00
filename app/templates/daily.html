@@ -38,7 +38,7 @@
 	<div class="card" style = "width: 800px; text-align: left; padding-bottom: 0px;" id = "journal" data-hidden = "{{ hide }}">
 		<div class="form-group" id = "add" style = "display: inline; padding-top: 10px; padding-left: 10px; padding-right: 10px;">
 			<button type="button" class="btn btn-owner btn-primary btn-rounded btn-xs" id = "add_entry" style = "width: 40px; border-radius: 30px;">+</button>
-			{% if isOwner %}Add a new task!{% endif %}
+			{% if isOwner %}Add a new entry!{% endif %}
 		</div>
 		<form action = "/entrycheck" method = "POST" class="form-group" id = "textform" style = "display: none; padding-left: 10px; padding-right: 10px;">
 	    <textarea class="form-control" rows="4" name = "new_entry" placeholder = "Today, I am..."></textarea><br>
