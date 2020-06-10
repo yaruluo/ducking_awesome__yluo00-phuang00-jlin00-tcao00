@@ -35,29 +35,40 @@
 <div style = "display: block; margin-left: auto; margin-right: auto;">
 	<h2> {{ date }} </h2><br>
 	<h3 style = "color: #ee4035;"> Daily Overview </h3>
-	<div class="card" style = "width: 800px; text-align: left; padding-bottom: 0px;" id = "journal" data-hidden = "{{ hide }}">
-		<div class="form-group" id = "add" style = "display: inline; padding-top: 10px; padding-left: 10px; padding-right: 10px;">
-			<button type="button" class="btn btn-owner btn-primary btn-rounded btn-xs" id = "add_entry" style = "width: 40px; border-radius: 30px;">+</button>
-			{% if isOwner %}Add a new entry!{% endif %}
+	<div class="card" style="width: 800px; text-align: left; padding-bottom: 0px;">
+		{% if isOwner and entries == None %}
+		<p>
+		  <button class="btn btn-primary btn-rounded btn-xs" type="button" data-toggle="collapse" data-target="#collapseEntry" aria-expanded="false" aria-controls="collapseEntry" style = "width: 40px; border-radius: 30px;">
+		    +
+		  </button> Add a new entry!
+		</p>
+		<div class="collapse" id="collapseEntry">
+			<form action = "/entrycheck" method = "POST" class="form-group" style = "padding-left: 10px; padding-right: 10px;">
+		    <textarea class="form-control" rows="4" name = "new_entry" placeholder = "Today, I am..."></textarea><br>
+				<button type="submit" class="btn btn-primary" id="submit">Submit</button>
+			</form>
 		</div>
-		<form action = "/entrycheck" method = "POST" class="form-group" id = "textform" style = "display: none; padding-left: 10px; padding-right: 10px;">
-	    <textarea class="form-control" rows="4" name = "new_entry" placeholder = "Today, I am..."></textarea><br>
-			<button type="submit" class="btn btn-owner btn-primary" id="submit">Submit</button>
-		</form>
+		{% endif %}
+		{% if viewentry %}
 		{% if entries != None %}
 			{% for x in entries %}
 				<div class = "card" style = "padding-left: 10px; padding-right: 10px; padding-top: 10px; text-align: left; background-color: #e8f4f8;">
 					{% autoescape false %}
 						{{ x | replace("\r\n", "<br>") }}
 					{% endautoescape %}
-					<div class="form-group" id="edit">
-						<br>
-						<button type="button" class="btn btn-owner btn-primary btn-rounded btn-xs" id = "editbutton">Edit</button>
+					{% if isOwner %}
+					<p><br>
+					  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseEdit" aria-expanded="false" aria-controls="collapseEdit">
+					    Edit
+					  </button>
+					</p>
+					<div class="collapse" id="collapseEdit">
+						<form action = "/editentry" method = "POST" class="form-group">
+					    <textarea class="form-control" rows="5" name = "edit_entry">{{ x }}</textarea><br>
+							<button type="submit" class="btn btn-primary">Submit</button>
+						</form>
 					</div>
-					<form action = "/editentry" method = "POST" class="form-group" id = "textedit" style = "display: none;">
-				    <textarea class="form-control" rows="5" name = "edit_entry">{{ x }}</textarea><br>
-						<button type="submit" class="btn btn-owner btn-primary">Submit</button>
-					</form>
+					{% endif %}
 					<!-- comments -->
 					{% if comment %}
 						{% if comments == [] %}
@@ -94,54 +105,74 @@
 						<br>
 					</div>
 			{% endfor %}
+		{% else %}
+			{% if not isOwner %}
+				<center class="text-secondary">
+					<br><i>No entry yet!</i><br><br>
+				</center>
+			{% endif %}
 		{% endif %}
+		{% else %}
+		<center>
+			<br>
+			<b>You are not allowed to view this entry.</b>
+			<br><br>
+		</center>
+		{% endif%}
 	</div><br>
 	<h3 style = "color: #f37736;"> To-Do List </h3>
 	<div class = "card" style = "width: 800px; text-align: left;" id = "tdlist">
-		<div class="form-group" style = "padding-top: 10px; padding-left: 10px; padding-right: 10px;">
-			<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs"  id = "add_task" style = "width: 40px; border-radius: 30px;">+</button>
-			{% if isOwner %}Add a new task!{% endif %}
+		{% if isOwner %}
+		<p>
+			<button class="btn btn-warning btn-rounded btn-xs" type="button" data-toggle="collapse" data-target="#collapseTask" aria-expanded="false" aria-controls="collapseTask" style = "width: 40px; border-radius: 30px;">
+				+
+			</button> Add a new task!
+		</p>
+		<div class="collapse" id="collapseTask">
+			<form action = "/taskcheck" method = "POST" class="form-group" id = "taskform" style="padding-left: 10px; padding-right: 10px;">
+				<label for="task" class="font-weight-bold">Task:</label>
+				<textarea class="form-control" rows="1" name = "task" id = "task" placeholder = "Buy groceries"></textarea><br>
+				<label for="description" class="font-weight-bold">Description:</label>
+		    <textarea class="form-control" rows="3" name = "description" id = "description" placeholder = "Milk, broccoli, chocolate..."></textarea><br>
+				<div class="form-group">
+					<label for="time" class="font-weight-bold">Time:</label>
+	        <div class="input-group date" id="datetimepicker0" data-target-input="nearest">
+	            <input type="text" class="form-control datetimepicker-input" id = "time" name = "time" data-target="#datetimepicker3" placeholder = "10:00 AM"/>
+	            <div class="input-group-append" data-target="#datetimepicker0" data-toggle="datetimepicker">
+	                <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+	            </div>
+	        </div>
+				</div>
+		    <script type="text/javascript">
+		        $(function () {
+		            $('#datetimepicker0').datetimepicker({
+		                format: 'LT',
+		            });
+		        });
+		    </script>
+				<button type="submit" class="btn btn-warning" id="submit_task">Submit</button>
+			</form>
 		</div>
-		<form action = "/taskcheck" method = "POST" class="form-group" id = "taskform" style = "display: none; padding-left: 10px; padding-right: 10px;">
-			<label for="task" class="font-weight-bold">Task:</label>
-			<textarea class="form-control" rows="1" name = "task" id = "task" placeholder = "Buy groceries"></textarea><br>
-			<label for="description" class="font-weight-bold">Description:</label>
-	    <textarea class="form-control" rows="3" name = "description" id = "description" placeholder = "Milk, broccoli, chocolate..."></textarea><br>
-			<div class="form-group">
-				<label for="time" class="font-weight-bold">Time:</label>
-        <div class="input-group date" id="datetimepicker0" data-target-input="nearest">
-            <input type="text" class="form-control datetimepicker-input" id = "time" name = "time" data-target="#datetimepicker3" placeholder = "10:00 AM"/>
-            <div class="input-group-append" data-target="#datetimepicker0" data-toggle="datetimepicker">
-                <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
-            </div>
-        </div>
-			</div>
-	    <script type="text/javascript">
-	        $(function () {
-	            $('#datetimepicker0').datetimepicker({
-	                format: 'LT',
-	            });
-	        });
-	    </script>
-
-			<button type="submit" class="btn btn-owner btn-warning" id="submit_task">Submit</button>
-		</form>
-
+		{% endif %}
 		{% if viewtd %}
 			{% if tasks != "" %}
 				{% for x in tasks %}
 					<div class = "card" style = "text-align: left; background-color: #e8f4f8; margin-bottom: 3px; border: 2px solid #e5cce5;">
+						{% if isOwner %}
 						<form action = "/edittask" method = "POST" class="form-group" id = "tasksetting{{x[0]}}" name = "tasksetting{{x[0]}}" style = "margin-bottom: 0px; display: inlne-block; font-size: 0px;">
 							{% if x[4] == 0 %}
-								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 621px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">x</button>
-								<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs special" id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Edit</button>
-								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "resolve_task{{x[0]}}" name = "resolve_task{{x[0]}}" style = "background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Resolve</button>
+								<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 621px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">x</button>
+								<button style="margin-right:1px; background-color:#cec1e7; border-color:#cec1e7;" name="edit_task{{x[0]}}" id="edit_task{{x[0]}}"
+												value="{{ x[0] }}" class="btn btn-warning btn-rounded btn-xs" type="button" data-toggle="collapse"
+												data-target="#collapseEditTask" aria-expanded="false" aria-controls="collapseEditTask">Edit</button>
+								<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "resolve_task{{x[0]}}" name = "resolve_task{{x[0]}}" style = "background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Resolve</button>
 							{% else %}
-								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 605px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">x</button>
-								<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs special" disabled id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Edit</button>
-								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "unresolve_task{{x[0]}}" name = "unresolve_task{{x[0]}}" style = "background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Unresolve</button>
+								<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 605px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">x</button>
+								<button type="button" class="btn btn-warning btn-rounded btn-xs" disabled id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Edit</button>
+								<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "unresolve_task{{x[0]}}" name = "unresolve_task{{x[0]}}" style = "background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Unresolve</button>
 							{% endif %}
 						</form>
+						{% endif %}
 						{% if x[4] == 0 %}
 							<div class = "card-body" style = "background-color: #e8f8f4; border-top: 2px solid white;">
 								<h5 style = "color: #F7717D; display: inline-block;">Task: <span style = "color: black; font-weight: normal;">{{ x[1] }}</span></h5><br>
@@ -155,37 +186,46 @@
 								<h5 style = "color: #0cd35e; display: inline-block;">Time: <span style = "color: black; font-weight: normal;">{{ x[3] }}</span></h5>
 							</div>
 						{% endif %}
-						<form action = "/edittask" method = "POST" class="form-group" id = "taskedit{{x[0]}}" style = "display: none; padding-left: 10px; padding-right: 10px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; background-color: white;">
-							<label for="task" class="font-weight-bold">Task:</label>
-							<textarea class="form-control" rows="1" name = "task{{x[0]}}" id = "task{{x[0]}}">{{ x[1] }}</textarea><br>
-							<label for="description" class="font-weight-bold">Description:</label>
-					    <textarea class="form-control" rows="3" name = "description{{x[0]}}" id = "description{{x[0]}}">{{ x[2] }}</textarea><br>
-							<div class="form-group">
-								<label for="time" class="font-weight-bold">Time:</label>
-				        <div class="input-group date" id="datetimepicker{{x[0]}}" data-target-input="nearest">
-				            <input type="text" class="form-control datetimepicker-input" id = "time{{x[0]}}" name = "time{{x[0]}}" data-target="#datetimepicker3" value = "{{ x[3] }}"/>
-				            <div class="input-group-append" data-target="#datetimepicker{{x[0]}}" data-toggle="datetimepicker">
-				                <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
-				            </div>
-				        </div>
-							</div>
-					    <script type="text/javascript">
-					        $(function () {
-										var temp = '#datetimepicker{{x[0]}}'
-					            $(temp).datetimepicker({
-					                format: 'LT',
-					            });
-					        });
-					    </script>
-
-							<button type="submit" class="btn btn-owner btn-warning" id="submit_task">Submit</button>
-						</form>
+						{% if isOwner %}
+						<div class="collapse" id="collapseEditTask">
+							<form action = "/edittask" method = "POST" class="form-group" id = "taskedit{{x[0]}}" style = "padding-left: 10px; padding-right: 10px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; background-color: white;">
+								<label for="task" class="font-weight-bold">Task:</label>
+								<textarea class="form-control" rows="1" name = "task{{x[0]}}" id = "task{{x[0]}}">{{ x[1] }}</textarea><br>
+								<label for="description" class="font-weight-bold">Description:</label>
+						    <textarea class="form-control" rows="3" name = "description{{x[0]}}" id = "description{{x[0]}}">{{ x[2] }}</textarea><br>
+								<div class="form-group">
+									<label for="time" class="font-weight-bold">Time:</label>
+					        <div class="input-group date" id="datetimepicker{{x[0]}}" data-target-input="nearest">
+					            <input type="text" class="form-control datetimepicker-input" id = "time{{x[0]}}" name = "time{{x[0]}}" data-target="#datetimepicker3" value = "{{ x[3] }}"/>
+					            <div class="input-group-append" data-target="#datetimepicker{{x[0]}}" data-toggle="datetimepicker">
+					                <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+					            </div>
+					        </div>
+								</div>
+						    <script type="text/javascript">
+						        $(function () {
+											var temp = '#datetimepicker{{x[0]}}'
+						            $(temp).datetimepicker({
+						                format: 'LT',
+						            });
+						        });
+						    </script>
+								<button type="submit" class="btn btn-warning" id="submit_task">Submit</button>
+							</form>
+						</div>
+						{% endif %}
 					</div>
 				{% endfor %}
+			{% else %}
+				{% if not isOwner %}
+					<center class="text-secondary">
+						<br><i>No entry yet!</i><br>
+					</center>
+				{% endif %}
 			{% endif %}
 		{% else %}
 		<center>
-			<b>You are not allowed to view this task list.</b>
+			<br><b>You are not allowed to view this task list.</b>
 		</center>
 		{% endif %}
 		<br>
@@ -196,7 +236,11 @@
 <div class = "card" style="width:800px;background-color:{{mood[1]}};">
 	<div class="card-body">
 		{% if viewmood %}
-		<p style="text-align:center">{{mood[0]}}</p>
+			{% if mood[0] != 'None' %}
+			<p style="text-align:center">{{mood[0]}}</p>
+			{% else %}
+			<p style="text-align:center" class="text-secondary"><i>No entry yet!</i></p>
+			{% endif %}
 		{% else %}
 		<center>
 			<b>You are not allowed to view this mood tracker.</b>
@@ -204,7 +248,7 @@
 		{% endif %}
 		{% if isOwner %}
 		<div style="text-align:left;">
-			<button type="button" id="updateMood" class="btn btn-owner btn-secondary" type="button" data-toggle="collapse" data-target="#collapseExample1" aria-expanded="false" aria-controls="collapseExample">Update</button>
+			<button type="button" id="updateMood" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#collapseExample1" aria-expanded="false" aria-controls="collapseExample">Update</button>
 			<div class="collapse" id="collapseExample1">
 				<br>
 				<form class="form-inline" action='/moodcheck' method="POST">
@@ -219,7 +263,7 @@
 							<option style="background-color: #ff5b5b" class="red" value="5">angry/anxious/fustrated/annoyed</option>
 						</select>
 						<input type="hidden" name="date" value="{{datetime}}">
-						<button type="submit" class="btn btn-owner btn-sm btn-secondary">Submit</button>
+						<button type="submit" class="btn btn-sm btn-secondary">Submit</button>
 					</span>
 				</form>
 			</div>
@@ -232,7 +276,11 @@
 <div class = "card" style="width:800px;background-color:#e8f4f8;">
 	<div class="card-body">
 		{% if viewsleep %}
-		<p style="text-align:center">{{sleep}} hours of sleep</p>
+			{% if sleep != None %}
+				<p style="text-align:center">{{sleep}} hours of sleep</p>
+			{% else %}
+				<center class="text-secondary"><i>No entry yet!</i></center>
+			{% endif %}
 		{% else %}
 		<center>
 			<b>You are not allowed to view this sleep tracker.</b>
@@ -240,14 +288,14 @@
 		{% endif %}
 		{% if isOwner %}
 		<div style="text-align:left;">
-			<button type="button" class="btn btn-owner btn-secondary" type="button" data-toggle="collapse" data-target="#sleep" aria-expanded="false" aria-controls="sleep">Update</button>
+			<button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#sleep" aria-expanded="false" aria-controls="sleep">Update</button>
 			<div class="collapse" id="sleep">
 				<br>
 				<form class="form-inline" action='/sleepcheck' method="POST">
 					<span>
-						<input type="number" name="sleep" min="0" step="0.01" required>
+						<input class="form-control" type="number" name="sleep" min="0" step="0.01" required>
 						<input type="hidden" name="date" value="{{datetime}}">
-						<button type="submit" class="btn btn-owner btn-sm btn-secondary">Submit</button>
+						<button type="submit" class="btn btn-sm btn-secondary">Submit</button>
 					</span>
 				</form>
 			</div>
@@ -256,81 +304,4 @@
 	</div>
 </div>
 <br>
-
-
 {% endblock body %}
-
-{% block script %}
-<script>
-
-	var test = document.getElementById("journal").getAttribute("data-hidden");
-	var add = document.getElementById("add");
-	// console.log(test);
-
-	if(test == "yes"){
-		add.style.display = "none";
-		var edit = document.getElementById("editbutton");
-		var textedit = document.getElementById("textedit");
-
-		edit.onclick = function(){
-			// console.log("here")
-			if(textedit.style.display == "none"){
-				textedit.style.display = "inline";
-			}else{
-				textedit.style.display = "none";
-			}
-		}
-	}
-	if(test == "no"){
-		add.style.display = "inline";
-	}
-
-	var textform = document.getElementById("textform");
-
-	var addEntry = document.getElementById("add_entry");
-	addEntry.onclick = function(){
-		if(textform.style.display == "none"){
-			textform.style.display = "inline";
-		}else{
-			textform.style.display = "none";
-		}
-	}
-
-
-	var addTask = document.getElementById("add_task");
-	addTask.onclick = function(){
-		if(taskform.style.display == "none"){
-			taskform.style.display = "inline";
-		}else{
-			taskform.style.display = "none";
-		}
-	}
-
-	var special = document.getElementsByClassName("special");
-
-	for(var x = 0; x < special.length; x++){
-		special[x].onclick = function(){
-			temp = this.getAttribute("value");
-			name = "taskedit" + temp;
-			var tempForm = document.getElementById(name);
-			// console.log(tempForm);
-			if(tempForm.style.display == "none"){
-				tempForm.style.display = "inline";
-			}else{
-				tempForm.style.display = "none";
-			}
-		}
-	}
-
-	var owner = "{{ isOwner }}";
-
-	if(owner == "False"){
-		var buttons = document.getElementsByClassName("btn-owner");
-		for(var x = 0; x < buttons.length; x++){
-			buttons[x].style.display = "none";
-		}
-	}
-
-</script>
-
-{% endblock %}
