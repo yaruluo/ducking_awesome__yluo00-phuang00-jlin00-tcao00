@@ -133,13 +133,13 @@
 					<div class = "card" style = "text-align: left; background-color: #e8f4f8; margin-bottom: 3px; border: 2px solid #e5cce5;">
 						<form action = "/edittask" method = "POST" class="form-group" id = "tasksetting{{x[0]}}" name = "tasksetting{{x[0]}}" style = "margin-bottom: 0px; display: inlne-block; font-size: 0px;">
 							{% if x[4] == 0 %}
-								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 621px;" value = "{{ x[0] }}">x</button>
-								<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs special" id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px;" value = "{{ x[0] }}">Edit</button>
-								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "resolve_task{{x[0]}}" name = "resolve_task{{x[0]}}" value = "{{ x[0] }}">Resolve</button>
+								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 621px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">x</button>
+								<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs special" id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Edit</button>
+								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "resolve_task{{x[0]}}" name = "resolve_task{{x[0]}}" style = "background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Resolve</button>
 							{% else %}
-								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 605px;" value = "{{ x[0] }}">x</button>
-								<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs special" disabled id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px;" value = "{{ x[0] }}">Edit</button>
-								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "unresolve_task{{x[0]}}" name = "unresolve_task{{x[0]}}" value = "{{ x[0] }}">Unresolve</button>
+								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 605px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">x</button>
+								<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs special" disabled id = "edit_task{{x[0]}}" name = "edit_task{{x[0]}}" style = "margin-right: 1px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Edit</button>
+								<button type="submit" class="btn btn-owner btn-warning btn-rounded btn-xs" id = "unresolve_task{{x[0]}}" name = "unresolve_task{{x[0]}}" style = "background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Unresolve</button>
 							{% endif %}
 						</form>
 						{% if x[4] == 0 %}
