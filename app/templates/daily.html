@@ -58,7 +58,7 @@
 					<span><a data-toggle="collapse" href="#collapseEdit" role="button" aria-expanded="false" aria-controls="collapseEdit">
 						 <span class="fa fa-pencil mx-2"> </span>
 					</a></span>
-					<div class="collapse" id="collapseEdit">
+					<div class="collapse" id="collapseEdit" style = "margin-top: 10px;">
 						<form action = "/editentry" method = "POST" class="form-group">
 					    <textarea class="form-control" rows="5" name = "edit_entry">{{ x }}</textarea>
 							<button type="submit" class="btn btn-primary btn-sm float-right my-2 form-control">Submit</button>
@@ -219,7 +219,7 @@
 			{% endif %}
 		{% else %}
 		<center>
-			<br><b>You are not allowed to view this task list.</b>
+			<br><b>You are not allowed to view this task list.</b><br><br>
 		</center>
 		{% endif %}
 	</div>
@@ -270,7 +270,7 @@
 </div>
 <br>
 <h3 style = "color: #2C01D8;"> Sleep Tracker </h3>
-<div class = "card" style="width:800px;background-color:#e8f4f8;">
+<div class = "card" style="width:800px; background-color:#e8f4f8;">
 	<div class="card-body">
 		{% if viewsleep %}
 			{% if sleep != None %}
