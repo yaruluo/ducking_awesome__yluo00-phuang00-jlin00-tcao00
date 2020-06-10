@@ -29,11 +29,15 @@
 			<td>{{ user[0] }}</td>
 			<td>{{ user[1] }}</td>
 			<td>
+				{% if user[4] != None %}
 				<form action="/addfriends" method="POST">
 					<input type="hidden" name="id" value="{{ user[1] }}">
 					<input type="hidden" name="query" value="{{ query }}">
 					<button class="btn {{ user[2] }}" type="submit" {{ user[3] }}>{{ user[4] }}</button>
 				</form>
+				{% else %}
+				<a href="/friends" class="btn btn-info">Respond</a>
+				{% endif %}
 			</td>
 		</tr>
 		{% endfor %}

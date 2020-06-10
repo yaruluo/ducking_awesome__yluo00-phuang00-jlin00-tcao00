@@ -149,7 +149,7 @@ def findUser(user_id, query):
                 info.append(friend_id) #user_id
                 friend = isFriend(user_id, friend_id)
                 requested = isRequested(user_id, friend_id)
-                print(requested)
+                reverse_requested = isRequested(friend_id, user_id)
                 if friend: #color
                     info.append("btn-secondary")
                     info.append("disabled")
@@ -159,6 +159,9 @@ def findUser(user_id, query):
                     if requested:
                         info.append("disabled")
                         info.append("Requested")
+                    elif reverse_requested:
+                        info.append("")
+                        info.append(None)
                     else:
                         info.append("")
                         info.append("Send Request")
@@ -185,7 +188,7 @@ def processRequest(to_user, from_user, accepted):
     inputs = (to_user, )
     requests = execmany(q, inputs).fetchone()[0]
     requests = requests.split(",")
-    requests = requests.remove(str(from_user))
+    requests.remove(str(from_user))
     if requests is not None:
         requests = requests.join(",")
     q = "UPDATE user_tbl SET requests=? WHERE user_id=?"
