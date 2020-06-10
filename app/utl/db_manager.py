@@ -189,8 +189,9 @@ def processRequest(to_user, from_user, accepted):
     requests = execmany(q, inputs).fetchone()[0]
     requests = requests.split(",")
     requests.remove(str(from_user))
-    if requests is not None:
-        requests = requests.join(",")
+    requests = ",".join(requests)
+    if (requests == ''):
+        requests = None
     q = "UPDATE user_tbl SET requests=? WHERE user_id=?"
     inputs = (requests, to_user)
     execmany(q, inputs)
