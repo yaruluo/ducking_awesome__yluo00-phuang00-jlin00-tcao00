@@ -119,15 +119,15 @@ def signupcheck():
 @app.route("/daily/<user>/<date>")
 @login_required
 def daily(user,date):
-    if not db_manager.userExists(user):
+    if not db_manager.userExists(user): #if faulty url, redirect to default entry for today
         return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
-    today = datetime.now()
-    now = "" + today.strftime("%A") + ", " + today.strftime("%B") + " " + today.strftime("%d") + ", " + today.strftime("%Y")
-    session['date'] = now
-    entry_id = db_manager.getEntryId(user, today.date())
-    text = db_manager.getEntry(user, today.date())
-    unresolved = db_manager.getSpecificTasks(user, today.date(), 0)
-    resolved = db_manager.getSpecificTasks(user, today.date(), 1)
+    username = db_manager.getUsername(user)
+    date = datetime.strptime(date, "%Y-%m-%d").date()
+    fulldate = "" + date.strftime("%A") + ", " + date.strftime("%B") + " " + date.strftime("%d") + ", " + date.strftime("%Y")
+    entry_id = db_manager.getEntryId(user, date)
+    text = db_manager.getEntry(user, date)
+    unresolved = db_manager.getSpecificTasks(user, date, 0)
+    resolved = db_manager.getSpecificTasks(user, date, 1)
     comments = db_manager.getComments(user, entry_id)
     permissions = db_manager.getPermissions(user)
     if(unresolved == "" and resolved == ""):
@@ -173,43 +173,54 @@ def daily(user,date):
         viewtd = permissions.get(3)[0]
         comment = permissions.get(4)[0]
         viewentry = True
-    return render_template("daily.html", isLogin=False, daily="active", date = session['date'], entries = text, isOwner=isOwner, datetime=date, mood=mood_vals, tasks = tasks, sleep=sleep_vals,
-                                         comments=comments, user_id=user, entry_id=entry_id, entrydate=today, comment=comment, viewmood=viewmood, viewsleep=viewsleep, viewperiod=viewperiod, viewtd=viewtd, viewentry=viewentry)
+    return render_template("daily.html", isLogin=False, daily="active", date=fulldate, entries=text, isOwner=isOwner, datetime=date, mood=mood_vals, tasks=tasks, sleep=sleep_vals, username=username,
+                                         comments=comments, user_id=user, entry_id=entry_id, comment=comment, viewmood=viewmood, viewsleep=viewsleep, viewperiod=viewperiod, viewtd=viewtd, viewentry=viewentry, currentuser=session['username'])
 
+@app.route("/changedate", methods=["POST"])
+@login_required
+def changedate():
+    date = request.form['date']
+    date = datetime.strptime(date, "%Y-%m-%d").date()
+    user = request.form['user_id']
+    return redirect(url_for('daily', user=user, date=date))
 
-@app.route("/entrycheck", methods=["GET", "POST"])
+@app.route("/entrycheck", methods=["POST"])
 @login_required
 def entry():
     entry = request.form['new_entry']
-    db_manager.updateEntry(session['username'], entry)
-    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+    date = request.form['date']
+    date = datetime.strptime(date, "%Y-%m-%d").date()
+    db_manager.updateEntry(session['username'], entry, date)
+    return redirect(url_for('daily', date=date, user=session['user_id']))
 
-@app.route("/editentry", methods=["GET", "POST"])
+@app.route("/editentry", methods=["POST"])
 @login_required
 def edit():
     entry = request.form['edit_entry']
-    db_manager.updateEntry(session['username'], entry)
-    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+    date = request.form['date']
+    date = datetime.strptime(date, "%Y-%m-%d").date()
+    db_manager.updateEntry(session['username'], entry, date)
+    return redirect(url_for('daily', date=date, user=session['user_id']))
 
-@app.route("/taskcheck", methods=["GET", "POST"])
+@app.route("/taskcheck", methods=["POST"])
 @login_required
 def task():
     task = request.form['task']
     description = request.form['description']
     time = request.form['time']
-    print(task)
-    print(description)
-    print(time)
+    date = request.form['date']
+    date = datetime.strptime(date, "%Y-%m-%d").date()
     if (task == "" and description == "" and time == ""):
-        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
-    db_manager.createTask(session['username'], task, description, time, 0)
-    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+        return redirect(url_for('daily', date=date, user=session['user_id']))
+    db_manager.createTask(session['username'], task, description, time, 0, date)
+    return redirect(url_for('daily', date=date, user=session['user_id']))
 
-@app.route("/edittask", methods=["GET", "POST"])
+@app.route("/edittask", methods=["POST"])
 @login_required
 def taskedit():
-    today = datetime.now()
-    tasks = db_manager.getTasks(session['user_id'], today.date())
+    date = request.form['date']
+    date = datetime.strptime(date, "%Y-%m-%d").date()
+    tasks = db_manager.getTasks(session['user_id'], date)
 
     toRemove = ""
     toResolve = ""
@@ -220,30 +231,22 @@ def taskedit():
     changeDescription = ""
     changeTime = ""
 
-    print("==================")
     for x in tasks:
         entryID = str(x[0])
         delete = 'delete_task' + entryID
-        print(delete)
         resolve = 'resolve_task' + entryID
         unresolve = 'unresolve_task' + entryID
         taskEdit = 'task' + entryID
         descriptionEdit = 'description' + entryID
         timeEdit = 'time' + entryID
         if(delete in request.form):
-            print("yes delete")
             toRemove = request.form[delete]
-            print(toRemove)
             break
         elif(resolve in request.form):
-                print("yes resolve")
                 toResolve = request.form[resolve]
-                print(toResolve)
                 break
         elif(unresolve in request.form):
-                print("yes unresolve")
                 toUnresolve = request.form[unresolve]
-                print(toUnresolve)
                 break
         else:
             if(taskEdit in request.form):
@@ -257,33 +260,32 @@ def taskedit():
                 changeTime = request.form[timeEdit]
                 break
     if(toRemove != ""):
-        db_manager.removeTask(session['username'], today.date(), int(toRemove))
+        db_manager.removeTask(session['username'], date, int(toRemove))
     if(toResolve != ""):
-        db_manager.resolveTask(session['username'], today.date(), int(toResolve), 1)
+        db_manager.resolveTask(session['username'], date, int(toResolve), 1)
     if(toUnresolve != ""):
-        db_manager.resolveTask(session['username'], today.date(), int(toUnresolve), 0)
-
-    print("change")
-    print(changeTask)
-    print(changeDescription)
-    print(changeTime)
+        db_manager.resolveTask(session['username'], date, int(toUnresolve), 0)
 
     if(toChange != ""):
-        db_manager.editTask(session['username'], today.date(), int(toChange), changeTask, changeDescription, changeTime)
+        db_manager.editTask(session['username'], date, int(toChange), changeTask, changeDescription, changeTime)
 
-    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+    return redirect(url_for('daily', date=date, user=session['user_id']))
 
-@app.route("/moodcheck", methods=["GET","POST"])
+@app.route("/moodcheck", methods=["POST"])
 @login_required
 def mood():
-    db_manager.addMood(session['user_id'], request.form['date'], request.form['mood'])
-    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+    date = request.form['date']
+    date = datetime.strptime(date, "%Y-%m-%d").date()
+    db_manager.addMood(session['user_id'], date, request.form['mood'])
+    return redirect(url_for('daily', date=date, user=session['user_id']))
 
-@app.route("/sleepcheck", methods=["GET","POST"])
+@app.route("/sleepcheck", methods=["POST"])
 @login_required
 def sleep():
-    db_manager.addSleep(session['user_id'], request.form['date'], request.form['sleep'])
-    return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
+    date = request.form['date']
+    date = datetime.strptime(date, "%Y-%m-%d").date()
+    db_manager.addSleep(session['user_id'], date, request.form['sleep'])
+    return redirect(url_for('daily', date=date, user=session['user_id']))
 
 @app.route("/addcomment", methods=["POST"])
 @login_required
@@ -291,7 +293,8 @@ def addcomment():
     user_id = session['user_id']
     friend_id = request.form['user_id']
     comment = request.form['commentbody']
-    date = datetime.date(datetime.now())
+    date = request.form['date']
+    date = datetime.strptime(date, "%Y-%m-%d").date()
     if comment != '':
         db_manager.addComment(user_id, friend_id, date, comment)
     return redirect(url_for("daily", user=friend_id, date=date))
@@ -311,7 +314,7 @@ def monthly():
         month = datetime.now().strftime('%m')
         moods = db_manager.getMonthMoods(session['user_id'], str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
         sleeps = db_manager.getMonthSleep(session['user_id'], str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
-    return render_template("monthly.html", isLogin=False, monthly="active", date=date, month=month, year=year, moods=moods, sleeps=sleeps)
+    return render_template("monthly.html", isLogin=False, monthly="active", date=date, month=month, year=year, moods=moods, sleeps=sleeps, currentuser=session['username'])
 
 @app.route("/friends")
 @login_required
@@ -321,7 +324,7 @@ def friends():
     friendlist = db_manager.formatFriends(user_id)
     requests = db_manager.formatRequests(user_id)
     date = datetime.now().date()
-    return render_template("friends.html", isLogin=False, friends="active", edit=False, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date)
+    return render_template("friends.html", isLogin=False, friends="active", edit=False, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date, currentuser=session['username'])
 
 @app.route("/processrequest", methods=["POST"])
 @login_required
@@ -343,7 +346,7 @@ def permissions():
     friendlist = db_manager.formatFriends(user_id)
     requests = db_manager.formatRequests(user_id)
     date = datetime.now().date()
-    return render_template("friends.html", isLogin=False, friends="active", edit=True, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date)
+    return render_template("friends.html", isLogin=False, friends="active", edit=True, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date, currentuser=session['username'])
 
 @app.route("/editpermissions", methods=["POST"])
 @login_required
@@ -374,7 +377,7 @@ def addfriends():
         db_manager.sendRequest(id, user_id)
         query = request.form['query']
         return redirect(url_for("addfriends", query=query))
-    return render_template("addfriends.html", isLogin=False, addfriends="active", users=users, search=search, query=query)
+    return render_template("addfriends.html", isLogin=False, addfriends="active", users=users, search=search, query=query, currentuser=session['username'])
 
 #====================================================
 # LOGOUT AND MAIN

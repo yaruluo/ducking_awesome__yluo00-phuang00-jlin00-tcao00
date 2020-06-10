@@ -253,27 +253,20 @@ def getComments(user_id, entry_id):
 #====================================================
 # MANAGING JOURNAL ENTRIES
 
-def updateEntry(username, entry):
+def updateEntry(username, entry, date):
     '''def updateEntry(username, entry): add a new entry to the journal_tbl'''
     idNum = getUserID(username)
     q = "SELECT entry_id FROM journal_tbl WHERE user_id=? AND date=?"
-    today = datetime.now()
-    date = today.date()
     inputs = (idNum, date)
     data = execmany(q, inputs).fetchone()
-    print("updateEntry")
-    print(data)
     if(data is None):
-        print("nope")
         q = "INSERT INTO journal_tbl (user_id, date, body) VALUES(?, ?, ?)"
         inputs = (idNum, date, entry)
         execmany(q, inputs)
     else:
-        print("yup")
         q = "UPDATE journal_tbl SET body=? WHERE user_id=? AND date=?"
         inputs = (entry, idNum, date)
         execmany(q, inputs)
-
 
 def getEntry(user, date):
     '''def getEntry(username, date): retrieve the body text of the user at the specified date'''
@@ -281,8 +274,6 @@ def getEntry(user, date):
     q = "SELECT body FROM journal_tbl WHERE user_id=? AND date=?"
     inputs = (user, date)
     data = execmany(q, inputs).fetchone()
-    print("getEntry")
-    print(data)
     return data
 
 def getEntryId(user, date):
@@ -294,11 +285,9 @@ def getEntryId(user, date):
         return -1
     return data[0]
 
-def createTask(username, task, description, time, resolved):
+def createTask(username, task, description, time, resolved, date):
     '''def createTask(username, date, text, time, resolved): create a to-do task for the current day'''
     idNum = getUserID(username)
-    today = datetime.now()
-    date = today.date()
     q = "INSERT INTO tdlist_tbl (user_id, date, task, description, time, resolved) VALUES(?, ?, ?, ?, ?, ?)"
     inputs = (idNum, date, task, description, time, resolved)
     execmany(q, inputs)
@@ -309,9 +298,7 @@ def getTasks(user, date):
     q = "SELECT entry_id FROM tdlist_tbl WHERE user_id=? AND date=?"
     inputs = (user, date)
     data = execmany(q, inputs).fetchall()
-    print("getTask")
     # print(len(data))
-    print(data)
     # print(data[1])
     list = []
     if(len(data) == 0):
@@ -323,7 +310,6 @@ def getTasks(user, date):
                 inputs = (user, date, y)
                 temp = execmany(q, inputs).fetchone()
                 list.append(temp)
-        print(list)
         # print(list[0])
         # print(list[0][0])
         return list
@@ -334,9 +320,7 @@ def getSpecificTasks(user, date, resolved):
     q = "SELECT entry_id FROM tdlist_tbl WHERE user_id=? AND date=? AND resolved=?"
     inputs = (user, date, resolved)
     data = execmany(q, inputs).fetchall()
-    print("getSpecificTask")
     # print(len(data))
-    print(data)
     # print(data[1])
     list = []
     if(len(data) == 0):
@@ -348,7 +332,6 @@ def getSpecificTasks(user, date, resolved):
                 inputs = (user, date, y)
                 temp = execmany(q, inputs).fetchone()
                 list.append(temp)
-        print(list)
         # print(list[0])
         # print(list[0][0])
         return list

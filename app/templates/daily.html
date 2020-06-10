@@ -29,7 +29,16 @@
 
 {% block body %}
 <div style = "display: block; margin-left: auto; margin-right: auto;">
-	<h2> {{ date }} </h2><br>
+	{% if not isOwner %} <h1 style="color:#aaa"><i>(Viewing for {{ username }})</i></h1><br>{% endif %}
+	<h2> {{ date }} </h2>
+	<form class="form-inline text-center my-2" action="/changedate" method="POST">
+		<div style="margin:auto">
+			<input class="form-control" style="width:18rem" type="date" name="date" required>
+			<input type="hidden" name="user_id" value="{{ user_id }}">
+			<button class="btn btn-primary mx-1" type="submit">Submit</button>
+		</div>
+	</form>
+	<br>
 	<h3 style = "color: #ee4035;"> Daily Overview </h3>
 	<div class="card" style="width: 800px; text-align: left; padding-bottom: 0px;">
 		{% if isOwner and entries == None %}
@@ -40,6 +49,7 @@
 		</p>
 		<div class="collapse" id="collapseEntry">
 			<form action = "/entrycheck" method = "POST" class="form-group" style = "padding-left: 10px; padding-right: 10px;">
+				<input type="hidden" name="date" value="{{datetime}}">
 		    <textarea class="form-control" rows="4" name = "new_entry" placeholder = "Today, I am..."></textarea>
 				<button type="submit" class="btn btn-primary float-right my-2 form-control btn-sm" id="submit">Submit</button>
 			</form>
@@ -60,6 +70,7 @@
 					</a></span>
 					<div class="collapse" id="collapseEdit">
 						<form action = "/editentry" method = "POST" class="form-group">
+							<input type="hidden" name="date" value="{{datetime}}">
 					    <textarea class="form-control" rows="5" name = "edit_entry">{{ x }}</textarea>
 							<button type="submit" class="btn btn-primary btn-sm float-right my-2 form-control">Submit</button>
 						</form>
@@ -82,6 +93,7 @@
 							</div>
 							<form action="/addcomment" method="POST">
 								<div class="form-group">
+									<input type="hidden" name="date" value="{{datetime}}">
 									<input type="hidden" name="user_id" value="{{ user_id }}">
 									<input type="text" class="form-control d-inline my-2" name="commentbody" placeholder="Add comment..."></input>
 								</div>
@@ -118,6 +130,7 @@
 		</p>
 		<div class="collapse" id="collapseTask">
 			<form action = "/taskcheck" method = "POST" class="form-group" id = "taskform" style="padding-left: 10px; padding-right: 10px;">
+				<input type="hidden" name="date" value="{{datetime}}">
 				<label for="task" class="font-weight-bold">Task:</label>
 				<textarea class="form-control" rows="1" name = "task" id = "task" placeholder = "Buy groceries"></textarea><br>
 				<label for="description" class="font-weight-bold">Description:</label>
@@ -148,21 +161,22 @@
 					<div class = "card" style = "text-align: left; background-color: #e8f4f8; margin-bottom: 3px; border: 2px solid #e5cce5;">
 						{% if isOwner %}
 						<form action = "/edittask" method = "POST" class="form-group" id = "tasksetting{{x[0]}}" name = "tasksetting{{x[0]}}" style = "margin-bottom: 0px; display: inlne-block; font-size: 0px;">
+							<input type="hidden" name="date" value="{{datetime}}">
 							{% if x[4] == 0 %}
 								<button type="submit" class="btn float-left" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" value = "{{ x[0] }}">
 									<span class="fa fa-times-circle" style="color:red"></span>
 								</button>
-								<button type="submit" class="btn btn-link float-right mx-1 text-success" id = "resolve_task{{x[0]}}" name = "resolve_task{{x[0]}}" value = "{{ x[0] }}">Resolve</button>
+								<button type="submit" class="btn btn-link float-right text-success" id = "resolve_task{{x[0]}}" name = "resolve_task{{x[0]}}" value = "{{ x[0] }}">Resolve</button>
 								<button name="edit_task{{x[0]}}" id="edit_task{{x[0]}}"
-												value="{{ x[0] }}" class="btn btn-link float-right mx-1" type="button" data-toggle="collapse"
+												value="{{ x[0] }}" class="btn btn-link float-right" type="button" data-toggle="collapse"
 												data-target="#collapseEditTask{{x[0]}}" aria-expanded="false" aria-controls="collapseEditTask{{x[0]}}">Edit</button>
 							{% else %}
 								<button type="submit" class="btn float-left" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" value = "{{ x[0] }}">
 									<span class="fa fa-times-circle" style="color:red"></span>
 								</button>
-								<button type="submit" class="btn btn-link float-right mx-1 text-success" id = "unresolve_task{{x[0]}}" name = "unresolve_task{{x[0]}}" value = "{{ x[0] }}">Unresolve</button>
+								<button type="submit" class="btn btn-link float-right text-success" id = "unresolve_task{{x[0]}}" name = "unresolve_task{{x[0]}}" value = "{{ x[0] }}">Unresolve</button>
 								<button name="edit_task{{x[0]}}" id="edit_task{{x[0]}}"
-												value="{{ x[0] }}" class="btn btn-link float-right mx-1" type="button" data-toggle="collapse"
+												value="{{ x[0] }}" class="btn btn-link float-right" type="button" data-toggle="collapse"
 												data-target="#collapseEditTask{{x[0]}}" aria-expanded="false" aria-controls="collapseEditTask{{x[0]}}" disabled>Edit</button>
 								{% endif %}
 						</form>
@@ -183,6 +197,7 @@
 						{% if isOwner %}
 						<div class="collapse" id="collapseEditTask{{x[0]}}">
 							<form action = "/edittask" method = "POST" class="form-group" id = "taskedit{{x[0]}}" style = "padding-left: 10px; padding-right: 10px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; background-color: white;">
+								<input type="hidden" name="date" value="{{datetime}}">
 								<label for="task" class="font-weight-bold">Task:</label>
 								<textarea class="form-control" rows="1" name = "task{{x[0]}}" id = "task{{x[0]}}">{{ x[1] }}</textarea><br>
 								<label for="description" class="font-weight-bold">Description:</label>
@@ -261,7 +276,7 @@
 						<option style="background-color: #ff5b5b" class="red" value="5">angry/anxious/fustrated/annoyed</option>
 					</select>
 					<input type="hidden" name="date" value="{{datetime}}">
-					<button type="submit" class="btn btn-sm btn-secondary">Submit</button>
+					<button type="submit" class="btn btn-secondary">Submit</button>
 				</div>
 		 	</form>
 		 </div>
@@ -293,7 +308,7 @@
 					<div style="margin:auto;">
 						<input class="form-control" type="number" name="sleep" min="0" step="0.01" max="24" placeholder="0.00" style="width:18rem" required>
 						<input type="hidden" name="date" value="{{datetime}}">
-						<button type="submit" class="btn btn-sm btn-secondary">Submit</button>
+						<button type="submit" class="btn btn-secondary">Submit</button>
 					</div>
 				</form>
 			</div>
