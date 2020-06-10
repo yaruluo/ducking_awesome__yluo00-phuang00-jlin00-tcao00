@@ -55,6 +55,13 @@ def getUsername(user_id):
     data = execmany(q, inputs).fetchone()[0]
     return data
 
+def userExists(user_id):
+    '''def userExists(user_id): return boolean to check if user exists'''
+    q = "select username FROM user_tbl WHERE user_id=?"
+    inputs = (user_id, )
+    data = execmany(q, inputs).fetchone()
+    return data is not None
+
 #====================================================
 # MANAGING FRIENDS
 

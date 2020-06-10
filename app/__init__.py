@@ -119,6 +119,8 @@ def signupcheck():
 @app.route("/daily/<user>/<date>")
 @login_required
 def daily(user,date):
+    if not db_manager.userExists(user):
+        return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
     today = datetime.now()
     now = "" + today.strftime("%A") + ", " + today.strftime("%B") + " " + today.strftime("%d") + ", " + today.strftime("%Y")
     session['date'] = now
