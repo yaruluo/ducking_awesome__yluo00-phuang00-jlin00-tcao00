@@ -38,7 +38,7 @@
 	<div class="card" style="width: 800px; text-align: left; padding-bottom: 0px;">
 		{% if isOwner and entries == None %}
 		<p>
-		  <button class="btn btn-primary btn-rounded btn-xs" type="button" data-toggle="collapse" data-target="#collapseEntry" aria-expanded="false" aria-controls="collapseEntry" style = "width: 40px; border-radius: 30px;">
+		  <button class="btn btn-primary btn-rounded btn-xs" type="button" data-toggle="collapse" data-target="#collapseEntry" aria-expanded="false" aria-controls="collapseEntry" style = "width: 40px; border-radius: 30px; margin-top: 10px; margin-left: 10px; margin-right: 10px;">
 		    +
 		  </button> Add a new entry!
 		</p>
@@ -124,7 +124,7 @@
 	<div class = "card" style = "width: 800px; text-align: left;" id = "tdlist">
 		{% if isOwner %}
 		<p>
-			<button class="btn btn-warning btn-rounded btn-xs" type="button" data-toggle="collapse" data-target="#collapseTask" aria-expanded="false" aria-controls="collapseTask" style = "width: 40px; border-radius: 30px; background-color: #cec1e7; border-color: #cec1e7;">
+			<button class="btn btn-warning btn-rounded btn-xs" type="button" data-toggle="collapse" data-target="#collapseTask" aria-expanded="false" aria-controls="collapseTask" style = "width: 40px; border-radius: 30px; background-color: #cec1e7; border-color: #cec1e7; margin-top: 10px; margin-left: 10px; margin-right: 10px;">
 				+
 			</button> Add a new task!
 		</p>
@@ -150,7 +150,7 @@
 		            });
 		        });
 		    </script>
-				<button type="submit" class="btn btn-warning" id="submit_task">Submit</button>
+				<button type="submit" class="btn btn-warning" id="submit_task" style = "background-color: #cec1e7; border-color: #cec1e7;">Submit</button>
 			</form>
 		</div>
 		{% endif %}
@@ -164,7 +164,7 @@
 								<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 621px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">x</button>
 								<button style="margin-right:1px; background-color:#cec1e7; border-color:#cec1e7;" name="edit_task{{x[0]}}" id="edit_task{{x[0]}}"
 												value="{{ x[0] }}" class="btn btn-warning btn-rounded btn-xs" type="button" data-toggle="collapse"
-												data-target="#collapseEditTask" aria-expanded="false" aria-controls="collapseEditTask">Edit</button>
+												data-target="#collapseEditTask{{x[0]}}" aria-expanded="false" aria-controls="collapseEditTask{{x[0]}}">Edit</button>
 								<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "resolve_task{{x[0]}}" name = "resolve_task{{x[0]}}" style = "background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">Resolve</button>
 							{% else %}
 								<button type="submit" class="btn btn-warning btn-rounded btn-xs" id = "delete_task{{x[0]}}" name = "delete_task{{x[0]}}" style = "margin-right: 1px; margin-left: 605px; background-color: #cec1e7; border-color: #cec1e7;" value = "{{ x[0] }}">x</button>
@@ -187,7 +187,7 @@
 							</div>
 						{% endif %}
 						{% if isOwner %}
-						<div class="collapse" id="collapseEditTask">
+						<div class="collapse" id="collapseEditTask{{x[0]}}">
 							<form action = "/edittask" method = "POST" class="form-group" id = "taskedit{{x[0]}}" style = "padding-left: 10px; padding-right: 10px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; background-color: white;">
 								<label for="task" class="font-weight-bold">Task:</label>
 								<textarea class="form-control" rows="1" name = "task{{x[0]}}" id = "task{{x[0]}}">{{ x[1] }}</textarea><br>
@@ -210,7 +210,7 @@
 						            });
 						        });
 						    </script>
-								<button type="submit" class="btn btn-warning" id="submit_task">Submit</button>
+								<button type="submit" class="btn btn-warning" id="submit_task" style = "background-color: #cec1e7; border-color: #cec1e7;">Submit</button>
 							</form>
 						</div>
 						{% endif %}
