@@ -99,7 +99,7 @@
 	<h3 style = "color: #f37736;"> To-Do List </h3>
 	<div class = "card" style = "width: 800px; text-align: left;" id = "tdlist">
 		<div class="form-group" style = "padding-top: 10px; padding-left: 10px; padding-right: 10px;">
-			<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs"  id = "add_task" style = "width: 40px; border-radius: 30px;">+</button>
+			<button type="button" class="btn btn-owner btn-warning btn-rounded btn-xs"  id = "add_task" style = "width: 40px; border-radius: 30px; background-color: #cec1e7; border-color: #cec1e7;">+</button>
 			{% if isOwner %}Add a new task!{% endif %}
 		</div>
 		<form action = "/taskcheck" method = "POST" class="form-group" id = "taskform" style = "display: none; padding-left: 10px; padding-right: 10px;">
@@ -124,7 +124,7 @@
 	        });
 	    </script>
 
-			<button type="submit" class="btn btn-owner btn-warning" id="submit_task">Submit</button>
+			<button type="submit" class="btn btn-owner btn-warning" id="submit_task" style = "background-color: #cec1e7; border-color: #cec1e7;">Submit</button>
 		</form>
 
 		{% if viewtd %}
