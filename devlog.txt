@@ -112,9 +112,12 @@ peihuaH -- 2020-06-10 01:30
 - updated monthly page to display sleep tracker
 - will add legend later
 
-jackieL -- 2020-06-03:42
+jackieL -- 2020-06-10 03:42
 - fixed error with clearing friend requests
 - added styling to daily.html and removed superfluous javascript code
 - fixed bug in /daily route with viewing nonexistent users
 - added code to allow users to select and edit different dates for journal entries
 - edited code for viewing friends' journal entries
+
+peihuaH -- 2020-06-10 18:57
+- added legend for sleep tracker in monthly

@@ -196,10 +196,47 @@ var sleep = function(e){
 
   var scale = d3.scaleLinear()
     .domain([0, d3.max(sleep_data, function(d) { return d.sleep; })])
-    .range(['white','darkSlateBlue']);
+    .range([0,1]);
+
+  const margin = ({top: 0, right: 0, bottom: 30, left: 40});
+  const barHeight = 10;
+  const heights = 50;
+  const width = 200;
+  const leg_svg = d3.select("#sleepleg");
+  const defs = leg_svg.append("defs");
+
+  var colorScale = d3.scaleSequential(d3.interpolateBlues).domain([0, d3.max(sleep_data, function(d) { return d.sleep; })]);
+  var axisScale = d3.scaleLinear()
+      .domain(colorScale.domain())
+      .range([margin.left, width - margin.right]);
+  var axisBottom = g => g
+    .attr("class", `x-axis`)
+    .attr("transform", `translate(100,${heights - margin.bottom})`)
+    .call(d3.axisBottom(axisScale)
+      .ticks(width / 80)
+      .tickSize(-barHeight));
+  const linearGradient = defs.append("linearGradient")
+      .attr("id", "linear-gradient");
+
+  linearGradient.selectAll("stop")
+    .data(colorScale.ticks().map((t, i, n) => ({ offset: `${100*i/n.length}%`, color: colorScale(t) })))
+    .enter().append("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  leg_svg.append('g')
+    .attr("transform", `translate(0,${heights - margin.bottom - barHeight})`)
+    .append("rect")
+    .attr('transform', `translate(${100 + margin.left}, 0)`)
+	.attr("width", width - margin.right - margin.left)
+	.attr("height", barHeight)
+	.style("fill", "url(#linear-gradient)");
+
+  leg_svg.append('g')
+    .call(axisBottom);
 
   rect.filter(function(d) { return d in lookup; })
-      .style("fill", function(d) { return scale(lookup[d]); })
+      .style("fill", function(d) { return d3.interpolateBlues(scale(lookup[d])); })
       .select("title")
       .text(function(d) { return titleFormat(new Date(d)) + " : " + lookup[d] + " hours"; });
 
