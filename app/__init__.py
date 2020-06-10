@@ -197,7 +197,8 @@ def task():
 @login_required
 def taskedit():
     today = datetime.now()
-    tasks = db_manager.getTasks(session['username'], today.date())
+    tasks = db_manager.getTasks(session['user_id'], today.date())
+
     toRemove = ""
     toResolve = ""
     toUnresolve = ""
