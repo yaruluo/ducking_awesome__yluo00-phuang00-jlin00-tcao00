@@ -17,7 +17,6 @@
 	}
 </style>
 {% endblock %}
-
 {% block body %}
 <h2>Monthly Overview for {{date}}</h2>
 <br>
@@ -49,12 +48,19 @@
 	</div>
 </form>
 <br>
-<br>
-{% endblock body %}
+<div id="calendar">
+	<h3 style = "color: #7bc043;"> Mood Tracker </h3>
+</div>
+<div>
+	<svg id="legend" height=300 width=450></svg>
+</div>
+{% endblock %}
 
 {% block script %}
 <script type="text/javascript">
-	var mood_data = {{moods}};
+	var mood_data = {{moods|tojson}};
+	var mo = {{month}};
+	var yr = {{year}};
 </script>
 <script src="{{url_for('static', filename='js/monthly.js')}}"></script>
 {% endblock %}

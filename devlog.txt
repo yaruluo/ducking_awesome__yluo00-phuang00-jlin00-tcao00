@@ -104,3 +104,6 @@ jackieL -- 2020-06-09 03:18
 tiffanyC -- 2020-06-09 20:53
 - resolved issue with import order/style posed by Mr. Mykolyk
 - fixed an issue with resolving and deleting tasks
+
+peihuaH -- 2020-06-10 00:25
+- updated monthly page to display mood tracker with legend
