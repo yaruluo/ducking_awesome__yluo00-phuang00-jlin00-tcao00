@@ -350,7 +350,7 @@ def removeTask(username, date, entryNum):
     execmany(q, inputs)
 
 def resolveTask(username, date, entryNum, resolve):
-    '''def removeTask(username, date, entryNum): resolves the task row from tdlist_tbl given the entry ID'''
+    '''def resolveTask(username, date, entryNum): resolves the task row from tdlist_tbl given the entry ID'''
     idNum = getUserID(username)
     q = "UPDATE tdlist_tbl SET resolved=? WHERE entry_id=? AND user_id=? AND date=?"
     inputs = (resolve, entryNum, idNum, date)
