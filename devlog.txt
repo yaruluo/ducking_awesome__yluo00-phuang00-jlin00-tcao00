@@ -99,4 +99,8 @@ yaruL -- 2020-06-08 23:42
 
 jackieL -- 2020-06-09 03:18
 - added code to allow users to comment on friends' journal entries
-- added code to account for permissions when viewing friends' pages 
+- added code to account for permissions when viewing friends' pages
+
+tiffanyC -- 2020-06-09 20:53
+- resolved issue with import order/style posed by Mr. Mykolyk
+- fixed an issue with resolving and deleting tasks
