@@ -304,12 +304,14 @@ def monthly():
         year = request.form['year']
         date = MONTHS[month] + ' ' + year
         moods = db_manager.getMonthMoods(session['user_id'], request.form['year'] + '-' + request.form['month'])
+        sleeps = db_manager.getMonthSleep(session['user_id'], request.form['year'] + '-' + request.form['month'])
     else:
         year = datetime.now().strftime('%Y')
         date = datetime.now().strftime('%B') + ' ' + year
         month = datetime.now().strftime('%m')
         moods = db_manager.getMonthMoods(session['user_id'], str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
-    return render_template("monthly.html", isLogin=False, monthly="active", date=date, month=month, year=year, moods=moods)
+        sleeps = db_manager.getMonthSleep(session['user_id'], str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
+    return render_template("monthly.html", isLogin=False, monthly="active", date=date, month=month, year=year, moods=moods, sleeps=sleeps)
 
 @app.route("/friends")
 @login_required

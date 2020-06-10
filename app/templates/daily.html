@@ -291,7 +291,7 @@
 				<br>
 				<form class="form-inline" action='/sleepcheck' method="POST">
 					<div style="margin:auto;">
-						<input class="form-control" type="number" name="sleep" min="0" step="0.01" placeholder="0.00" style="width:18rem" required>
+						<input class="form-control" type="number" name="sleep" min="0" step="0.01" max="24" placeholder="0.00" style="width:18rem" required>
 						<input type="hidden" name="date" value="{{datetime}}">
 						<button type="submit" class="btn btn-sm btn-secondary">Submit</button>
 					</div>

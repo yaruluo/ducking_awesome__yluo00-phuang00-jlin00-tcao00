@@ -52,13 +52,21 @@
 	<h3 style = "color: #7bc043;"> Mood Tracker </h3>
 </div>
 <div>
-	<svg id="legend" height=300 width=450></svg>
+	<svg id="legend" height=175 width=450></svg>
+</div>
+<div id="sleeps">
+	<h3 style = "color: #2C01D8;"> Sleep Tracker </h3>
+</div>
+<div>
+	<svg id="sleepleg" height=175 width=450></svg>
 </div>
 {% endblock %}
 
 {% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
 <script type="text/javascript">
 	var mood_data = {{moods|tojson}};
+	var sleep_data = {{sleeps|tojson}};
 	var mo = {{month}};
 	var yr = {{year}};
 </script>

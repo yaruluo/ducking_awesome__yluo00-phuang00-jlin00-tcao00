@@ -107,3 +107,7 @@ tiffanyC -- 2020-06-09 20:53
 
 peihuaH -- 2020-06-10 00:25
 - updated monthly page to display mood tracker with legend
+
+peihuaH -- 2020-06-10 01:30
+- updated monthly page to display sleep tracker
+- will add legend later

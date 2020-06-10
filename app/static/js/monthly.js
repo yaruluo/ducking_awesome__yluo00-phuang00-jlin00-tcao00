@@ -4,20 +4,12 @@ var mood = function(e){
     return d3.timeWeeks(d3.timeWeek.floor(m), d3.timeMonth.offset(m,1)).length;
   };
 
-  var minDate = d3.min(mood_data, function(d) { return new Date(d.date) });
-  var maxDate = d3.max(mood_data, function(d) { return new Date(d.date) });
+  var minDate = minDate = new Date(yr, mo - 1, 1);
+  var maxDate = maxDate = new Date(yr, mo - 1, 2);
   var colors = ['#ffb6e6', '#a3dbff', '#71ffda', '#feffb2', '#ffd177', '#ff5b5b'];
   var moods = {0: 'happy/joyful/content/relax', 1: 'sad/lonely/depressed/insecure',
                2: 'productive/motivated/alive/excited', 3: 'sick/tired/bored/lazy',
-               4: 'average/normal/fine/OK', 5: 'angry/anxious/fustrated/annoyed'}
-
-  if (minDate === undefined){
-    console.log("whoa");
-    minDate = new Date(yr, mo - 1, 1);
-    maxDate = new Date(yr, mo - 1, 2);
-  };
-  console.log(minDate);
-  console.log(maxDate);
+               4: 'average/normal/fine/OK', 5: 'angry/anxious/fustrated/annoyed'};
 
 
   var cellMargin = 2,
@@ -30,9 +22,6 @@ var mood = function(e){
       monthName = d3.timeFormat("%B"),
       months = d3.timeMonth.range(minDate, maxDate),
       height = ((cellSize * 7) + (cellMargin * 8) + 20);
-
-  console.log("hi");
-  console.log(months);
 
   var svg = d3.select("#calendar").selectAll("svg")
     .data(months)
@@ -125,10 +114,95 @@ var mood = function(e){
 
   rect.filter(function(d) { return d in lookup; })
     .style("fill", function(d) {
-      console.log(lookup[d]);
       return colors[lookup[d]]})
     .select("title")
     .text(function(d) { return titleFormat(new Date(d)) + " : " + moods[lookup[d]]; });
 }
 
+var sleep = function(e){
+  var weeksInMonth = function(month){
+    var m = d3.timeMonth.floor(month)
+    return d3.timeWeeks(d3.timeWeek.floor(m), d3.timeMonth.offset(m,1)).length;
+  };
+
+  var minDate = new Date(yr, mo - 1, 1);
+  var maxDate = new Date(yr, mo - 1, 2);
+
+  if (minDate === undefined || minDate.getTime() == maxDate.getTime()){
+    minDate = new Date(yr, mo - 1, 1);
+    maxDate = new Date(yr, mo - 1, 2);
+  };
+
+  var cellMargin = 2,
+      cellSize = 30;
+
+  var day = d3.timeFormat("%w"),
+      week = d3.timeFormat("%U"),
+      format = d3.timeFormat("%Y-%m-%d"),
+      titleFormat = d3.utcFormat("%B %d, %Y");
+      monthName = d3.timeFormat("%B"),
+      months = d3.timeMonth.range(minDate, maxDate),
+      height = ((cellSize * 7) + (cellMargin * 8) + 20);
+
+  var svg = d3.select("#sleeps").selectAll("svg")
+    .data(months)
+    .enter().append("svg")
+    .attr("class", "month")
+    .attr("height", ((cellSize * 7) + (cellMargin * 8) + 10) ) // the 20 is for the month labels
+    .attr("width", function(d) {
+      var columns = weeksInMonth(d);
+      return 91 + ((cellSize * columns) + (cellMargin * (columns + 1)));
+    })
+    .append("g")
+      .attr("transform", (d, i) => `translate(40.5,0)`);
+
+  var rect = svg.selectAll("rect.day")
+    .data(function(d, i) { return d3.timeDays(d, new Date(d.getFullYear(), d.getMonth()+1, 1)); })
+    .enter().append("rect")
+    .attr("class", "day")
+    .attr("width", cellSize)
+    .attr("height", cellSize)
+    .attr("rx", 3).attr("ry", 3) // rounded corners
+    .attr("fill", '#eaeaea') // default light grey fill
+    .attr("y", function(d) { return (day(d) * cellSize) + (day(d) * cellMargin) + cellMargin; })
+    .attr("x", function(d) { return ((week(d) - week(new Date(d.getFullYear(),d.getMonth(),1))) * cellSize) + ((week(d) - week(new Date(d.getFullYear(),d.getMonth(),1))) * cellMargin) + cellMargin ; })
+    .on("mouseover", function(d) {
+      d3.select(this).classed('hover', true);
+    })
+    .on("mouseout", function(d) {
+      d3.select(this).classed('hover', false);
+    })
+    .datum(format);
+
+  rect.append("title")
+    .text(function(d) { return titleFormat(new Date(d)); });
+
+  svg.append("g")
+        .attr("text-anchor", "end")
+      .selectAll("text")
+      .data((d3.range(7)).map(i => new Date(1995, 0, i)))
+      .join("text")
+        .attr("x", -5)
+        .attr("y", d => (d.getUTCDay() + 0.5) * (cellMargin + cellSize))
+        .attr("dy", "0.31em")
+        .text(d => "SMTWTFS"[d.getUTCDay()]);
+
+  var lookup = d3.nest()
+    .key(function(d) { return d.date; })
+    .rollup(function(leaves) {
+      return d3.sum(leaves, function(d){ return parseInt(d.sleep); });
+    })
+    .object(sleep_data);
+
+  var scale = d3.scaleLinear()
+    .domain([0, d3.max(sleep_data, function(d) { return d.sleep; })])
+    .range(['white','darkSlateBlue']);
+
+  rect.filter(function(d) { return d in lookup; })
+      .style("fill", function(d) { return scale(lookup[d]); })
+      .select("title")
+      .text(function(d) { return titleFormat(new Date(d)) + " : " + lookup[d] + " hours"; });
+
+}
 mood();
+sleep();
