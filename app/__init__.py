@@ -296,10 +296,16 @@ def monthly(user):
     isOwner = (str(session['user_id']) == user)
     permissions = db_manager.getPermissions(user)
     viewcal = False
+    viewmood = False
+    viewsleep = False
     if isOwner:
         viewcal = True
+        viewmood = True
+        viewsleep = True
     elif (db_manager.isFriend(session['user_id'], int(user))):
         viewcal = permissions.get(2)[0]
+        viewmood = permissions.get(0)[0]
+        viewsleep = permissions.get(1)[0]
     if 'month' in request.form:
         month = request.form['month']
         year = request.form['year']
@@ -313,7 +319,8 @@ def monthly(user):
         moods = db_manager.getMonthMoods(user, str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
         sleeps = db_manager.getMonthSleep(user, str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
     return render_template("monthly.html", default_id=session['user_id'], username=username, isOwner=isOwner, isLogin=False, monthly="active",
-                            date=date, month=month, year=year, moods=moods, sleeps=sleeps, currentuser=session['username'], viewcal=viewcal, user=user)
+                            date=date, month=month, year=year, moods=moods, sleeps=sleeps, currentuser=session['username'], viewcal=viewcal,
+                            viewmood=viewmood, viewsleep=viewsleep, user=user)
 
 #====================================================
 # FRIENDS
