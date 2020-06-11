@@ -30,9 +30,10 @@
 {% block body %}
 <div style = "display: block; margin-left: auto; margin-right: auto;">
 	{% if not isOwner %} <h1 style="color:#aaa"><i>(Viewing for {{ username }})</i></h1><br>{% endif %}
-	<h2> {{ date }} </h2>
+	<h2 style = "margin-bottom: 20px;"> {{ date }} </h2>
 	<form class="form-inline text-center my-2" action="/changedate" method="POST">
 		<div style="margin:auto">
+			<label for="date" class = "font-weight-bold" style = "margin-bottom: 5px;">Choose a date:</label>
 			<input class="form-control" style="width:18rem" type="date" name="date" required>
 			<input type="hidden" name="user_id" value="{{ user_id }}">
 			<button class="btn btn-primary mx-1" type="submit">Submit</button>
