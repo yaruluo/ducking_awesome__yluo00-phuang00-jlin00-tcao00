@@ -22,7 +22,7 @@
 <h2>Monthly Overview for {{date}}</h2>
 <br>
 {% if viewcal %}
-<form style="display:table;"action="/monthly" method="POST">
+<form style="display:table;"action="/monthly/{{ user }}" method="POST">
 	<div class="form-row">
 		<div class="col-auto">
 			<select id="dropdown" class="form-control form-group custom-select align-items-center" style="width:150px" name="month" required>

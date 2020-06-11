@@ -100,9 +100,6 @@ def signupcheck():
     if(username == "" or password == "" or confirm == ""):
         flash('Please fill out all fields!', 'alert-danger')
         return render_template("signup.html", username=username, password=password, confirm=confirm, isLogin=True, signup="active")
-    if ("," in username):
-            flash('Commas are not allowed in username!', 'alert-danger')
-            return render_template("signup.html", username=username, password=password, confirm=confirm, isLogin=True, signup="active")
     if (confirm!=password):
         flash('Passwords do not match!', 'alert-danger')
         return render_template("signup.html", username=username, password=password, confirm=confirm, isLogin=True, signup="active")
@@ -139,15 +136,7 @@ def daily(user,date):
         tasks = unresolved
     else:
         tasks = unresolved + resolved
-
-    if(text is None):
-        hide = "no"
-    else:
-        hide = "yes"
-    # print(user)
-    # print(date)
     mood_vals = db_manager.getMood(user, date)
-    # print(mood_vals)
     sleep_vals = db_manager.getSleep(user, date)
     if (int(user) == session['user_id']):
         isOwner = True
@@ -297,6 +286,9 @@ def addcomment():
         db_manager.addComment(user_id, friend_id, date, comment)
     return redirect(url_for("daily", user=friend_id, date=date))
 
+#====================================================
+# MONTHLY SPREAD
+
 @app.route("/monthly/<user>", methods=["GET", "POST"])
 @login_required
 def monthly(user):
@@ -321,7 +313,10 @@ def monthly(user):
         moods = db_manager.getMonthMoods(user, str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
         sleeps = db_manager.getMonthSleep(user, str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
     return render_template("monthly.html", default_id=session['user_id'], username=username, isOwner=isOwner, isLogin=False, monthly="active",
-                            date=date, month=month, year=year, moods=moods, sleeps=sleeps, currentuser=session['username'], viewcal=viewcal)
+                            date=date, month=month, year=year, moods=moods, sleeps=sleeps, currentuser=session['username'], viewcal=viewcal, user=user)
+
+#====================================================
+# FRIENDS
 
 @app.route("/friends")
 @login_required
@@ -386,6 +381,9 @@ def addfriends():
         return redirect(url_for("addfriends", query=query))
     return render_template("addfriends.html", default_id=session['user_id'], isLogin=False, addfriends="active", users=users, search=search, query=query, currentuser=session['username'])
 
+#====================================================
+# FUTURE SPREAD
+
 @app.route("/future/<user>")
 @login_required
 def future(user):
@@ -394,6 +392,15 @@ def future(user):
     isOwner = session['user_id'] == int(user)
     friendlist = db_manager.formatFriends(int(user))
     return render_template("future.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'], lists=lists, length=length, isOwner=isOwner, friendlist=friendlist)
+
+@app.route("/addnewlist", methods=["POST"])
+@login_required
+def addnewlist():
+    user_id = request.form['user']
+    title = request.form['title']
+    options = request.form.getlist("options")
+    db_manager.addList(user_id, title, options)
+    return redirect(url_for("future", user=user_id))
 
 @app.route("/editlist/<list>", methods=["GET", "POST"])
 @login_required
@@ -420,14 +427,6 @@ def editlist(list):
         db_manager.addItem(list_id, item)
         return redirect(url_for('editlist', list=list, code=303))
 
-@app.route("/addnewlist", methods=["POST"])
-@login_required
-def addnewlist():
-    user_id = request.form['user']
-    title = request.form['title']
-    options = request.form.getlist("options")
-    db_manager.addList(user_id, title, options)
-    return redirect(url_for("future", user=user_id))
 #====================================================
 # LOGOUT AND MAIN
 

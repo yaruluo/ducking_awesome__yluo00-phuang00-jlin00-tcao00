@@ -28,19 +28,19 @@
 {% endblock %}
 
 {% block body %}
-<div style = "display: block; margin-left: auto; margin-right: auto;">
-	{% if not isOwner %} <h1 style="color:#aaa"><i>(Viewing for {{ username }})</i></h1><br>{% endif %}
-	<h2 style = "margin-bottom: 20px;"> {{ date }} </h2>
+<div style="display: block; margin-left: auto; margin-right: auto;">
+	{% if not isOwner %} <h1 style="color:#aaa"><i>(Viewing for {{ username }})</i></h1><br> {% endif %}
+	<h2 style="margin-bottom: 20px;"> {{ date }} </h2>
 	<form class="form-inline text-center my-2" action="/changedate" method="POST">
 		<div style="margin:auto">
-			<label for="date" class = "font-weight-bold" style = "margin-bottom: 5px;">Choose a date:</label>
+			<label for="date" class="font-weight-bold" style="margin-bottom: 5px;">Choose a date:</label>
 			<input class="form-control" style="width:18rem" type="date" name="date" required>
 			<input type="hidden" name="user_id" value="{{ user_id }}">
 			<button class="btn btn-primary mx-1" type="submit">Submit</button>
 		</div>
 	</form>
 	<br>
-	<h3 style = "color: #ee4035;"> Daily Overview </h3>
+	<h3 style="color: #ee4035;"> Daily Overview </h3>
 	<div class="card" style="width: 800px; text-align: left; padding-bottom: 0px;">
 		{% if isOwner and entries == None %}
 		<p class="p-4 m-0">
