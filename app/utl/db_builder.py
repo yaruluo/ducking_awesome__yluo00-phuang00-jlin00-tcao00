@@ -44,3 +44,9 @@ def build_db():
 
     command = "CREATE TABLE IF NOT EXISTS sleep_tbl (user_id INTEGER, date TEXT, sleep REAL)"
     exec(command)
+
+    command = "CREATE TABLE IF NOT EXISTS future_tbl (user_id INTEGER, list_id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER, title TEXT, items TEXT, collaborators TEXT)"
+    exec(command)
+
+    command = "CREATE TABLE IF NOT EXISTS listitem_tbl (item_id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, resolved INT)"
+    exec(command)

@@ -7,6 +7,7 @@
 from datetime import datetime
 from functools import wraps
 import sqlite3, os, random
+import math
 
 # third-party imports
 from flask import Flask, render_template, request, redirect, url_for, session, flash
@@ -385,6 +386,28 @@ def addfriends():
         return redirect(url_for("addfriends", query=query))
     return render_template("addfriends.html", default_id=session['user_id'], isLogin=False, addfriends="active", users=users, search=search, query=query, currentuser=session['username'])
 
+@app.route("/future/<user>")
+@login_required
+def future(user):
+    lists = db_manager.getLists(user)
+    length = math.ceil(len(lists) / 3)
+    isOwner = session['user_id'] == int(user)
+    friendlist = db_manager.formatFriends(int(user))
+    return render_template("future.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'], lists=lists, length=length, isOwner=isOwner, friendlist=friendlist)
+
+@app.route("/editlist/<list>")
+@login_required
+def editlist(list):
+    return render_template("list.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'])
+
+@app.route("/addnewlist", methods=["POST"])
+@login_required
+def addnewlist():
+    user_id = request.form['user']
+    title = request.form['title']
+    options = request.form.getlist("options")
+    db_manager.addList(user_id, title, options)
+    return redirect(url_for("future", user=user_id))
 #====================================================
 # LOGOUT AND MAIN
 

@@ -38,6 +38,14 @@ def addUser(username, password):
         q = "INSERT INTO user_tbl (username, password, permissions) VALUES(?, ?, ?)"
         inputs = (username, password, 0)
         execmany(q, inputs)
+        user_id = getUserID(username)
+        q = "INSERT INTO future_tbl (user_id, type) VALUES(?, ?)"
+        inputs = (user_id, 0)
+        execmany(q, inputs)
+        inputs = (user_id, 1)
+        execmany(q, inputs)
+        inputs = (user_id, 2)
+        execmany(q, inputs)
         return True
     return False #if username already exists
 
@@ -428,3 +436,208 @@ def getMonthSleep(user_id, month_year):
     for row in data:
         dict.append({'date': row[0], 'sleep': row[1]})
     return dict
+
+#====================================================
+# MANAGING FUTURE LISTS
+
+def addList(user_id, title, collaborators):
+    '''def addList(user_id, title, collaborators): adds list by user with given title and collaborators'''
+    q = "INSERT INTO future_tbl (user_id, type, title, collaborators) VALUES(?, ?, ?, ?)"
+    collaborators = ",".join(collaborators)
+    inputs = (user_id, 3, title, collaborators)
+    execmany(q, inputs)
+
+def addItem(list_id, item):
+    '''def addItem(list_id, item): add item to given list'''
+    q = "INSERT INTO listitem_tbl (item, resolved) VALUES(?, ?)"
+    inputs = (item, 0)
+    item_id = execmany(q, inputs).lastrowid
+    q = "SELECT items FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    items = execmany(q, inputs).fetchone()
+    if items is not None:
+        items = items[0]
+        items = items.split(",")
+    else:
+        items = []
+    items.append(item_id)
+    items = ",".join(items)
+    q = "UPDATE future_tbl SET items=? WHERE list_id=?"
+    inputs = (items, list_id)
+    execmany(q, inputs)
+
+def deleteItem(list_id, item_id):
+    '''def deleteItem(list_id, item_id): remove item from list'''
+    q = "DELETE from listitem_tbl WHERE item_id=?"
+    inputs = (item_id, )
+    execmany(q, inputs)
+    q = "SELECT items FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    items = execmany(q, inputs).fetchone()[0]
+    items = items.split(",")
+    index = items.index(str(item_id))
+    items.remove(str(item_id))
+    items = ",".join(items)
+    q = "UPDATE future_tbl SET items=? WHERE list_id=?"
+    inputs = (items, list_id)
+    execmany(q, inputs)
+
+def resolveItem(item_id):
+    '''def resolveItem(item_id): resolve a specific item'''
+    q = "UPDATE listitem_tbl SET resolved=? WHERE item_id=?"
+    inputs = (1, item_id)
+    execmany(q, inputs)
+
+def editItem(item_id, item):
+    '''def editItem(item_id, item): edit specific item'''
+    q = "UPDATE listitem_tbl SET item=? WHERE item_id=?"
+    inputs = (item, item_id)
+    execmany(q, inputs)
+
+def getItemsFromList(list_id):
+    '''def getItemsFromList(list_id): return all items in a list with resolved status'''
+    q = "SELECT items FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    items = execmany(q, inputs).fetchone()
+    if items is not None:
+        items = items[0]
+        if items is None:
+            return []
+        items = items.split(",")
+        list = []
+        for item in items:
+            info = []
+            item_id = int(item)
+            q = "SELECT item FROM listitem_tbl WHERE item_id=?"
+            inputs = (item_id, )
+            item = execmany(q, inputs).fetchone()[0]
+            info.append(item)
+            q = "SELECT resolved FROM listitem_tbl WHERE item_id=?"
+            resolved = int(execmany(q, inputs).fetchone()[0]) == 1
+            info.append(resolved)
+            list.append(tuple(info))
+        return list
+    else:
+        return []
+
+def deleteList(list_id):
+    '''def deleteList(list_id): delete specified list'''
+    q = "SELECT type FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    type = execmany(q, inputs).fetchone()[0]
+    if type == 3:
+        q = "SELECT items from future_tbl WHERE list_id=?"
+        items = execmany(q, inputs).fetchone()
+        if items is not None:
+            items = items[0]
+            items = items.split(",")
+            for item in items:
+                item_id = int(item)
+                deleteItem(list_id, item_id)
+        q = "DELETE from future_tbl WHERE list_id=?"
+        execmany(q, inputs)
+        return True
+    return False #cannot delete default lists
+
+def editTitle(list_id, title):
+    '''def editTitle(list_id, title): edit title for given list'''
+    q = "UPDATE future_tbl SET title=? WHERE list_id=?"
+    inputs = (title, list_id)
+    execmany(q, inputs)
+
+def addCollaborators(list_id, collaborators):
+    '''def addCollaborators(list_id, collaborators): add collaborators to list'''
+    q = "SELECT type FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    type = execmany(q, inputs).fetchone()[0]
+    if type == 3:
+        q = "SELECT collaborators FROM future_tbl WHERE list_id=?"
+        data = execmany(q, inputs).fetchone()
+        if data is not None:
+            data = data[0]
+            data += "," + ",".join(collaborators)
+        else:
+            data = ",".join(collaborators)
+        q = "UPDATE future_tbl SET collaborators=? WHERE list_id=?"
+        inputs = (data, list_id)
+        execmany(q, inputs)
+        return True
+    return False
+
+def getTitle(list_id):
+    '''def getTitle(list_id): get title of specified list'''
+    q = "SELECT title FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    data = execmany(q, inputs).fetchone()[0]
+    return data
+
+def getCollaborators(list_id):
+    '''def getCollaborators(list_id): return list of collaborators with their usernames'''
+    q = "SELECT collaborators FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    data = execmany(q, inputs).fetchone()
+    if data is None:
+        return []
+    data = data[0]
+    if data is None:
+        return []
+    data = data.split(",")
+    list = []
+    for collaborator in data:
+        info = []
+        info.append(int(collaborator))
+        info.append(getUsername(int(collaborator)))
+        list.append(tuple(info))
+    return list
+
+def canEdit(list_id, user_id):
+    '''def canEdit(list_id, user_id): returns whether or not user is allowed to edit list'''
+    q = "SELECT user_id FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    data = execmany(q, inputs).fetchone()[0]
+    if user_id == str(data):
+        return True
+    q = "SELECT collaborators FROM future_tbl WHERE list_id=?"
+    data = execmany(q, inputs).fetchone()
+    if data is None:
+        return False
+    data = data[0]
+    if data is None:
+        return False
+    data = data.split(",")
+    return (str(user_id) in data)
+
+def getOwner(list_id):
+    '''def getOwner(list_id): get owner of specified list'''
+    q = "SELECT user_id FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    user_id = execmany(q, inputs).fetchone()[0]
+    info = []
+    info.append(user_id)
+    info.append(getUsername(user_id))
+    return tuple(info)
+
+def getType(list_id):
+    '''def getType(list_id): get type of specified list'''
+    q = "SELECT type FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    type = execmany(q, inputs).fetchone()[0]
+    return type
+
+def getLists(user_id):
+    '''def getLists(user_id): returns array of list_ids that user can edit'''
+    q = "SELECT list_id FROM future_tbl"
+    data = exec(q)
+    list = []
+    for id in data:
+        list_id = id[0]
+        if canEdit(list_id, user_id):
+            info = []
+            info.append(list_id)
+            info.append(getTitle(list_id))
+            info.append(getItemsFromList(list_id))
+            info.append(getOwner(list_id))
+            info.append(getCollaborators(list_id))
+            info.append(getType(list_id))
+            list.append(info)
+    return list
