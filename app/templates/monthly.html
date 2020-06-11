@@ -21,7 +21,7 @@
 {% if not isOwner %} <h1 style="color:#aaa"><i>(Viewing for {{ username }})</i></h1><br> {% endif %}
 <h2>Monthly Overview for {{date}}</h2>
 <br>
-{% if viewcal %}
+{% if viewcal and (viewsleep or viewmood) %}
 <form style="display:table;"action="/monthly/{{ user }}" method="POST">
 	<div class="form-row">
 		<div class="col-auto">
