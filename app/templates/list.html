@@ -10,7 +10,7 @@
   <h3 class="card-title">{{ title }}</h3>
   By {{ owner[1] }}<br>
   {% if type == 3 %}
-  <i>Collaborators:
+  <i class="text-success">Collaborators:
     {% for person in collaborators %}
     {{ person[1] }},
     {% endfor %}

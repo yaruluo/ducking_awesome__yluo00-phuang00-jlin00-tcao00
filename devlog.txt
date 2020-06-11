@@ -124,3 +124,9 @@ peihuaH -- 2020-06-10 18:57
 
 jackieL -- 2020-06-10 20:19
 - allowed users to visit each friends' monthly calendars, added permissions for this action
+
+jackieL -- 2020-06-11 03:47
+- added a new tab to website called future for allowing users to create future lists
+- added code to create and display each list, two new tables added to database with appropriate backend functions
+- added code to allow collaboration on each list
+- added code to allow users to edit lists 
