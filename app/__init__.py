@@ -395,10 +395,30 @@ def future(user):
     friendlist = db_manager.formatFriends(int(user))
     return render_template("future.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'], lists=lists, length=length, isOwner=isOwner, friendlist=friendlist)
 
-@app.route("/editlist/<list>")
+@app.route("/editlist/<list>", methods=["GET", "POST"])
 @login_required
 def editlist(list):
-    return render_template("list.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'])
+    if request.method == "GET":
+        exists = db_manager.listExists(list)
+        if not exists:
+            flash("You do not have access to that list!", 'alert-danger')
+            return redirect(url_for('future', user=session['user_id']))
+        canEdit = db_manager.canEdit(list, session['user_id'])
+        if not canEdit:
+            flash("You do not have access to that list!", 'alert-danger')
+            return redirect(url_for('future', user=session['user_id']))
+        title = db_manager.getTitle(list)
+        items = db_manager.getItemsFromList(list)
+        owner = db_manager.getOwner(list)
+        collaborators = db_manager.getCollaborators(list)
+        type = db_manager.getType(list)
+        return render_template("list.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'],
+                                title=title, items=items, owner=owner, collaborators=collaborators, type=type, list=list)
+    else:
+        list_id = request.form['list']
+        item = request.form['item']
+        db_manager.addItem(list_id, item)
+        return redirect(url_for('editlist', list=list, code=303))
 
 @app.route("/addnewlist", methods=["POST"])
 @login_required

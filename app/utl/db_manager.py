@@ -457,10 +457,13 @@ def addItem(list_id, item):
     items = execmany(q, inputs).fetchone()
     if items is not None:
         items = items[0]
-        items = items.split(",")
+        if items is None:
+            items = []
+        else:
+            items = items.split(",")
     else:
         items = []
-    items.append(item_id)
+    items.append(str(item_id))
     items = ",".join(items)
     q = "UPDATE future_tbl SET items=? WHERE list_id=?"
     inputs = (items, list_id)
@@ -595,7 +598,7 @@ def canEdit(list_id, user_id):
     q = "SELECT user_id FROM future_tbl WHERE list_id=?"
     inputs = (list_id, )
     data = execmany(q, inputs).fetchone()[0]
-    if user_id == str(data):
+    if str(user_id) == str(data):
         return True
     q = "SELECT collaborators FROM future_tbl WHERE list_id=?"
     data = execmany(q, inputs).fetchone()
@@ -641,3 +644,10 @@ def getLists(user_id):
             info.append(getType(list_id))
             list.append(info)
     return list
+
+def listExists(list_id):
+    '''def listExists(list_id): check to see if list exists'''
+    q = "SELECT list_id FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    data = execmany(q, inputs).fetchone()
+    return data is not None

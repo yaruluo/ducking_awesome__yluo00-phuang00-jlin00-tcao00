@@ -5,4 +5,31 @@
 {% endblock %}
 
 {% block body %}
+<h2>Lists</h2><br>
+<div class="card w-50 p-4" style="background-color:#e8f4f8">
+  <h3 class="card-title">{{ title }}</h3>
+  By {{ owner[1] }}<br>
+  {% if type == 3 %}
+  <i>Collaborators:
+    {% for person in collaborators %}
+    {{ person[1] }},
+    {% endfor %}
+  </i>
+  {% endif %}
+  {% if items|length == 0 %}
+  <p class="my-2">
+    <i style="color:#aaa" class="text-center">None</i>
+  </p>
+  {% else %}
+  <br>
+    {% for item in items %}
+      {{ item[0] }}<br>
+    {% endfor %}
+  {% endif %}
+  <br>
+  <form action="/editlist/{{ list }}" method="POST">
+    <input type="hidden" name="list" value="{{ list }}">
+    <input type="text" class="form-control d-inline my-2" name="item" placeholder="Add item..." required></input>
+  </form>
+</div>
 {% endblock %}
