@@ -121,3 +121,6 @@ jackieL -- 2020-06-10 03:42
 
 peihuaH -- 2020-06-10 18:57
 - added legend for sleep tracker in monthly
+
+jackieL -- 2020-06-10 20:19
+- allowed users to visit each friends' monthly calendars, added permissions for this action

@@ -71,7 +71,7 @@ def getPermissions(user_id):
     inputs = (user_id,)
     data = execmany(q, inputs).fetchone()[0]
     dict = {0: [False, "View Mood Tracker"],
-            1: [False, "View Sleep Tracker"], 2: [False, "View Period Tracker"],
+            1: [False, "View Sleep Tracker"], 2: [False, "View Monthly Calendars"],
             3: [False, "View To-Do Lists"], 4: [False, "Comment Access"]}
     for i in range(5):
         index = 4 - i

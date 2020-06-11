@@ -156,7 +156,6 @@ def daily(user,date):
     viewtd = False
     viewsleep = False
     viewmood = False
-    viewperiod = False
     viewentry = False
     isFriend = db_manager.isFriend(session['user_id'], int(user))
     if isOwner:
@@ -164,17 +163,15 @@ def daily(user,date):
         viewtd = True
         viewsleep = True
         viewmood = True
-        viewperiod = True
         viewentry = True
-    if isFriend:
+    elif isFriend:
         viewmood = permissions.get(0)[0]
         viewsleep = permissions.get(1)[0]
-        viewperiod = permissions.get(2)[0]
         viewtd = permissions.get(3)[0]
         comment = permissions.get(4)[0]
         viewentry = True
-    return render_template("daily.html", isLogin=False, daily="active", date=fulldate, entries=text, isOwner=isOwner, datetime=date, mood=mood_vals, tasks=tasks, sleep=sleep_vals, username=username,
-                                         comments=comments, user_id=user, entry_id=entry_id, comment=comment, viewmood=viewmood, viewsleep=viewsleep, viewperiod=viewperiod, viewtd=viewtd, viewentry=viewentry, currentuser=session['username'])
+    return render_template("daily.html", isLogin=False, daily="active", date=fulldate, entries=text, isOwner=isOwner, datetime=date, mood=mood_vals, tasks=tasks, sleep=sleep_vals, username=username, default_id=session['user_id'],
+                                         comments=comments, user_id=user, entry_id=entry_id, comment=comment, viewmood=viewmood, viewsleep=viewsleep, viewtd=viewtd, viewentry=viewentry, currentuser=session['username'])
 
 @app.route("/changedate", methods=["POST"])
 @login_required
@@ -299,22 +296,31 @@ def addcomment():
         db_manager.addComment(user_id, friend_id, date, comment)
     return redirect(url_for("daily", user=friend_id, date=date))
 
-@app.route("/monthly", methods=["GET", "POST"])
+@app.route("/monthly/<user>", methods=["GET", "POST"])
 @login_required
-def monthly():
+def monthly(user):
+    username = db_manager.getUsername(user)
+    isOwner = (str(session['user_id']) == user)
+    permissions = db_manager.getPermissions(user)
+    viewcal = False
+    if isOwner:
+        viewcal = True
+    elif (db_manager.isFriend(session['user_id'], int(user))):
+        viewcal = permissions.get(2)[0]
     if 'month' in request.form:
         month = request.form['month']
         year = request.form['year']
         date = MONTHS[month] + ' ' + year
-        moods = db_manager.getMonthMoods(session['user_id'], request.form['year'] + '-' + request.form['month'])
-        sleeps = db_manager.getMonthSleep(session['user_id'], request.form['year'] + '-' + request.form['month'])
+        moods = db_manager.getMonthMoods(user, request.form['year'] + '-' + request.form['month'])
+        sleeps = db_manager.getMonthSleep(user, request.form['year'] + '-' + request.form['month'])
     else:
         year = datetime.now().strftime('%Y')
         date = datetime.now().strftime('%B') + ' ' + year
         month = datetime.now().strftime('%m')
-        moods = db_manager.getMonthMoods(session['user_id'], str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
-        sleeps = db_manager.getMonthSleep(session['user_id'], str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
-    return render_template("monthly.html", isLogin=False, monthly="active", date=date, month=month, year=year, moods=moods, sleeps=sleeps, currentuser=session['username'])
+        moods = db_manager.getMonthMoods(user, str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
+        sleeps = db_manager.getMonthSleep(user, str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
+    return render_template("monthly.html", default_id=session['user_id'], username=username, isOwner=isOwner, isLogin=False, monthly="active",
+                            date=date, month=month, year=year, moods=moods, sleeps=sleeps, currentuser=session['username'], viewcal=viewcal)
 
 @app.route("/friends")
 @login_required
@@ -324,7 +330,7 @@ def friends():
     friendlist = db_manager.formatFriends(user_id)
     requests = db_manager.formatRequests(user_id)
     date = datetime.now().date()
-    return render_template("friends.html", isLogin=False, friends="active", edit=False, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date, currentuser=session['username'])
+    return render_template("friends.html", default_id=session['user_id'], isLogin=False, friends="active", edit=False, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date, currentuser=session['username'])
 
 @app.route("/processrequest", methods=["POST"])
 @login_required
@@ -346,7 +352,7 @@ def permissions():
     friendlist = db_manager.formatFriends(user_id)
     requests = db_manager.formatRequests(user_id)
     date = datetime.now().date()
-    return render_template("friends.html", isLogin=False, friends="active", edit=True, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date, currentuser=session['username'])
+    return render_template("friends.html", default_id=session['user_id'], isLogin=False, friends="active", edit=True, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date, currentuser=session['username'])
 
 @app.route("/editpermissions", methods=["POST"])
 @login_required
@@ -377,7 +383,7 @@ def addfriends():
         db_manager.sendRequest(id, user_id)
         query = request.form['query']
         return redirect(url_for("addfriends", query=query))
-    return render_template("addfriends.html", isLogin=False, addfriends="active", users=users, search=search, query=query, currentuser=session['username'])
+    return render_template("addfriends.html", default_id=session['user_id'], isLogin=False, addfriends="active", users=users, search=search, query=query, currentuser=session['username'])
 
 #====================================================
 # LOGOUT AND MAIN

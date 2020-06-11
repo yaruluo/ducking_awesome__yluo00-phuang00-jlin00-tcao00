@@ -18,8 +18,10 @@
 </style>
 {% endblock %}
 {% block body %}
+{% if not isOwner %} <h1 style="color:#aaa"><i>(Viewing for {{ username }})</i></h1><br> {% endif %}
 <h2>Monthly Overview for {{date}}</h2>
 <br>
+{% if viewcal %}
 <form style="display:table;"action="/monthly" method="POST">
 	<div class="form-row">
 		<div class="col-auto">
@@ -61,6 +63,19 @@
 	<svg id="sleepleg" height=30 width=450></svg>
 	<h6 style="font-size:13px">Sleep (hours)</h6>
 </div>
+{% else %}
+<br>
+<div class="card w-50">
+	<div class="card-body">
+		<p class="card-text font-weight-bold text-danger">
+			<br>
+			You are not allowed to view these monthly calendars!
+			<br><br>
+		</p>
+	</div>
+</div>
+<br>
+{% endif%}
 {% endblock %}
 
 {% block script %}
