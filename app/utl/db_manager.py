@@ -445,6 +445,8 @@ def addList(user_id, title, collaborators):
     q = "INSERT INTO future_tbl (user_id, type, title, collaborators) VALUES(?, ?, ?, ?)"
     temp = collaborators #store list of collaborators
     collaborators = ",".join(collaborators)
+    if collaborators == "":
+        collaborators = None
     inputs = (user_id, 3, title, collaborators)
     list_id = execmany(q, inputs).lastrowid
     for collaborator in temp:
