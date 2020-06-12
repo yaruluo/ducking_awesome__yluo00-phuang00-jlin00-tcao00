@@ -4,15 +4,33 @@
 	Future
 {% endblock %}
 
+{% block style %}
+<style>
+	.btn-resolve {
+		color:black
+	}
+	.btn-resolve:hover{
+		text-decoration:line-through !important
+	}
+	.btn-resolved{
+		color:#777;
+		text-decoration:line-through !important
+	}
+	.btn-resolved:hover{
+		text-decoration:none !important;
+	}
+</style>
+{% endblock %}
+
 {% block body %}
-<h2>Lists</h2><br>
+<h2>Future Spread</h2><br>
 <div class="card w-50 p-4" style="background-color:#e8f4f8">
   <h3 class="card-title">{{ title }}</h3>
   By {{ owner[1] }}<br>
   {% if type == 3 %}
   <i class="text-success">Collaborators:
     {% for person in collaborators %}
-    {{ person[1] }},
+    {{ person[1] }}{% if loop.index != collaborators|length %},{% endif %}
     {% endfor %}
   </i>
   {% endif %}
@@ -23,13 +41,45 @@
   {% else %}
   <br>
     {% for item in items %}
-      {{ item[0] }}<br>
+			<form action="/itemaction" method="POST" id="noedit{{ item[0] }}" style="display:block">
+				<input type="hidden" name="item_id" value="{{ item[0] }}">
+				<input type="hidden" name="list" value="{{ list }}">
+				<button type="submit" class="btn fa fa-minus-circle text-danger" name="action" value="delete"></button>
+			{% if item[2] == 0 %}
+				<button type="submit" class="btn btn-link btn-resolve py-1" name="action" value="resolve">{{ item[1] }}</button>
+			{% else %}
+				<button type="submit" class="btn btn-link btn-resolved py-1" name="action" value="resolve">{{ item[1] }}</button>
+			{% endif %}
+				<button type="button" class="btn btn-link fa fa-pencil" id="{{ item[0] }}" onclick="changeview(this.id)"></button>
+			</form>
+			<form action="/itemaction" method="POST" style="display:none" id="edit{{ item[0] }}">
+				<input type="hidden" name="item_id" value="{{ item[0] }}">
+				<input type="hidden" name="list" value="{{ list }}">
+				<input type="text" name="itembody" value="{{ item[1] }}">
+				<button type="submit" name="action" value="edit" style="display:none"></button>
+			</form>
     {% endfor %}
   {% endif %}
   <br>
   <form action="/editlist/{{ list }}" method="POST">
     <input type="hidden" name="list" value="{{ list }}">
     <input type="text" class="form-control d-inline my-2" name="item" placeholder="Add item..." required></input>
+		<input type="hidden" name="action" value="edit">
   </form>
 </div>
+{% endblock %}
+
+{% block script %}
+<script>
+
+	function changeview(id){
+		editid = 'edit' + id
+		noeditid = 'noedit' + id
+		edit = document.getElementById(editid)
+		noedit = document.getElementById(noeditid)
+		edit.style.display = "block"
+		noedit.style.display = "none"
+
+	}
+</script>
 {% endblock %}

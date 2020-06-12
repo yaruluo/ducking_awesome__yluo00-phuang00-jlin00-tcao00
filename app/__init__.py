@@ -387,11 +387,19 @@ def addfriends():
 @app.route("/future/<user>")
 @login_required
 def future(user):
+    username = db_manager.getUsername(user)
     lists = db_manager.getLists(user)
     length = math.ceil(len(lists) / 3)
     isOwner = session['user_id'] == int(user)
     friendlist = db_manager.formatFriends(int(user))
-    return render_template("future.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'], lists=lists, length=length, isOwner=isOwner, friendlist=friendlist)
+    permissions = db_manager.getPermissions(user)
+    viewfuture = False
+    if isOwner:
+        viewfuture = True
+    elif (db_manager.isFriend(session['user_id'], int(user))):
+        viewfuture = permissions.get(5)[0]
+    return render_template("future.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'],
+                            lists=lists, length=length, isOwner=isOwner, friendlist=friendlist, username=username, viewfuture=viewfuture)
 
 @app.route("/addnewlist", methods=["POST"])
 @login_required
@@ -418,14 +426,38 @@ def editlist(list):
         items = db_manager.getItemsFromList(list)
         owner = db_manager.getOwner(list)
         collaborators = db_manager.getCollaborators(list)
+        enumcoll = len(collaborators)
         type = db_manager.getType(list)
         return render_template("list.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'],
-                                title=title, items=items, owner=owner, collaborators=collaborators, type=type, list=list)
+                                title=title, items=items, owner=owner, collaborators=collaborators, type=type, list=list, enumcoll=enumcoll)
     else:
         list_id = request.form['list']
         item = request.form['item']
         db_manager.addItem(list_id, item)
-        return redirect(url_for('editlist', list=list, code=303))
+        return redirect(url_for('editlist', list=list))
+
+@app.route("/deletelist", methods=["POST"])
+@login_required
+def deletelist():
+    user_id = request.form['user']
+    list_id = request.form['list_id']
+    db_manager.deleteList(list_id)
+    return redirect(url_for("future", user=user_id))
+
+@app.route("/itemaction", methods=["POST"])
+@login_required
+def itemaction():
+    action = request.form['action']
+    list = request.form['list']
+    item_id = request.form['item_id']
+    if action == "delete":
+        db_manager.deleteItem(list, item_id)
+    if action == "resolve":
+        db_manager.resolveItem(item_id)
+    if action == "edit":
+        itembody = request.form['itembody']
+        db_manager.editItem(item_id, itembody)
+    return redirect(url_for('editlist', list=list))
 
 #====================================================
 # LOGOUT AND MAIN

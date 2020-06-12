@@ -78,11 +78,11 @@ def getPermissions(user_id):
     q = "SELECT permissions FROM user_tbl WHERE user_id=?"
     inputs = (user_id,)
     data = execmany(q, inputs).fetchone()[0]
-    dict = {0: [False, "View Mood Tracker"],
-            1: [False, "View Sleep Tracker"], 2: [False, "View Monthly Calendars"],
-            3: [False, "View To-Do Lists"], 4: [False, "Comment Access"]}
-    for i in range(5):
-        index = 4 - i
+    dict = {0: [False, "View Mood Tracker"], 1: [False, "View Sleep Tracker"],
+            2: [False, "View Monthly Calendars"], 3: [False, "View To-Do Lists"],
+            4: [False, "Comment Access"], 5: [False, "View Future Spread"]}
+    for i in range(6):
+        index = 5 - i
         quotient = data // pow(10, index)
         if (quotient != 0):
             dict[index][0] = True
@@ -487,8 +487,15 @@ def deleteItem(list_id, item_id):
 
 def resolveItem(item_id):
     '''def resolveItem(item_id): resolve a specific item'''
+    q = "SELECT resolved FROM listitem_tbl WHERE item_id=?"
+    inputs = (item_id, )
+    resolved = execmany(q, inputs).fetchone()[0]
+    if resolved == 0:
+        resolved = 1
+    else:
+        resolved = 0
     q = "UPDATE listitem_tbl SET resolved=? WHERE item_id=?"
-    inputs = (1, item_id)
+    inputs = (resolved, item_id)
     execmany(q, inputs)
 
 def editItem(item_id, item):
@@ -511,6 +518,7 @@ def getItemsFromList(list_id):
         for item in items:
             info = []
             item_id = int(item)
+            info.append(item_id)
             q = "SELECT item FROM listitem_tbl WHERE item_id=?"
             inputs = (item_id, )
             item = execmany(q, inputs).fetchone()[0]
@@ -533,10 +541,11 @@ def deleteList(list_id):
         items = execmany(q, inputs).fetchone()
         if items is not None:
             items = items[0]
-            items = items.split(",")
-            for item in items:
-                item_id = int(item)
-                deleteItem(list_id, item_id)
+            if items is not None:
+                items = items.split(",")
+                for item in items:
+                    item_id = int(item)
+                    deleteItem(list_id, item_id)
         q = "DELETE from future_tbl WHERE list_id=?"
         execmany(q, inputs)
         return True
