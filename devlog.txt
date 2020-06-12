@@ -139,4 +139,7 @@ jackieL -- 2020-06-11 22:13
 - added list functionality for editing, deleting and resolving items and editing titles
 - added list functionality for deleting lists
 - create permissions for viewing future lists by friends
-- created a message board and restyled friends.html page 
+- created a message board and restyled friends.html page
+
+jackieL -- 2020-06-11 23:34
+- allowed user to edit list of collaborators, updated message board accordingly
