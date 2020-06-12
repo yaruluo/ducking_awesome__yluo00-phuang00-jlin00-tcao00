@@ -461,8 +461,10 @@ def editlist(list):
         type = db_manager.getType(list)
         requests = db_manager.formatRequests(user_id)
         messages = db_manager.formatMessages(user_id)
-        return render_template("list.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'], messages=messages,
-                                title=title, items=items, owner=owner, collaborators=collaborators, type=type, list=list, enumcoll=enumcoll, requests=requests)
+        friendlist = db_manager.formatFriends(user_id)
+        collabid = db_manager.getCollaboratorId(list)
+        return render_template("list.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'], messages=messages, collabid=collabid,
+                                title=title, items=items, owner=owner, collaborators=collaborators, type=type, list=list, enumcoll=enumcoll, requests=requests, friendlist=friendlist)
     else:
         list_id = request.form['list']
         item = request.form['item']
@@ -498,6 +500,14 @@ def edittittle():
     list = request.form['list']
     title = request.form['title']
     db_manager.editTitle(list, title)
+    return redirect(url_for('editlist', list=list))
+
+@app.route("/updatecollab", methods=["POST"])
+@login_required
+def updatecollab():
+    list = request.form['list']
+    options = request.form.getlist("options")
+    db_manager.updateCollaborators(list, options)
     return redirect(url_for('editlist', list=list))
 
 #====================================================

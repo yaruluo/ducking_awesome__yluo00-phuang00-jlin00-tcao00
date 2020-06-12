@@ -27,6 +27,8 @@
           <label class="form-check-label" for="{{ friend[1] }}">{{ friend[0] }}</label><br>
       {% endfor %}
       </div>
+			{% else %}
+				<i class="text-secondary"><small>Note: You have no friends to add as collaborators.</small></i>
       {% endif %}
       <br>
       <button class="btn btn-primary btn-sm" type="submit">Submit</button>
@@ -39,7 +41,7 @@
 {% for i in range(length) %}
 <div class="row w-75">
   <div class="col-4">
-    <div class="card"><br>
+    <div class="card px-2"><br>
 			{% if lists[i * 3][3][0] == default_id and lists[i * 3][5] == 3 %}
 			<form action="/deletelist" method="POST">
 				<input type="hidden" name="user" value="{{ default_id }}">
@@ -84,7 +86,7 @@
   </div>
   {% if (i * 3 + 1) <= lists|length - 1 %}
   <div class="col-4">
-    <div class="card"><br>
+    <div class="card px-2"><br>
 			{% if lists[i * 3 + 1][3][0] == default_id and lists[i * 3 + 1][5] == 3 %}
 			<form action="/deletelist" method="POST">
 				<input type="hidden" name="user" value="{{ default_id }}">
@@ -130,7 +132,7 @@
   {% endif %}
   {% if (i * 3 + 2) <= lists|length - 1 %}
   <div class="col-4">
-    <div class="card"><br>
+    <div class="card px-2"><br>
 			{% if lists[i * 3 + 2][3][0] == default_id and lists[i * 3 + 2][5] == 3 %}
 			<form action="/deletelist" method="POST">
 				<input type="hidden" name="user" value="{{ default_id }}">

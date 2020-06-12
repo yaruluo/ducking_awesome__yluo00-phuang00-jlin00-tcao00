@@ -502,9 +502,15 @@ def removeMessage(friend_id, user_id, list_id):
     q = "SELECT newlists FROM user_tbl WHERE user_id=?"
     inputs = (user_id, )
     newlists = execmany(q, inputs).fetchone()[0]
-    newlists = newlists.split(",")
+    if newlists is None:
+        newlists = []
+    else:
+        newlists = newlists.split(",")
     entry = str(friend_id) + "/" + str(list_id)
-    newlists.remove(entry)
+    try:
+        newlists.remove(entry)
+    except ValueError:
+        pass
     if len(newlists) == 0:
         newlists = None
     else:
@@ -666,6 +672,39 @@ def getCollaborators(list_id):
         info.append(getUsername(int(collaborator)))
         list.append(tuple(info))
     return list
+
+def getCollaboratorId(list_id):
+    '''def getCollaboratorId(list_id): get IDs of collaborators'''
+    q = "SELECT collaborators FROM future_tbl WHERE list_id=?"
+    inputs = (list_id, )
+    data = execmany(q, inputs).fetchone()
+    if data is None:
+        return []
+    data = data[0]
+    if data is None:
+        return []
+    data = data.split(",")
+    list = []
+    for collaborator in data:
+        list.append(collaborator)
+    return list
+
+def updateCollaborators(list_id, collaborators):
+    '''def updateCollaborators(list_id, collaborators): update collaborators on specified list'''
+    friend_id = getOwner(list_id)[0]
+    old_collaborators = getCollaboratorId(list_id)
+    for person in old_collaborators:
+        user_id = int(person)
+        removeMessage(friend_id, user_id, list_id)
+    for person in collaborators:
+        to_id = person
+        sendMessage(friend_id, to_id, list_id)
+    collaborators = ",".join(collaborators)
+    if collaborators == "":
+        collaborators = None
+    q = "UPDATE future_tbl SET collaborators=? WHERE list_id=?"
+    inputs = (collaborators, list_id)
+    execmany(q, inputs)
 
 def canEdit(list_id, user_id):
     '''def canEdit(list_id, user_id): returns whether or not user is allowed to edit list'''

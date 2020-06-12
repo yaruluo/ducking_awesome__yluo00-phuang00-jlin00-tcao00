@@ -38,11 +38,39 @@
 	</form>
   By {{ owner[1] }}<br>
   {% if type == 3 %}
-  <i class="text-success">Collaborators:
-    {% for person in collaborators %}
-    {{ person[1] }}{% if loop.index != collaborators|length %},{% endif %}
-    {% endfor %}
-  </i>
+	<p class="mb-0">
+		<i class="text-success">Collaborators:
+	    {% for person in collaborators %}
+	    {{ person[1] }}{% if loop.index != collaborators|length %},{% endif %}
+	    {% endfor %}
+	  </i>
+		{% if owner[0] == default_id %}
+	  <a class="btn-link fa fa-pencil" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"></a>
+		{% endif %}
+	</p>
+	<div class="collapse mt-2" id="collapseExample">
+	  <div class="card card-body w-50">
+			{% if friendlist|length != 0 %}
+      <span class="font-weight-bold">Add collaborators: </span>
+			<form action="/updatecollab" method="POST">
+				<input type="hidden" name="list" value="{{ list }}">
+				<div class="form-check">
+		      {% for friend in friendlist %}
+						{% if friend[1] in collabid %}
+							<input type="checkbox" class="form-check-input" id="{{ friend[1] }}" value="{{ friend[1] }}" name="options" checked>
+						{% else %}
+		          <input type="checkbox" class="form-check-input" id="{{ friend[1] }}" value="{{ friend[1] }}" name="options">
+						{% endif %}
+		          <label class="form-check-label" for="{{ friend[1] }}">{{ friend[0] }}</label><br>
+		      {% endfor %}
+				{% else %}
+				<i class="text-secondary"><small>Note: You have no friends to add as collaborators.</small></i>
+				{% endif %}
+		   </div>
+			 <button type="submit" class="btn btn-sm btn-primary my-2">Update</button>
+			</form>
+		</div>
+	</div>
   {% endif %}
   {% if items|length == 0 %}
   <p class="my-2">
@@ -65,7 +93,7 @@
 			<form action="/itemaction" method="POST" style="display:none" id="edit{{ item[0] }}">
 				<input type="hidden" name="item_id" value="{{ item[0] }}">
 				<input type="hidden" name="list" value="{{ list }}">
-				<input type="text" name="itembody" value="{{ item[1] }}">
+				<input type="text" class="form-control w-75" name="itembody" value="{{ item[1] }}">
 				<button type="submit" name="action" value="edit" style="display:none"></button>
 			</form>
     {% endfor %}
