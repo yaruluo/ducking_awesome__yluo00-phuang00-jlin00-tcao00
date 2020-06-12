@@ -21,7 +21,7 @@
 {% if not isOwner %} <h1 style="color:#aaa"><i>(Viewing for {{ username }})</i></h1><br> {% endif %}
 <h2>Monthly Overview for {{date}}</h2>
 <br>
-{% if viewcal %}
+{% if viewcal and (viewsleep or viewmood) %}
 <form style="display:table;"action="/monthly/{{ user }}" method="POST">
 	<div class="form-row">
 		<div class="col-auto">
@@ -50,18 +50,28 @@
 	</div>
 </form>
 <br>
-<div id="calendar">
-	<h3 style = "color: #7bc043;"> Mood Tracker </h3>
-</div>
-<div>
-	<svg id="legend" height=175 width=450></svg>
-</div>
-<div id="sleeps">
-	<h3 style = "color: #2C01D8;"> Sleep Tracker </h3>
-</div>
-<div>
-	<svg id="sleepleg" height=30 width=450></svg>
-	<h6 style="font-size:13px">Sleep (hours)</h6>
+{% if viewmood %}
+<div class="row justify-content-center">
+	<div class="col-auto">
+		<div id="calendar">
+			<h3 style = "color: #7bc043;"> Mood Tracker </h3>
+		</div>
+		<div>
+			<svg id="legend" height=175 width=450></svg>
+		</div>
+	</div>
+	{% endif %}
+	{% if viewsleep %}
+	<div class="col-auto">
+		<div id="sleeps">
+			<h3 style = "color: #2C01D8;"> Sleep Tracker </h3>
+		</div>
+		<div>
+			<svg id="sleepleg" height=30 width=450></svg>
+			<h6 style="font-size:13px">Sleep (hours)</h6>
+		</div>
+	</div>
+	{% endif %}
 </div>
 {% else %}
 <br>
