@@ -160,8 +160,11 @@ def daily(user,date):
         viewtd = permissions.get(3)[0]
         comment = permissions.get(4)[0]
         viewentry = True
+    user_id = session['user_id']
+    requests = db_manager.formatRequests(user_id)
+    messages = db_manager.formatMessages(user_id)
     return render_template("daily.html", isLogin=False, daily="active", date=fulldate, entries=text, isOwner=isOwner, datetime=date, mood=mood_vals, tasks=tasks, sleep=sleep_vals, username=username, default_id=session['user_id'],
-                                         comments=comments, user_id=user, entry_id=entry_id, comment=comment, viewmood=viewmood, viewsleep=viewsleep, viewtd=viewtd, viewentry=viewentry, currentuser=session['username'])
+                                         comments=comments, user_id=user, entry_id=entry_id, comment=comment, viewmood=viewmood, viewsleep=viewsleep, viewtd=viewtd, viewentry=viewentry, currentuser=session['username'], messages=messages, requests=requests)
 
 @app.route("/changedate", methods=["POST"])
 @login_required
@@ -293,6 +296,7 @@ def addcomment():
 @login_required
 def monthly(user):
     username = db_manager.getUsername(user)
+    user_id = session['user_id']
     isOwner = (str(session['user_id']) == user)
     permissions = db_manager.getPermissions(user)
     viewcal = False
@@ -318,9 +322,11 @@ def monthly(user):
         month = datetime.now().strftime('%m')
         moods = db_manager.getMonthMoods(user, str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
         sleeps = db_manager.getMonthSleep(user, str(datetime.now().year) + '-' + datetime.now().strftime('%m'))
+    requests = db_manager.formatRequests(user_id)
+    messages = db_manager.formatMessages(user_id)
     return render_template("monthly.html", default_id=session['user_id'], username=username, isOwner=isOwner, isLogin=False, monthly="active",
                             date=date, month=month, year=year, moods=moods, sleeps=sleeps, currentuser=session['username'], viewcal=viewcal,
-                            viewmood=viewmood, viewsleep=viewsleep, user=user)
+                            viewmood=viewmood, viewsleep=viewsleep, user=user, messages=messages, requests=requests)
 
 #====================================================
 # FRIENDS
@@ -332,8 +338,10 @@ def friends():
     permissions = db_manager.getPermissions(user_id)
     friendlist = db_manager.formatFriends(user_id)
     requests = db_manager.formatRequests(user_id)
+    messages = db_manager.formatMessages(user_id)
     date = datetime.now().date()
-    return render_template("friends.html", default_id=session['user_id'], isLogin=False, friends="active", edit=False, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date, currentuser=session['username'])
+    return render_template("friends.html", default_id=session['user_id'], isLogin=False, friends="active", edit=False, permissions=permissions.items(), friendlist=friendlist,
+                            requests=requests, date=date, currentuser=session['username'], messages=messages)
 
 @app.route("/processrequest", methods=["POST"])
 @login_required
@@ -347,6 +355,15 @@ def processrequest():
         db_manager.processRequest(user_id, friend_id, True)
     return redirect(url_for("friends"))
 
+@app.route("/processmessage", methods=["POST"])
+@login_required
+def processmessage():
+    friend_id = request.form['friend_id']
+    user_id = request.form['user_id']
+    list_id = request.form['list_id']
+    db_manager.removeMessage(friend_id, user_id, list_id)
+    return redirect(url_for("friends"))
+
 @app.route("/permissions")
 @login_required
 def permissions():
@@ -355,7 +372,8 @@ def permissions():
     friendlist = db_manager.formatFriends(user_id)
     requests = db_manager.formatRequests(user_id)
     date = datetime.now().date()
-    return render_template("friends.html", default_id=session['user_id'], isLogin=False, friends="active", edit=True, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date, currentuser=session['username'])
+    messages = db_manager.formatMessages(user_id)
+    return render_template("friends.html", default_id=session['user_id'], isLogin=False, friends="active", edit=True, permissions=permissions.items(), friendlist=friendlist, requests=requests, date=date, currentuser=session['username'], messages=messages)
 
 @app.route("/editpermissions", methods=["POST"])
 @login_required
@@ -386,7 +404,9 @@ def addfriends():
         db_manager.sendRequest(id, user_id)
         query = request.form['query']
         return redirect(url_for("addfriends", query=query))
-    return render_template("addfriends.html", default_id=session['user_id'], isLogin=False, addfriends="active", users=users, search=search, query=query, currentuser=session['username'])
+    requests = db_manager.formatRequests(user_id)
+    messages = db_manager.formatMessages(user_id)
+    return render_template("addfriends.html", default_id=session['user_id'], isLogin=False, addfriends="active", users=users, search=search, query=query, currentuser=session['username'], requests=requests, messages=messages)
 
 #====================================================
 # FUTURE SPREAD
@@ -395,9 +415,10 @@ def addfriends():
 @login_required
 def future(user):
     username = db_manager.getUsername(user)
+    user_id = session['user_id']
     lists = db_manager.getLists(user)
     length = math.ceil(len(lists) / 3)
-    isOwner = session['user_id'] == int(user)
+    isOwner = user_id == int(user)
     friendlist = db_manager.formatFriends(int(user))
     permissions = db_manager.getPermissions(user)
     viewfuture = False
@@ -405,8 +426,10 @@ def future(user):
         viewfuture = True
     elif (db_manager.isFriend(session['user_id'], int(user))):
         viewfuture = permissions.get(5)[0]
-    return render_template("future.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'],
-                            lists=lists, length=length, isOwner=isOwner, friendlist=friendlist, username=username, viewfuture=viewfuture)
+    requests = db_manager.formatRequests(user_id)
+    messages = db_manager.formatMessages(user_id)
+    return render_template("future.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'], requests=requests,
+                            lists=lists, length=length, isOwner=isOwner, friendlist=friendlist, username=username, viewfuture=viewfuture, messages=messages)
 
 @app.route("/addnewlist", methods=["POST"])
 @login_required
@@ -420,6 +443,7 @@ def addnewlist():
 @app.route("/editlist/<list>", methods=["GET", "POST"])
 @login_required
 def editlist(list):
+    user_id = session['user_id']
     if request.method == "GET":
         exists = db_manager.listExists(list)
         if not exists:
@@ -435,8 +459,10 @@ def editlist(list):
         collaborators = db_manager.getCollaborators(list)
         enumcoll = len(collaborators)
         type = db_manager.getType(list)
-        return render_template("list.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'],
-                                title=title, items=items, owner=owner, collaborators=collaborators, type=type, list=list, enumcoll=enumcoll)
+        requests = db_manager.formatRequests(user_id)
+        messages = db_manager.formatMessages(user_id)
+        return render_template("list.html", default_id=session['user_id'], isLogin=False, future="active", currentuser=session['username'], messages=messages,
+                                title=title, items=items, owner=owner, collaborators=collaborators, type=type, list=list, enumcoll=enumcoll, requests=requests)
     else:
         list_id = request.form['list']
         item = request.form['item']
@@ -464,6 +490,14 @@ def itemaction():
     if action == "edit":
         itembody = request.form['itembody']
         db_manager.editItem(item_id, itembody)
+    return redirect(url_for('editlist', list=list))
+
+@app.route("/edittitle", methods=["POST"])
+@login_required
+def edittittle():
+    list = request.form['list']
+    title = request.form['title']
+    db_manager.editTitle(list, title)
     return redirect(url_for('editlist', list=list))
 
 #====================================================

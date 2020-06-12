@@ -39,12 +39,12 @@ def addUser(username, password):
         inputs = (username, password, 0)
         execmany(q, inputs)
         user_id = getUserID(username)
-        q = "INSERT INTO future_tbl (user_id, type) VALUES(?, ?)"
-        inputs = (user_id, 0)
+        q = "INSERT INTO future_tbl (user_id, type, title) VALUES(?, ?, ?)"
+        inputs = (user_id, 0, "Bucket List")
         execmany(q, inputs)
-        inputs = (user_id, 1)
+        inputs = (user_id, 1, "Reading List")
         execmany(q, inputs)
-        inputs = (user_id, 2)
+        inputs = (user_id, 2, "To-Watch List")
         execmany(q, inputs)
         return True
     return False #if username already exists
@@ -443,8 +443,72 @@ def getMonthSleep(user_id, month_year):
 def addList(user_id, title, collaborators):
     '''def addList(user_id, title, collaborators): adds list by user with given title and collaborators'''
     q = "INSERT INTO future_tbl (user_id, type, title, collaborators) VALUES(?, ?, ?, ?)"
+    temp = collaborators #store list of collaborators
     collaborators = ",".join(collaborators)
     inputs = (user_id, 3, title, collaborators)
+    list_id = execmany(q, inputs).lastrowid
+    for collaborator in temp:
+        sendMessage(user_id, collaborator, list_id)
+
+def sendMessage(user_id, friend_id, list_id):
+    '''def sendMessage(user_id, friend_id, list_id): send message to a friend from user'''
+    q = "SELECT newlists FROM user_tbl WHERE user_id=?"
+    inputs = (friend_id, )
+    newlists = execmany(q, inputs).fetchone()[0]
+    if newlists is None:
+        newlists = []
+    else:
+        newlists = newlists.split(",")
+    entry = str(user_id) + "/" + str(list_id)
+    newlists.append(entry)
+    newlists = ",".join(newlists)
+    q = "UPDATE user_tbl SET newlists=? WHERE user_id=?"
+    inputs = (newlists, friend_id)
+    execmany(q, inputs)
+
+def getMessages(user_id):
+    '''def getMessages(user_id): get user's messages'''
+    q = "SELECT newlists FROM user_tbl WHERE user_id=?"
+    inputs = (user_id, )
+    newlists = execmany(q, inputs).fetchone()[0]
+    if newlists is None:
+        return []
+    return newlists.split(",")
+
+def formatMessages(user_id):
+    '''def formatMessages(user_id): format output of getMessages()'''
+    messages = getMessages(user_id)
+    list = []
+    if len(messages) == 0:
+        return []
+    for message in messages:
+        info = []
+        message = message.split("/")
+        user_id = int(message[0])
+        username = getUsername(user_id)
+        list_id = int(message[1])
+        list_title = getTitle(list_id)
+        info.append(user_id)
+        info.append(username)
+        info.append(list_id)
+        info.append(list_title)
+        list.append(tuple(info))
+    return list
+
+def removeMessage(friend_id, user_id, list_id):
+    '''def removeMessage(friend_id, user_id, list_id): remove friend's message with specified list_id from user's messages'''
+    q = "SELECT newlists FROM user_tbl WHERE user_id=?"
+    inputs = (user_id, )
+    newlists = execmany(q, inputs).fetchone()[0]
+    newlists = newlists.split(",")
+    entry = str(friend_id) + "/" + str(list_id)
+    newlists.remove(entry)
+    if len(newlists) == 0:
+        newlists = None
+    else:
+        newlists = ",".join(newlists)
+    q = "UPDATE user_tbl SET newlists=? WHERE user_id=?"
+    inputs = (newlists, user_id)
     execmany(q, inputs)
 
 def addItem(list_id, item):
@@ -478,7 +542,6 @@ def deleteItem(list_id, item_id):
     inputs = (list_id, )
     items = execmany(q, inputs).fetchone()[0]
     items = items.split(",")
-    index = items.index(str(item_id))
     items.remove(str(item_id))
     items = ",".join(items)
     q = "UPDATE future_tbl SET items=? WHERE list_id=?"

@@ -25,7 +25,17 @@
 {% block body %}
 <h2>Future Spread</h2><br>
 <div class="card w-50 p-4" style="background-color:#e8f4f8">
-  <h3 class="card-title">{{ title }}</h3>
+  <h3 class="card-title" id="listtitle">{{ title }}
+		{% if type == 3 %}
+		<button type="button" class="btn btn-link fa fa-pencil fa-sm" onclick="changetitle()"></button>
+		{% endif %}
+	</h3>
+	<form action="/edittitle" method="POST" style="display:none" id="titleform">
+		<input type="hidden" name="list" value="{{ list }}">
+		<div class="input-group input-group-lg w-50 mb-2">
+		  <input type="text" class="form-control text-center" aria-label="Large" aria-describedby="inputGroup-sizing-sm" name="title" value="{{ title }}">
+		</div>
+	</form>
   By {{ owner[1] }}<br>
   {% if type == 3 %}
   <i class="text-success">Collaborators:
@@ -79,7 +89,14 @@
 		noedit = document.getElementById(noeditid)
 		edit.style.display = "block"
 		noedit.style.display = "none"
+	}
 
+	function changetitle(){
+		console.log("CHANGE")
+		title = document.getElementById('listtitle')
+		titleform = document.getElementById('titleform')
+		title.style.display = "none"
+		titleform.style.display = "block"
 	}
 </script>
 {% endblock %}
