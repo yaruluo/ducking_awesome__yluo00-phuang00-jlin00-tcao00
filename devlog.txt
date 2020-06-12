@@ -134,3 +134,9 @@ jackieL -- 2020-06-11 03:47
 peihuaH -- 2020-06-11 19:00
 - changed the display of monthly so that the mood and sleep charts are side by side
 - updated it so permissions for monthly also depend on permissions for mood and sleep
+
+jackieL -- 2020-06-11 22:13
+- added list functionality for editing, deleting and resolving items and editing titles
+- added list functionality for deleting lists
+- create permissions for viewing future lists by friends
+- created a message board and restyled friends.html page 
