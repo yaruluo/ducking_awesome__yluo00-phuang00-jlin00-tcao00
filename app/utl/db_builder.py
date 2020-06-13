@@ -27,7 +27,7 @@ def execmany(cmd, inputs):
 
 def build_db():
     """Creates database if it does not yet exist with the necessary tables"""
-    command = "CREATE TABLE IF NOT EXISTS user_tbl (user_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, sleep TEXT, period TEXT, permissions INT, friends TEXT, requests TEXT, newlists TEXT)"
+    command = "CREATE TABLE IF NOT EXISTS user_tbl (user_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, permissions INT, friends TEXT, requests TEXT, newlists TEXT)"
     exec(command)
 
     command = "CREATE TABLE IF NOT EXISTS journal_tbl (entry_id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INT, date DATETIME, body TEXT)"
