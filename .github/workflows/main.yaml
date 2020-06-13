@@ -31,5 +31,4 @@ jobs: # jobs contains all of the things that are exeucted in this workflow
     - name: Execute __init__.py
       run: |
         cd app/
-        python __init__.py
-        ^C
+        python __init__.py &
