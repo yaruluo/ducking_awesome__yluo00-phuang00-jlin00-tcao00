@@ -32,6 +32,4 @@ jobs: # jobs contains all of the things that are exeucted in this workflow
       run: |
         cd app/
         python __init__.py
-
-    - name: Stop deploying Flask app
-      run: ^C
+        ^C
