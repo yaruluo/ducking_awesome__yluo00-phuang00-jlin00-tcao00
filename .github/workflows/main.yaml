@@ -6,7 +6,7 @@ name: GitHub Actions Test
 jobs: # jobs contains all of the things that are exeucted in this workflow
 
   test: # test is a job
-    name: run __init__.py
+    name: run app/__init__.py
     runs-on: macos-latest # this workflow runs on an ubuntu machine
 
     steps:
@@ -23,5 +23,5 @@ jobs: # jobs contains all of the things that are exeucted in this workflow
       with:
         python-version: '3.x' # we will use any version 3 of python
 
-    - name: Execute __init__.py
-      run: python __init__.py
+    - name: Execute app/__init__.py
+      run: python app/__init__.py
