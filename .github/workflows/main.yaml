@@ -32,9 +32,3 @@ jobs: # jobs contains all of the things that are exeucted in this workflow
       run: |
         cd app/
         python __init__.py &
-
-    - name: Test different routes
-      uses: ./
-      with:
-        url: 'http://127.0.0.1:5000/login'
-        method: 'GET'
