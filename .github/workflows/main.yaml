@@ -28,11 +28,10 @@ jobs: # jobs contains all of the things that are exeucted in this workflow
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Change directory
-      run: cd app/
-
     - name: Execute __init__.py
-      run: python __init__.py
+      run: |
+        cd app/
+        python __init__.py
 
     - name: Stop deploying Flask app
       run: ^C
