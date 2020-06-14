@@ -1,4 +1,4 @@
-# Project ConCensus by Team Ducking Awesome
+# Project Journie by Team Ducking Awesome
 
 
 Team Ducking Awesome
