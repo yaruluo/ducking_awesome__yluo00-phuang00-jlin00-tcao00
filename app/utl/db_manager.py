@@ -552,6 +552,8 @@ def deleteItem(list_id, item_id):
     items = items.split(",")
     items.remove(str(item_id))
     items = ",".join(items)
+    if items == "":
+        items = None
     q = "UPDATE future_tbl SET items=? WHERE list_id=?"
     inputs = (items, list_id)
     execmany(q, inputs)
