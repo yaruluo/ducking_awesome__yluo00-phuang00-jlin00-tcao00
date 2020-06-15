@@ -61,7 +61,7 @@ def root():
 
 @app.route( "/info")
 def into():
-    return render_template( 'info.html')
+    return render_template('info.html', isLogin=True, info="active")
 
 @app.route("/login")
 @no_login_required
