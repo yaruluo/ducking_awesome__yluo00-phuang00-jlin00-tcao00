@@ -1,99 +1,104 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>{% block title %} TITLE {% endblock %}</title>
+  <head>
+    <title>{% block title %} TITLE {% endblock %}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-		{% block style %} {% endblock %}
-	</head>
-	<body>
-			<center>
-				<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-						<a href="/" class="navbar-brand mr-3">
-							<svg height="30" viewBox="-4 1 511 511.99998" width="30" xmlns="http://www.w3.org/2000/svg"><path d="m468.128906 41.625h-389.582031v455.628906c0 8.144532 6.605469 14.746094 14.746094 14.746094h374.835937c19.910156 0 36.046875-16.136719 36.046875-36.046875v-398.28125c0-19.910156-16.140625-36.046875-36.046875-36.046875zm0 0" fill="#efedee"/><path d="m468.128906 41.625h-389.582031v454.503906h347.957031c34.078125 0 61.800782-27.722656 61.800782-61.800781v-386.53125c-5.757813-3.894531-12.699219-6.171875-20.175782-6.171875zm0 0" fill="#d2d2d2"/><path d="m426.503906 0h-374.835937c-8.144531 0-14.746094 6.601562-14.746094 14.746094v440.882812c0 8.140625 6.601563 14.746094 14.746094 14.746094h374.835937c19.90625 0 36.042969-16.140625 36.042969-36.046875v-398.28125c0-19.910156-16.136719-36.046875-36.042969-36.046875zm0 0" fill="#b6a4ff"/><path d="m260.660156 374.683594c282.417969-148.027344 106.152344-317.476563 0-213.734375-106.148437-103.742188-282.414062 65.707031 0 213.734375zm0 0" fill="#eb6da8"/><g fill="#3a484a"><path d="m188.605469 250.324219c-4.269531 0-7.726563-3.460938-7.726563-7.726563v-13.042968c0-4.265626 3.457032-7.726563 7.726563-7.726563 4.265625 0 7.726562 3.460937 7.726562 7.726563v13.042968c0 4.269532-3.460937 7.726563-7.726562 7.726563zm0 0"/><path d="m332.71875 250.324219c-4.265625 0-7.726562-3.460938-7.726562-7.726563v-13.042968c0-4.265626 3.460937-7.726563 7.726562-7.726563 4.269531 0 7.726562 3.460937 7.726562 7.726563v13.042968c0 4.269532-3.457031 7.726563-7.726562 7.726563zm0 0"/><path d="m260.660156 257.285156c-9.160156 0-17.761718-3.832031-23.601562-10.511718-2.808594-3.210938-2.480469-8.09375.734375-10.902344 3.210937-2.808594 8.09375-2.480469 10.902343.734375 2.902344 3.320312 7.265626 5.226562 11.964844 5.226562 4.703125 0 9.066406-1.90625 11.96875-5.226562 2.808594-3.214844 7.691406-3.542969 10.902344-.734375s3.542969 7.691406.730469 10.902344c-5.835938 6.679687-14.4375 10.511718-23.601563 10.511718zm0 0"/><path d="m56 36.074219h-38.15625c-9.578125 0-17.34375 7.765625-17.34375 17.347656 0 9.578125 7.765625 17.34375 17.34375 17.34375h38.15625c9.578125 0 17.34375-7.765625 17.34375-17.34375 0-9.582031-7.765625-17.347656-17.34375-17.347656zm0 0"/><path d="m56 125.570312h-38.15625c-9.578125 0-17.34375 7.765626-17.34375 17.34375 0 9.582032 7.765625 17.347657 17.34375 17.347657h38.15625c9.578125 0 17.34375-7.765625 17.34375-17.347657 0-9.578124-7.765625-17.34375-17.34375-17.34375zm0 0"/><path d="m56 215.066406h-38.15625c-9.578125 0-17.34375 7.765625-17.34375 17.34375 0 9.582032 7.765625 17.347656 17.34375 17.347656h38.15625c9.578125 0 17.34375-7.765624 17.34375-17.347656 0-9.578125-7.765625-17.34375-17.34375-17.34375zm0 0"/><path d="m56 304.5625h-38.15625c-9.578125 0-17.34375 7.765625-17.34375 17.34375 0 9.582031 7.765625 17.347656 17.34375 17.347656h38.15625c9.578125 0 17.34375-7.765625 17.34375-17.347656 0-9.578125-7.765625-17.34375-17.34375-17.34375zm0 0"/><path d="m56 394.058594h-38.15625c-9.578125 0-17.34375 7.765625-17.34375 17.34375 0 9.582031 7.765625 17.34375 17.34375 17.34375h38.15625c9.578125 0 17.34375-7.761719 17.34375-17.34375 0-9.578125-7.765625-17.34375-17.34375-17.34375zm0 0"/></g></svg>
-							<strong class="px-2">Journie</strong>
-						</a>
-				    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-				        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-				        <span class="navbar-toggler-icon"></span>
-				    </button>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    {% block style %} {% endblock %}
+  </head>
+  <body>
+    <center>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+	<a href="/" class="navbar-brand mr-3">
+	  <svg height="30" viewBox="-4 1 511 511.99998" width="30" xmlns="http://www.w3.org/2000/svg"><path d="m468.128906 41.625h-389.582031v455.628906c0 8.144532 6.605469 14.746094 14.746094 14.746094h374.835937c19.910156 0 36.046875-16.136719 36.046875-36.046875v-398.28125c0-19.910156-16.140625-36.046875-36.046875-36.046875zm0 0" fill="#efedee"/><path d="m468.128906 41.625h-389.582031v454.503906h347.957031c34.078125 0 61.800782-27.722656 61.800782-61.800781v-386.53125c-5.757813-3.894531-12.699219-6.171875-20.175782-6.171875zm0 0" fill="#d2d2d2"/><path d="m426.503906 0h-374.835937c-8.144531 0-14.746094 6.601562-14.746094 14.746094v440.882812c0 8.140625 6.601563 14.746094 14.746094 14.746094h374.835937c19.90625 0 36.042969-16.140625 36.042969-36.046875v-398.28125c0-19.910156-16.136719-36.046875-36.042969-36.046875zm0 0" fill="#b6a4ff"/><path d="m260.660156 374.683594c282.417969-148.027344 106.152344-317.476563 0-213.734375-106.148437-103.742188-282.414062 65.707031 0 213.734375zm0 0" fill="#eb6da8"/><g fill="#3a484a"><path d="m188.605469 250.324219c-4.269531 0-7.726563-3.460938-7.726563-7.726563v-13.042968c0-4.265626 3.457032-7.726563 7.726563-7.726563 4.265625 0 7.726562 3.460937 7.726562 7.726563v13.042968c0 4.269532-3.460937 7.726563-7.726562 7.726563zm0 0"/><path d="m332.71875 250.324219c-4.265625 0-7.726562-3.460938-7.726562-7.726563v-13.042968c0-4.265626 3.460937-7.726563 7.726562-7.726563 4.269531 0 7.726562 3.460937 7.726562 7.726563v13.042968c0 4.269532-3.457031 7.726563-7.726562 7.726563zm0 0"/><path d="m260.660156 257.285156c-9.160156 0-17.761718-3.832031-23.601562-10.511718-2.808594-3.210938-2.480469-8.09375.734375-10.902344 3.210937-2.808594 8.09375-2.480469 10.902343.734375 2.902344 3.320312 7.265626 5.226562 11.964844 5.226562 4.703125 0 9.066406-1.90625 11.96875-5.226562 2.808594-3.214844 7.691406-3.542969 10.902344-.734375s3.542969 7.691406.730469 10.902344c-5.835938 6.679687-14.4375 10.511718-23.601563 10.511718zm0 0"/><path d="m56 36.074219h-38.15625c-9.578125 0-17.34375 7.765625-17.34375 17.347656 0 9.578125 7.765625 17.34375 17.34375 17.34375h38.15625c9.578125 0 17.34375-7.765625 17.34375-17.34375 0-9.582031-7.765625-17.347656-17.34375-17.347656zm0 0"/><path d="m56 125.570312h-38.15625c-9.578125 0-17.34375 7.765626-17.34375 17.34375 0 9.582032 7.765625 17.347657 17.34375 17.347657h38.15625c9.578125 0 17.34375-7.765625 17.34375-17.347657 0-9.578124-7.765625-17.34375-17.34375-17.34375zm0 0"/><path d="m56 215.066406h-38.15625c-9.578125 0-17.34375 7.765625-17.34375 17.34375 0 9.582032 7.765625 17.347656 17.34375 17.347656h38.15625c9.578125 0 17.34375-7.765624 17.34375-17.347656 0-9.578125-7.765625-17.34375-17.34375-17.34375zm0 0"/><path d="m56 304.5625h-38.15625c-9.578125 0-17.34375 7.765625-17.34375 17.34375 0 9.582031 7.765625 17.347656 17.34375 17.347656h38.15625c9.578125 0 17.34375-7.765625 17.34375-17.347656 0-9.578125-7.765625-17.34375-17.34375-17.34375zm0 0"/><path d="m56 394.058594h-38.15625c-9.578125 0-17.34375 7.765625-17.34375 17.34375 0 9.582031 7.765625 17.34375 17.34375 17.34375h38.15625c9.578125 0 17.34375-7.761719 17.34375-17.34375 0-9.578125-7.765625-17.34375-17.34375-17.34375zm0 0"/></g></svg>
+	  <strong class="px-2">Journie</strong>
+	</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+		aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	  <span class="navbar-toggler-icon"></span>
+	</button>
 
-				    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-				{% if isLogin %}
-							<ul class="navbar-nav ml-auto">
-									<li class="nav-item {{ login }} px-3 navbar-right">
-											<a class="nav-link" href="/login" style="font-size:16px;">Login</a>
-									</li>
-							</ul>
-							<ul class="navbar-nav ml-4">
-									<li class="nav-item {{ signup }} px-3 navbar-right">
-											<a class="nav-link" href="/signup" style="font-size:16px;">Sign Up</a>
-									</li>
-							</ul>
-				{% else %}
-							<ul class="navbar-nav mr-auto">
-									<li class="nav-item {{ daily }} px-4">
-											<a class="nav-link" href="/" style="font-size:16px;">Daily</a>
-									</li>
-									<li class="nav-item {{ monthly }} px-4">
-											<a class="nav-link" href="/monthly/{{ default_id }}" style="font-size:16px;">Monthly</a>
-									</li>
-									<li class="nav-item {{ future }} px-4">
-											<a class="nav-link" href="/future/{{ default_id }}" style="font-size:16px;">Future</a>
-									</li>
-									<li class="nav-item {{ friends }} px-4">
-											<a class="nav-link" href="/friends" style="font-size:16px;">
-												Friends
-												{% if messages|length + requests|length > 0 %}
-													<span class="badge badge-danger mx-1">{{ messages|length + requests|length }}</span>
-												{% endif %}
-											</a>
-									</li>
-									<li class="nav-item {{ addfriends }} px-4">
-											<a class="nav-link" href="/addfriends" style="font-size:16px;">Add Friends</a>
-									</li>
-							</ul>
-							<span class="navbar-text mx-4 text-white">
-								Hello {{ currentuser }}!
-							</span>
-							<ul class="navbar-nav">
-									<li class="nav-item navbar-right">
-											<a class="nav-link text-white bg-info" href="/logout">Logout</a>
-									</li>
-							</ul>
-				{% endif %}
-					</div>
-				</nav>
-				<br>
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+	  {% if isLogin %}
+	  <ul class="navbar-nav ml-4">
+	    <li class="nav-item {{ info }} px-3 navbar-right">
+	      <a class="nav-link" href="/info" style="font-size:16px;">Info</a>
+	    </li>
+	  </ul>
+	  <ul class="navbar-nav ml-auto">
+	    <li class="nav-item {{ login }} px-3 navbar-right">
+	      <a class="nav-link" href="/login" style="font-size:16px;">Login</a>
+	    </li>
+	  </ul>
+	  <ul class="navbar-nav ml-4">
+	    <li class="nav-item {{ signup }} px-3 navbar-right">
+	      <a class="nav-link" href="/signup" style="font-size:16px;">Sign Up</a>
+	    </li>
+	  </ul>
+	  {% else %}
+	  <ul class="navbar-nav mr-auto">
+	    <li class="nav-item {{ daily }} px-4">
+	      <a class="nav-link" href="/" style="font-size:16px;">Daily</a>
+	    </li>
+	    <li class="nav-item {{ monthly }} px-4">
+	      <a class="nav-link" href="/monthly/{{ default_id }}" style="font-size:16px;">Monthly</a>
+	    </li>
+	    <li class="nav-item {{ future }} px-4">
+	      <a class="nav-link" href="/future/{{ default_id }}" style="font-size:16px;">Future</a>
+	    </li>
+	    <li class="nav-item {{ friends }} px-4">
+	      <a class="nav-link" href="/friends" style="font-size:16px;">
+		Friends
+		{% if messages|length + requests|length > 0 %}
+		<span class="badge badge-danger mx-1">{{ messages|length + requests|length }}</span>
+		{% endif %}
+	      </a>
+	    </li>
+	    <li class="nav-item {{ addfriends }} px-4">
+	      <a class="nav-link" href="/addfriends" style="font-size:16px;">Add Friends</a>
+	    </li>
+	  </ul>
+	  <span class="navbar-text mx-4 text-white">
+	    Hello {{ currentuser }}!
+	  </span>
+	  <ul class="navbar-nav">
+	    <li class="nav-item navbar-right">
+	      <a class="nav-link text-white bg-info" href="/logout">Logout</a>
+	    </li>
+	  </ul>
+	  {% endif %}
+	</div>
+      </nav>
+      <br>
 
-				{% set msgs = get_flashed_messages(with_categories=true) %}
-				{% for category, msg in msgs %}
-				<div class="alert {{ category }}" role="alert">
-  				{{ msg }}
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-					   <span aria-hidden="true">&times;</span>
-					 </button>
-				</div>
-				{% endfor %}
+      {% set msgs = get_flashed_messages(with_categories=true) %}
+      {% for category, msg in msgs %}
+      <div class="alert {{ category }}" role="alert">
+  	{{ msg }}
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	  <span aria-hidden="true">&times;</span>
+	</button>
+      </div>
+      {% endfor %}
 
-				{% block body %}
-				{% endblock %}
+      {% block body %}
+      {% endblock %}
 
-				<br>
-				<footer>
-					© 2020 Ducking Awesome. All Rights Reserved.
-				</footer>
-				<br>
+      <br>
+      <footer>
+	© 2020 Ducking Awesome. All Rights Reserved.
+      </footer>
+      <br>
 
-			</center>
-	</body>
-	<script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
-	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
-	{% block script %}
-	{% endblock %}
+    </center>
+  </body>
+  <script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+  {% block script %}
+  {% endblock %}
 </html>

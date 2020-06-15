@@ -59,6 +59,10 @@ def root():
         return redirect(url_for('daily', date=datetime.date(datetime.now()), user=session['user_id']))
     return redirect('/login')
 
+@app.route( "/info")
+def into():
+    return render_template( 'info.html')
+
 @app.route("/login")
 @no_login_required
 def login():
