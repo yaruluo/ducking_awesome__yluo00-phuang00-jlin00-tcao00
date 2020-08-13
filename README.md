@@ -10,7 +10,7 @@ P05: Fin
 2020-06-11
 
 ### [Video Demo Here](https://www.youtube.com/watch?v=J_NI2SXR-lI)
-Our site is also live [here](http://p5.jckiesd.tech).
+<!--- Our site is also live [here](http://p5.jckiesd.tech). --->
 
 # Roster
 Yaru (PM)
